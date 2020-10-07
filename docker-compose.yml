@@ -3,17 +3,22 @@ version: '3'
 services: 
     
     mysql-development:
-        image: mysql:8.0.17
         restart: always
+        image: mysql:8.0.17
         environment: 
             MYSQL_ROOT_PASSWORD: #password
             MYSQL_DATABASE: #database
         ports:
-            - "3308:3306"
+            - '3308:3306'
         expose:
             - '3306'
         #creates a volume on the host that is outside the container
         volumes:
             - mysql-data:/var/lib/mysql
+    data:
+        image: mysql:8.0.17
+        volumes: 
+            - mysql-data:/var/lib/mysql
+        command: 'true'
 volumes:
     mysql-data:
