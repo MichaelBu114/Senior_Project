@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services: 
     
@@ -6,10 +6,10 @@ services:
         restart: always
         image: mysql:8.0.17
         environment: 
-            MYSQL_ROOT_PASSWORD: #password
-            MYSQL_DATABASE: #database
+            MYSQL_ROOT_PASSWORD: snowflake6365stark
+            MYSQL_DATABASE: dp_sp
         ports:
-            - '3308:3306'
+            - '3309:3306'
         expose:
             - '3306'
         #creates a volume on the host that is outside the container
@@ -20,5 +20,12 @@ services:
         volumes: 
             - mysql-data:/var/lib/mysql
         command: 'true'
+    web:
+        build: .
+        ports:
+            - "5000:5000"
+    redis:
+        image: "redis:alpine"
+
 volumes:
     mysql-data:
