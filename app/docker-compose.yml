@@ -24,6 +24,8 @@ services:
         build: .
         ports:
             - "5000:5000"
+        links:
+            - "mysql-development"
     redis:
         image: "redis:alpine"
 
