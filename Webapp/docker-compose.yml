@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 
 services: 
     
@@ -6,8 +6,8 @@ services:
         restart: always
         image: mysql:8.0.17
         environment: 
-            MYSQL_ROOT_PASSWORD: #password
-            MYSQL_DATABASE: #database
+            MYSQL_ROOT_PASSWORD: snowflake6365stark
+            MYSQL_DATABASE: dp_sp
         ports:
             - '3309:3306'
         expose:
@@ -20,13 +20,21 @@ services:
         volumes: 
             - mysql-data:/var/lib/mysql
         command: 'true'
-    web:
-        build: flask/.
+    flask:
+        image: webapp-flask
+        build:
+            context: .
+            dockerfile: Dockerfile-flask
+        volumes:
+            - "./:/app"
+    nginx:
+        image: webapp-nginx
+        build:
+            context: .
+            dockerfile: Dockerfile-nginx
         ports:
-            - "5000:5000"
-        links:
-            - "mysql-development"
-    redis:
-        image: "redis:alpine"
+            - 5000:80
+        depends_on:
+            - flask
 volumes:
     mysql-data:
