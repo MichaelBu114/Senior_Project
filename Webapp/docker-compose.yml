@@ -25,6 +25,8 @@ services:
         build:
             context: .
             dockerfile: Dockerfile-flask
+        links:
+            - db_sp
         volumes:
             - "./:/app"
     nginx:
