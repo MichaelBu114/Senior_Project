@@ -27,7 +27,7 @@ def login():
             return 'Login successful'
         else:
             msg = 'Incorrect username/password'
-    return render_template('', msg='')
+    return render_template('login_test.html, msg='')
 
 @app.route('/pagelogin/logout')
 def logout():
