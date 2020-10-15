@@ -20,14 +20,14 @@ def login():
         cursor = mysql.get_db().cursor()
         cursor.execute('SELECT * FROM Login WHERE username = %s AND password = %s', (username,password,))
         login = cursor.fetchone()
-        if account:
+        if login:
             session['loggedin'] = True
             session['id'] = login['login_id']
             session['username'] = login['username']
             return 'Login successful'
         else:
             msg = 'Incorrect username/password'
-    return render_template('login_test.html, msg='')
+    return render_template('login_test.html', msg='')
 
 @app.route('/pagelogin/logout')
 def logout():
