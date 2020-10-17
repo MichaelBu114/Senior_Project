@@ -1,0 +1,27 @@
+create
+    definer = root@`%` procedure addUser(IN newFirstName varchar(90), IN newLastName varchar(90),
+                                         IN newEmail varchar(150))
+BEGIN
+    INSERT INTO User (lastname, firstname, email, activity, distance, price_range, user_rating, reservations, FK_login, FK_user_categories, FK_user_establishment, FK_comment)
+VALUES (newLastName, newFirstName, newEmail, 1,null,null,null,null ,LAST_INSERT_ID(),null,null,null);
+end;
+
+create
+    definer = root@`%` procedure GetLogin(IN username varchar(45), IN password varchar(90))
+BEGIN
+    SELECT * FROM Login as l WHERE l.username = username AND l.password = password;
+end;
+
+create
+    definer = root@`%` procedure GetUsername(IN checkUser varchar(45))
+BEGIN
+    SELECT l.username FROM Login AS l WHERE l.username =  checkUser;
+end;
+
+create
+    definer = root@`%` procedure newUser(IN newUsername varchar(45), IN newPassword varchar(90),
+                                         IN firstName varchar(90), IN lastName varchar(90), IN Email varchar(150))
+BEGIN
+    INSERT INTO Login (username,password,date_changed) VALUES (newUsername,newPassword,curdate());
+    call addUser(firstName,lastName,Email,LAST_INSERT_ID());
+end;
