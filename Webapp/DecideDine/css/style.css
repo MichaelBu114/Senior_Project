@@ -40,7 +40,7 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 }
 /* ~~ this container surrounds all other divs giving them their percentage-based width ~~ */
 .container {
-	width: 90%;
+	width: 100%;
 	max-width: 1260px;/* a max-width may be desirable to keep this layout from getting too wide on a large monitor. This keeps line length more readable. IE6 does not respect this declaration. */
 	min-width: 780px;/* a min-width may be desirable to keep this layout from getting too narrow. This keeps line length more readable in the side columns. IE6 does not respect this declaration. */
 	/*background-color: #FFF;*/
@@ -49,7 +49,7 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 /* ~~the header is not given a width. It will extend the full width of your layout. It contains an image placeholder that should be replaced with your own linked logo~~ */
 
 .header {
-	width: 99%;
+	width: 100%;
 	padding: 5px;
 	background-color: #f67b5f;
 	float: left;
@@ -63,7 +63,6 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 	height: 30px;
 }
 #header_logo {
-	margin: 0;
 	float: left;
 	width: 70%;
 	text-align: center;
