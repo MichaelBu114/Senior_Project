@@ -12,6 +12,9 @@ app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
 mysql.init_app(app)
 
 @app.route('/')
+def home():
+    return render_template('index.html')
+
 @app.route('/pagelogin/', methods=['GET','POST'])
 def login():
     msg = ''
@@ -60,7 +63,7 @@ def newAccount():
             msg = 'You have successfully registered!'
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
-    return render_template('', msg = msg)
+    return render_template('index.html', msg = msg)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
