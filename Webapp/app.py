@@ -4,11 +4,11 @@ import hashlib
 import re
 
 app = Flask(__name__)
-mysql = MySQL()
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
+mysql = MySQL()
 mysql.init_app(app)
 
 @app.route('/')
@@ -40,7 +40,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-@app.route('/newAccount', methods = ['GET', 'POST'])
+@app.route('/newAccount/', methods = ['GET', 'POST'])
 def newAccount():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'firstName' in request.form and 'lastName' in request.form:
         username = request.form['username'] 
@@ -65,5 +65,5 @@ def newAccount():
         msg = 'Please fill out the form!'
     return render_template('index.html', msg = msg)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug = True)
+
+app.run(host='0.0.0.0', debug = True)
