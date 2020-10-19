@@ -1,15 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from flaskext.mysql import MySQL
 import hashlib
 import re
-
+from flask import Flask, render_template, request, redirect, url_for, session
+from flaskext.mysql import MySQL
+mysql = MySQL()
 app = Flask(__name__)
+mysql.init_app(app)
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
-mysql = MySQL()
-mysql.init_app(app)
+
 
 @app.route('/')
 def home():
@@ -20,8 +20,8 @@ def login():
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username'] 
-        password = hashlib.md5(request.form['password'])
-        cursor = mysql.connect().cursor()
+        password = request.form['password']
+        cursor = mysql.get_db().cursor()
         cursor.callproc('GetLogin', [username,password])
         login = cursor.fetchone()
         if login:
@@ -48,7 +48,7 @@ def newAccount():
         email = request.form['emai']
         firstname = request.form['firstName']
         lastname = request.form['lastName'] 
-        cursor = mysql.connect().cursor()
+        cursor = mysql.get_db().cursor()
         cursor.callproc('GetUsername', ['username']) 
         login = cursor.fetchone()
         if login: 
@@ -65,5 +65,5 @@ def newAccount():
         msg = 'Please fill out the form!'
     return render_template('index.html', msg = msg)
 
-
-app.run(host='0.0.0.0', debug = True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug = True)
