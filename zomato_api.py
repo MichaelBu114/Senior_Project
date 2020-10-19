@@ -1,13 +1,17 @@
 import sys
-import os
 import requests
 
 ZOMATO_API_KEY = ""
 GOOGLE_MAPS_API_KEY = ""
-ZIP = ""
 
-ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/geocode"
+ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/search"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
+
+# These values will eventually be passed to this script
+ZIP = sys.argv[1] # First argument to script
+RADIUS = 5 # Miles
+SORTING = "real_distance" # Sort by distance
+CUISINES = "" # Filter by one or more cuisines
 
 def test_location_call():
     header = {"user-key" : ZOMATO_API_KEY}
@@ -17,33 +21,31 @@ def test_location_call():
     lat = maps_response["results"][0]["geometry"]["location"]["lat"]
     lon = maps_response["results"][0]["geometry"]["location"]["lng"]
     
-    # Call zomato geocode api
-    response = requests.get(ZOMATO_BASE_URL+"?lat=%s&lon=%s" % (lat, lon), headers=header).json()
-    
-    print "Found %s locations for zip code %s\n" % (len(response["nearby_restaurants"]), ZIP)
-    
-    for i in response["nearby_restaurants"]:
-        print "Name: " + i["restaurant"]["name"]
-        print "URL: " + i["restaurant"]["url"]
-        print "Address: " + i["restaurant"]["location"]["address"]
-        print "Coordinates: " + i["restaurant"]["location"]["latitude"] + ", " + i["restaurant"]["location"]["longitude"]
-        print "Currency: " + i["restaurant"]["currency"]
-        print "Menu URL: " + i["restaurant"]["menu_url"]
-        print "Delivery: " + str(i["restaurant"]["R"]["has_menu_status"]["delivery"])
-        print "Takeaway: " + str(i["restaurant"]["R"]["has_menu_status"]["takeaway"])
-        
-        online = "Yes" if i["restaurant"]["has_online_delivery"] == 1 else "No"
-        delivery = "Yes" if i["restaurant"]["is_delivering_now"] == 1 else "No"
-        reservation = "Yes" if i["restaurant"]["is_table_reservation_supported"] == 1 else "No"
-        booking = "Yes" if i["restaurant"]["has_table_booking"] == 1 else "No"
-        grocery = "Yes" if i["restaurant"]["R"]["is_grocery_store"] == "true" else "No"
-        
-        print "Has Online Delivery: " + online
-        print "Delivering Now: " + delivery
-        print "Is Table Revervation Supported: " + reservation
-        print "Has Table Booking: " + booking
-        print "Is Grocery Store: " + grocery
-        
-        print "\n"
+    # Call zomato search api
+    meters = RADIUS * 1609
+    id = 0
+    response_json = {}
+    response_json["status"] = "OK"
+
+    for start in ["0","21","41","61","81"]:
+        response = requests.get(ZOMATO_BASE_URL+"?lat=%s&lon=%s&radius=%s&sort=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, SORTING, CUISINES, start), headers=header).json()
+        print "Calling " + ZOMATO_BASE_URL+"?lat=%s&lon=%s&radius=%s&sort=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, SORTING, CUISINES, start)
+        for i in response["restaurants"]:
+            response_json[id] = {}
+            response_json[id]["id"] = i["restaurant"]["id"]
+            response_json[id]["coordinates"] = {}
+            response_json[id]["name"] = i["restaurant"]["name"]
+            response_json[id]["url"] = i["restaurant"]["url"]
+            response_json[id]["phone_number"] = i["restaurant"]["phone_numbers"]
+            response_json[id]["address"] = i["restaurant"]["location"]["address"]
+            response_json[id]["coordinates"]["lat"] = i["restaurant"]["location"]["latitude"]
+            response_json[id]["coordinates"]["lng"] = i["restaurant"]["location"]["longitude"]
+            response_json[id]["currency"] = i["restaurant"]["currency"]
+            response_json[id]["menu"] = i["restaurant"]["menu_url"]
+            response_json[id]["cuisine"] = i["restaurant"]["cuisines"]
+            id += 1
+
+    print "\n"
+    print response_json
     
 test_location_call()
