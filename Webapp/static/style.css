@@ -1,7 +1,7 @@
 @charset "utf-8";
 body {
 	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
-	background-image: url(..static/images/Background.png);
+	background-image: url(../static/images/Background.png);
 	margin: 0;
 	padding: 0;
 	color: #000;
