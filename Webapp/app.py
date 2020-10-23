@@ -2,15 +2,15 @@ import hashlib
 import re
 import gc
 from flask import Flask, render_template, request, redirect, url_for, session
-from flask.ext.mysql import MySQL
+from flaskext.mysql import MySQL
 from flask.helpers import flash
 
+mysql = MySQL()
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DB'] = 'dp_sp'
-mysql = MySQL()
 mysql.init_app(app)
 
 
@@ -23,10 +23,12 @@ def home():
 def login():
     error = ''
     try:
-        c, conn = connection()
-        if request.method == 'POST':
-            login = c.callproc('GetLogin', [request.form('username'), request.form('password')])
-            login = c.fetchone()[2]
+        if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+            username = request.form['username']
+            password = request.form['password']
+            cursor = mysql.get_db().cursor()
+            login = cursor.callproc('GetLogin', [request.form('username'), request.form('password')])
+            login = cursor.fetchone()
             if login:
                 session['logged_in'] = True
                 session['username'] = request.form('username')

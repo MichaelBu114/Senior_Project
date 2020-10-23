@@ -1,3 +1,4 @@
 Flask
 uWSGI
-mysql-connector
+flask-mysql
+mysql-client
