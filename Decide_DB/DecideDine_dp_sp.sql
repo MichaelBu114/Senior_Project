@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `dp_sp` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `dp_sp`;
 -- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
 --
 -- Host: localhost    Database: dp_sp
@@ -14,12 +16,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-DROP DATABASE IF EXISTS `dp_sp`;
-
-CREATE DATABASE `dp_sp` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `dp_sp`;
 
 --
 -- Table structure for table `Categories`
@@ -188,7 +184,7 @@ CREATE TABLE `Login` (
   `date_changed` date NOT NULL,
   PRIMARY KEY (`login_id`),
   UNIQUE KEY `Login_username_uindex` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,6 +193,7 @@ CREATE TABLE `Login` (
 
 LOCK TABLES `Login` WRITE;
 /*!40000 ALTER TABLE `Login` DISABLE KEYS */;
+INSERT INTO `Login` VALUES (1,'burkem35','password123','2020-10-16'),(2,'L1MBO','test456','2020-10-16'),(3,'Michael','Burke','2020-10-19'),(4,'test','test','2020-10-19'),(5,'sprint','test789','2020-10-19'),(6,'test2','testpassword','2020-10-23');
 /*!40000 ALTER TABLE `Login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +226,7 @@ DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `lastname` varchar(90) NOT NULL,
   `firstname` varchar(90) NOT NULL,
   `email` varchar(150) NOT NULL,
@@ -383,6 +380,86 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'dp_sp'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `addUser` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addUser`(IN newFirstName varchar(90), IN newLastName varchar(90),
+                                         IN newEmail varchar(150), IN FKLogin int)
+BEGIN
+    INSERT INTO User (lastname, firstname, email, activity, distance, price_range, user_rating, reservations, FK_login, FK_user_categories, FK_user_establishment, FK_comment)
+VALUES (newLastName, newFirstName, newEmail, 1,null,null,null,null ,FKLogin,null,null,null);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetLogin` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `GetLogin`(IN username varchar(45), IN password varchar(90))
+BEGIN
+    SELECT * FROM Login as l WHERE l.username = username AND l.password = password;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetUsername` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `GetUsername`(IN checkUser varchar(45))
+BEGIN
+    SELECT l.username FROM Login AS l WHERE l.username =  checkUser;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `newUser` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `newUser`(IN newUsername varchar(45), IN newPassword varchar(90),
+                                         IN firstName varchar(90), IN lastName varchar(90), IN Email varchar(150))
+BEGIN
+    INSERT INTO Login (username,password,date_changed) VALUES (newUsername,newPassword,curdate());
+    call addUser(firstName,lastName,Email,LAST_INSERT_ID());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -393,4 +470,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-10-14 19:36:58
+-- Dump completed on 2020-10-23 11:42:00
