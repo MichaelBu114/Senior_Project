@@ -1,9 +1,9 @@
 create
     definer = root@`%` procedure addUser(IN newFirstName varchar(90), IN newLastName varchar(90),
-                                         IN newEmail varchar(150))
+                                         IN newEmail varchar(150), IN FKLogin int)
 BEGIN
     INSERT INTO User (lastname, firstname, email, activity, distance, price_range, user_rating, reservations, FK_login, FK_user_categories, FK_user_establishment, FK_comment)
-VALUES (newLastName, newFirstName, newEmail, 1,null,null,null,null ,LAST_INSERT_ID(),null,null,null);
+VALUES (newLastName, newFirstName, newEmail, 1,null,null,null,null ,FKLogin,null,null,null);
 end;
 
 create

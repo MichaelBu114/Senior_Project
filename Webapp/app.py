@@ -2,7 +2,7 @@ import hashlib
 import re
 import gc
 from flask import Flask, render_template, request, redirect, url_for, session
-from flaskext.mysql import MySQL
+from flask.ext.mysql import MySQL
 from flask.helpers import flash
 
 app = Flask(__name__)
