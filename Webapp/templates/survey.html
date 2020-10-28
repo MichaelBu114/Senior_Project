@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<link rel='stylesheet' href='{{ url_for(' static ', filename = 'style.css ')}}?version=1'>
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Decide &amp; Dine</title>
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
  
-    
 </head>
 <style>
 
@@ -28,25 +28,19 @@
        
     }
 
-    .form-check-inline {
+  /*  .form-check-inline {
         display: inline-flex;
         align-items: center;
         padding-left: 0; 
         margin: 30px;
         
-    }
+    }*/
 
     .q1 {
         color:white;
         margin: 30px;
         font-size: 250%;
-
-    }
-
-    .radio {
-        color:white;
-        font-size: 120%;
-
+        /*border-bottom-style: solid;*/
     }
 
     a {
@@ -58,6 +52,7 @@
     a:hover {
         color: black;
     }
+
     .next {
         font-size: 200%;
         color: white;
@@ -90,152 +85,402 @@
     </div>
 
     <div class="floating-box">
-
-        <div><bt class="text">What are you feeling today??</bt></div>
-
-        <div>
-            <bt class="q1">1. How many miles would you like to travel</bt></div>
-        <div> 
-            <div class="custom-control custom-radio form-check-inline">
-                <input class="custom-control-input" type="radio" id="inlineRadio1" name="distance" >
-                <label class="custom-control-label" for="inlineRadio1"><bt class="radio">Less than 5 mi.</bt></label>
-            </div>
-            <div class="form-check custom-radio form-check-inline">
-                <input class="custom-control-input" type="radio" id="inlineRadio2" name="distance">
-                <label class="custom-control-label" for="inlineRadio2"><bt class="radio">Less than 10 mi.</bt></label>
-            </div>
-            <div class="form-check custom-radio form-check-inline">
-                <input class="custom-control-input" type="radio" id="inlineRadio3" name="distance">
-                <label class="custom-control-label" for="inlineRadio3"><bt class="radio">Less than 25 mi.</bt></label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="custom-control-input" type="radio" id="inlineRadio4" name="distance" checked>
-                <label class="custom-control-label" for="inlineRadio4"><bt class="radio">Less than 50 mi.</bt></label>
-            </div>
+        <div><bt class="text">What are you feeling today??</bt>
+            <br>
+        <label class="q1">1. Please enter your zip  <input type="text" pattern="[0-9]{5}" title="Five digit zip code" /></div>
+    <div> <label class="q1">2. How many miles would you like to travel</label>
+                 <select name="Distance_Group" id="Distance_Group_1">
+                    <option value="8046meters">Within 5 Miles</option>
+                    <option value="16093meters">Within 10 Miles</option>
+                    <option value="24140meters">Within 15 Miles</option>
+                    <option value="32186meters">Within 20 Miles</option>
+                    <option value="40233meters">Within 25 Miles</option>
+                    <option value="56327meters">Within 35 Miles</option>
+                </select>
         </div>
 
         <div>
-            <bt class="q1">2. What type of restaurant would you like to eat at?</bt></div>
-            <!-- Default unchecked -->
-            <div class="custom-control custom-radio form-check-inline">
-                <input type="radio" class="custom-control-input" id="defaultUnchecked" name="defaultExampleRadios" checked>
-                <label class="custom-control-label" for="defaultUnchecked"><bt class="radio">Fast Food</bt></label>
-            </div>
-            
-            <!-- Default checked -->
-            <div class="custom-control custom-radio form-check-inline">
-                <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios">
-                <label class="custom-control-label" for="defaultChecked"><bt class="radio">Dine In</bt></label>
-            </div>
-       
+           
+          
+            <label class="q1">3. Select your Establishment Types:</label>
+            <table width="800">
+                <tr>
+                    <td width="70">
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="1" id="EstCheckboxGroup_0" /> Café</label>
+                    </td>
+                    <td width="87">
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="5" id="EstCheckboxGroup_1" /> Lounge</label>
+                    </td>
+                    <td width="63">
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="6" id="EstCheckboxGroup_2" /> Pub</label>
+                    </td>
+                    <td width="55">
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="7" id="EstCheckboxGroup_3" /> Bar</label>
+                    </td>
+                    <td width="100">
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="8" id="EstCheckboxGroup_4" /> Club</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="16" id="EstCheckboxGroup_5" /> Casual Dining</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="18" id="EstCheckboxGroup_6" /> Fine Dining</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="20" id="EstCheckboxGroup_7" /> Food Court</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="21" id="EstCheckboxGroup_8" /> Quick Bites</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="23" id="EstCheckboxGroup_9" /> Dessert Parlour</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="24" id="EstCheckboxGroup_10" /> Deli</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="31" id="EstCheckboxGroup_11" /> Bakery</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="41" id="EstCheckboxGroup_12" /> Beverage Shop</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="81" id="EstCheckboxGroup_13" /> Food Truck</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="91" id="EstCheckboxGroup_14" /> Bistro</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="101" id="EstCheckboxGroup_15" /> Diner</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="161" id="EstCheckboxGroup_16" /> Microbrewery</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="271" id="EstCheckboxGroup_17" /> Sandwich Shop</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="272" id="EstCheckboxGroup_18" /> Cocktail Bar</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="275" id="EstCheckboxGroup_19" /> Pizzeria</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="278" id="EstCheckboxGroup_20" /> Wine Bar</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="281" id="EstCheckboxGroup_21" /> Fast Food</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="282" id="EstCheckboxGroup_22" /> Taqueria</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="283" id="EstCheckboxGroup_23" /> Brewery</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="284" id="EstCheckboxGroup_24" /> Juice Bar</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="285" id="EstCheckboxGroup_25" /> Fast Casual</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="286" id="EstCheckboxGroup_26" /> Coffee Shop</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="290" id="EstCheckboxGroup_27" /> Vineyard</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="291" id="EstCheckboxGroup_28" /> Sweet Shop</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="292" id="EstCheckboxGroup_29" /> Beer Garden</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="295" id="EstCheckboxGroup_30" /> Noodle Shop</label>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="EstCheckboxGroup" value="309" id="EstCheckboxGroup_31" /> Steakhouse</label>
+                    </td>
+                </tr>
+            </table>
 
             
-        <div><bt class="q1">3. What kind of food do you want?</bt></div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="american" value="american">
-                <label class="form-check-label" for="american">
-                    <bt class="radio">American</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="chinese" value="chinese">
-                <label class="form-check-label" for="chinese">
-                    <bt class="radio">Chinese</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="italian" value="italian">
-                <label class="form-check-label" for="italian">
-                    <bt class="radio">Italian</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mexican" value="mexican">
-                <label class="form-check-label" for="mexican">
-                    <bt class="radio">Mexican</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="japanese" value="japanese">
-                <label class="form-check-label" for="japanese">
-                    <bt class="radio">Japanese</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="korean" value="korean">
-                <label class="form-check-label" for="korean">
-                    <bt class="radio">Korean</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="greek" value="greek">
-                <label class="form-check-label" for="greek">
-                    <bt class="radio">Greek</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="vietnamese" value="vietnamese">
-                <label class="form-check-label" for="vietnamese">
-                    <bt class="radio">Vietnamese</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="thai" value="thai">
-                <label class="form-check-label" for="thai">
-                    <bt class="radio">Thai</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="cuban" value="cuban">
-                <label class="form-check-label" for="cuban">
-                    <bt class="radio">Cuban</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="indian" value="indian">
-                <label class="form-check-label" for="indian">
-                    <bt class="radio">Indian</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="other" value="other">
-                <label class="form-check-label" for="other">
-                    <bt class="radio" >Other</bt>
-                </label>
-            </div>
+       
         
-            <div><bt class="q1">4. Do you have any allergies or diet restrictions?</bt></div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="peanut" value="peanut">
-                <label class="form-check-label" for="peanut">
-                    <bt class="radio">Peanut </bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="diabetic" value="diabetic">
-                <label class="form-check-label" for="diabetic">
-                    <bt class="radio">Diabetic</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="vegan" value="vegan">
-                <label class="form-check-label" for="vegan">
-                    <bt class="radio" >Vegan</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="gluten free" value="gluten free">
-                <label class="form-check-label" for="gluten free">
-                    <bt class="radio" >Gluten Free</bt>
-                </label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="lactose" value="lactose">
-                <label class="form-check-label" for="lactose">
-                    <bt class="radio">lactose intolerance</bt>
-                </label>
-            </div>
-            
+        <label class="q1">4. Select your desired Cuisines:</label>
+        <table width="800">
+            <tr>
+                <td width="90">
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="1" id="CuisCheckboxGroup_0" /> American</label>
+                </td>
+                <td width="87">
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="3" id="CuisCheckboxGroup_1" /> Asian</label>
+                </td>
+                <td width="90">
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="5" id="CuisCheckboxGroup_2" /> Bakery</label>
+                </td>
+                <td width="70">
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="25" id="CuisCheckboxGroup_3" /> Chinese</label>
+                </td>
+                <td width="70">
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="30" id="CuisCheckboxGroup_4" /> Cafe</label>
+                </td>
+                <td width="70">
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="38" id="CuisCheckboxGroup_5" /> European</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="40" id="CuisCheckboxGroup_6" /> Fast Food</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="45" id="CuisCheckboxGroup_7" /> French</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="55" id="CuisCheckboxGroup_8" /> Italian</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="60" id="CuisCheckboxGroup_9" /> Japanese</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="67" id="CuisCheckboxGroup_10" /> Korean</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="70" id="CuisCheckboxGroup_11" /> Mediterranean</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="73" id="CuisCheckboxGroup_12" /> Mexican</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="82" id="CuisCheckboxGroup_13" /> Pizza</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="83" id="CuisCheckboxGroup_14" /> Seafood</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="89" id="CuisCheckboxGroup_15" /> Spanish</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="95" id="CuisCheckboxGroup_16" /> Thai</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="99" id="CuisCheckboxGroup_17" /> Vietnamese</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="100" id="CuisCheckboxGroup_18" /> Desserts</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="121" id="CuisCheckboxGroup_19" /> Cantonese</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="134" id="CuisCheckboxGroup_20" /> German</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="135" id="CuisCheckboxGroup_21" /> Irish</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="141" id="CuisCheckboxGroup_22" /> Steak</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="143" id="CuisCheckboxGroup_23" /> Healthy Food</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="148" id="CuisCheckboxGroup_24" /> Indian</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="150" id="CuisCheckboxGroup_25" /> Tex-Mex</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="152" id="CuisCheckboxGroup_26" /> African</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="153" id="CuisCheckboxGroup_27" /> Cuban</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="156" id="CuisCheckboxGroup_28" /> Greek</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="161" id="CuisCheckboxGroup_29" /> Coffee and Tea</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="168" id="CuisCheckboxGroup_30" /> Burger</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="177" id="CuisCheckboxGroup_31" /> Sushi</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="491" id="CuisCheckboxGroup_30" /> Cajun</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="501" id="CuisCheckboxGroup_31" /> Frozen Yogurt</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="541" id="CuisCheckboxGroup_31" /> Diner</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="181" id="CuisCheckboxGroup_15" /> Grill</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="182" id="CuisCheckboxGroup_16" /> Breakfast</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="192" id="CuisCheckboxGroup_17" /> Deli</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="193" id="CuisCheckboxGroup_18" /> BBQ</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="207" id="CuisCheckboxGroup_19" /> Jamaican</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="219" id="CuisCheckboxGroup_20" /> Polish</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="227" id="CuisCheckboxGroup_21" /> Bar Food</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="233" id="CuisCheckboxGroup_22" /> Ice Cream</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="265" id="CuisCheckboxGroup_23" /> Jewish</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="298" id="CuisCheckboxGroup_24" /> Fish and Chips</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="304" id="CuisCheckboxGroup_25" /> Sandwich</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="308" id="CuisCheckboxGroup_26" /> Vegetarian</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="318" id="CuisCheckboxGroup_27" /> Fondue</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="361" id="CuisCheckboxGroup_28" /> Puerto Rican</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="461" id="CuisCheckboxGroup_29" /> Soul Food</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="921" id="CuisCheckboxGroup_25" /> Southern American</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="955" id="CuisCheckboxGroup_26" /> Bagels</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="959" id="CuisCheckboxGroup_27" /> Donuts</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="966" id="CuisCheckboxGroup_28" /> Southwestern</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="971" id="CuisCheckboxGroup_29" /> Chili</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="983" id="CuisCheckboxGroup_27" /> Pub Food</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="997" id="CuisCheckboxGroup_28" /> Taco</label>
+                </td>
+                <td>
+                    <label><input type="checkbox" name="CuisCheckboxGroup" value="998" id="CuisCheckboxGroup_29" /> Salad</label>
+                </td>
+            </tr>
+        </table>
+
+
+
+        <label class="q1">5. Select your desired dining Categories:</label>
+        <table width="800">
+            <tr>
+                <td width="90">
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="1" id="CatCheckboxGroup_0" /> Delivery</label>
+                </td>
+                <td width="60">
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="2" id="CatCheckboxGroup_1" /> Dine-out</label>
+                </td>
+                <td width="60">
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="3" id="CatCheckboxGroup_2" /> Nightlife</label>
+                </td>
+                <td width="80">
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="4" id="CatCheckboxGroup_3" /> Catching-up</label>
+                </td>
+                <td width="70">
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="5" id="CatCheckboxGroup_4" /> Takeaway</label>
+                </td>
+                <td width="100">
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="6" id="CatCheckboxGroup_5" /> Cafes</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="7" id="CatCheckboxGroup_6" /> Daily Menus</label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="8" id="CatCheckboxGroup_7" /> Breakfast</label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="9" id="CatCheckboxGroup_8" /> Lunch</label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="10" id="CatCheckboxGroup_9" /> Dinner</label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="11" id="CatCheckboxGroup_10" /> Pubs and Bars</label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="13" id="CatCheckboxGroup_11" /> Pocket Friendly Delivery</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" name="CatCheckboxGroup" value="14" id="CatCheckboxGroup_12" /> Clubs and Lounges</label>
+                </td>
+                <td>
+                </table>
+
             <div>
                 <a href="#" class="next">Next</a>
         </div>
