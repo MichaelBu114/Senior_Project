@@ -12,12 +12,31 @@
   <div class="header">
     <div id="nav_link"><a href="#"><img src="static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
     <div id="header_logo"><a href="#"><img src="static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
-    <div id="login_link"><a href="#"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    <div id="login_link"><a href="/login"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
   </div>
   <!-- end .header -->
   <div class="content">
     <p>&nbsp;</p>
     <p>&nbsp;</p>
+    <div class="login">
+			<h1>Login</h1>
+			<div class="links">
+				<a href="{{ url_for('login') }}" class="active">Login</a>
+				<a href="#">Register</a>
+			</div>
+			<form action="{{ url_for('login') }}" method="post">
+				<label for="username">
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="text" name="username" placeholder="Username" id="username" required>
+				<label for="password">
+					<i class="fas fa-lock"></i>
+				</label>
+				<input type="password" name="password" placeholder="Password" id="password" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Login">
+			</form>
+		</div>
     <p>&nbsp;</p>
   </div>
   <!-- end .content -->

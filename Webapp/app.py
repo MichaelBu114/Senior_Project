@@ -1,16 +1,17 @@
 import hashlib
-import re
-import gc
 from flask import Flask, render_template, request, redirect, url_for, session
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 
-mysql = MySQL()
+
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'snowflake6365stark'
-app.config['MYSQL_DB'] = 'dp_sp'
+app.secret_key = 'SeniorProject'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
+app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
+app.config['MYSQL_DATABASE_PORT'] = 3309
+mysql = MySQL()
 mysql.init_app(app)
 
 
@@ -22,25 +23,21 @@ def home():
 @app.route('/login/', methods=['GET','POST'])
 def login():
     error = ''
-    try:
-        if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-            username = request.form['username']
-            password = request.form['password']
-            cursor = mysql.get_db().cursor()
-            login = cursor.callproc('GetLogin', [request.form('username'), request.form('password')])
-            login = cursor.fetchone()
-            if login:
-                session['logged_in'] = True
-                session['username'] = request.form('username')
-                flash('Login successful')
-                return redirect(url_for('home'))
-            else:
-                error = "Invalid username/password, try again."
-        gc.collect()
-        return render_template('login_test/html', error = error)
-    except Exception as e:
-        error = 'Invalid username/password, try again.'
-        return render_template('login_test.html', error = error)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        db = mysql.connect()
+        cursor = db.cursor()
+        login = cursor.callproc('GetLogin', [username, password])
+        login = cursor.fetchone()
+        if login:
+            session['logged_in'] = True
+            session['username'] = username
+            flash('Login successful')
+            return redirect(url_for('home'))
+        else:
+            error = "Invalid username/password, try again."
+    return render_template('login_test.html', error = error)
 
 @app.route('/logout')
 def logout():
