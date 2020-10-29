@@ -9,9 +9,11 @@ services:
             MYSQL_ROOT_PASSWORD: snowflake6365stark
             MYSQL_DATABASE: dp_sp
         ports:
-            - '3309:3306'
+            - '3306:3306'
         expose:
             - '3306'
+        security_opt:
+            - seccomp:unconfined
         #creates a volume on the host that is outside the container
         volumes:
             - mysql-data:/var/lib/mysql

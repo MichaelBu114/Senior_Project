@@ -1,7 +1,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=1'>
+<link rel = 'stylesheet' type = "text/css" href = '{{ url_for('static', filename = 'style.css')}}?version=1'>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
@@ -10,8 +10,8 @@
 <body>
 <div id="container">
   <div class="header">
-    <div id="nav_link"><a href="#"><img src="static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
-    <div id="header_logo"><a href="#"><img src="static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
+    <div id="nav_link"><a href="/"><img src="static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
+    <div id="header_logo"><a href="/"><img src="static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
     <div id="login_link"><a href="/login"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
   </div>
   <!-- end .header -->
@@ -22,7 +22,7 @@
 			<h1>Login</h1>
 			<div class="links">
 				<a href="{{ url_for('login') }}" class="active">Login</a>
-				<a href="#">Register</a>
+				<a href="{{ url_for('registration')}}">Register</a>
 			</div>
 			<form action="{{ url_for('login') }}" method="post">
 				<label for="username">
@@ -33,7 +33,7 @@
 					<i class="fas fa-lock"></i>
 				</label>
 				<input type="password" name="password" placeholder="Password" id="password" required>
-				<div class="msg">{{ msg }}</div>
+				<div class="error">{{ error }}</div>
 				<input type="submit" value="Login">
 			</form>
 		</div>
