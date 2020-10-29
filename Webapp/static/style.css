@@ -1,7 +1,7 @@
 @charset "utf-8";
 body {
 	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
-	background-image: url(../static/images/Background.png);
+	background-image: url(../images/Background.png);
 	margin: 0;
 	padding: 0;
 	color: #000;
@@ -143,3 +143,23 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 	font-size: 1px;
 	line-height: 0px;
 }
+
+.floating-box {
+	position: inherit;
+	margin: 40px auto;
+	max-width: 75%;
+	min-width: 800px;
+	background-color: rgb(246, 123, 95);
+}
+    .text {
+/*        margin-left: 140px;*/
+        color: #ffffff; 
+     /*   font-size: 350%; */
+    }
+	    .question {
+        color:white;
+        margin: 20px;
+        font-size:large;
+		font-weight:bold;
+    }
+	
