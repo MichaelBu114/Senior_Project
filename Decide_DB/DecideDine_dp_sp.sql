@@ -179,7 +179,7 @@ DROP TABLE IF EXISTS `Login`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Login` (
   `login_id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) NOT NULL,
+  `username` varchar(150) NOT NULL,
   `password` varchar(90) NOT NULL,
   `date_changed` date NOT NULL,
   PRIMARY KEY (`login_id`),
@@ -411,7 +411,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `GetLogin`(IN username varchar(45), IN password varchar(90))
+CREATE DEFINER=`root`@`%` PROCEDURE `GetLogin`(IN username varchar(150), IN password varchar(90))
 BEGIN
     SELECT * FROM Login as l WHERE l.username = username AND l.password = password;
 END ;;
@@ -430,7 +430,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `GetUsername`(IN checkUser varchar(45))
+CREATE DEFINER=`root`@`%` PROCEDURE `GetUsername`(IN checkUser varchar(150))
 BEGIN
     SELECT l.username FROM Login AS l WHERE l.username =  checkUser;
 END ;;
@@ -449,10 +449,10 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `newUser`(IN newUsername varchar(45), IN newPassword varchar(90),
+CREATE DEFINER=`root`@`%` PROCEDURE `newUser`(IN newPassword varchar(90),
                                          IN firstName varchar(90), IN lastName varchar(90), IN Email varchar(150))
 BEGIN
-    INSERT INTO Login (username,password,date_changed) VALUES (newUsername,newPassword,curdate());
+    INSERT INTO Login (username,password,date_changed) VALUES (email,newPassword,curdate());
     call addUser(firstName,lastName,Email,LAST_INSERT_ID());
 END ;;
 DELIMITER ;

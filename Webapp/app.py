@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 
+import zomato_api
+
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -71,6 +73,19 @@ def registration():
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg = msg)
+
+@app.route('/search/', methods = ['GET', 'POST'])
+def search():
+    msg = ""
+    
+    if request.method == 'POST':
+        if 'zip' in request.form and 'radius' in request.form:
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
+            msg += str(resp)
+        else:
+            msg += "Invalid input"
+    
+    return render_template('search.html', msg = msg)
 
 if __name__ == '__main__':
     app.run(debug = True)
