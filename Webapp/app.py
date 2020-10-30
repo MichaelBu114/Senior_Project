@@ -72,5 +72,18 @@ def registration():
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg = msg)
 
+@app.route('/search/', methods = ['GET', 'POST'])
+def search():
+    msg = ""
+    
+    if request.method == 'POST':
+        if 'zip' in request.form and 'radius' in request.form:
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
+            msg += resp
+        else:
+            msg += "Invalid input"
+    
+    return render_template('search.html', msg = msg)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0' ,debug = True)
