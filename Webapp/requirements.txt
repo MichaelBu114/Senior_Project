@@ -3,3 +3,4 @@ uWSGI
 flask-mysql
 mysql-client
 cryptography
+requests
