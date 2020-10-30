@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 
+import zomato_api
+
 
 app = Flask(__name__)
 app.secret_key = 'SeniorProject'
@@ -79,7 +81,7 @@ def search():
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
             resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
-            msg += resp
+            msg += str(resp)
         else:
             msg += "Invalid input"
     
