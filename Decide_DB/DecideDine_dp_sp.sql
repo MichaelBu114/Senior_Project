@@ -262,13 +262,13 @@ LOCK TABLES `User` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `User_Catgeories`
+-- Table structure for table `User_Categories`
 --
 
-DROP TABLE IF EXISTS `User_Catgeories`;
+DROP TABLE IF EXISTS `User_Categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `User_Catgeories` (
+CREATE TABLE `User_Categories` (
   `user_categories_id` int(11) NOT NULL AUTO_INCREMENT,
   `FK_user` int(11) NOT NULL,
   `FK_categories` int(11) DEFAULT NULL,
@@ -284,9 +284,9 @@ CREATE TABLE `User_Catgeories` (
 -- Dumping data for table `User_Catgeories`
 --
 
-LOCK TABLES `User_Catgeories` WRITE;
-/*!40000 ALTER TABLE `User_Catgeories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `User_Catgeories` ENABLE KEYS */;
+LOCK TABLES `User_Categories` WRITE;
+/*!40000 ALTER TABLE `User_Categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `User_Categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -456,6 +456,64 @@ BEGIN
     call addUser(firstName,lastName,Email,LAST_INSERT_ID());
 END ;;
 DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `addUserCuisine` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addUserCuisine`(IN user_id int(11), IN cuisine_id int(11))
+BEGIN
+INSERT INTO User_Cuisine (FK_user, FK_cuisine) VALUES (user_id, cuisine_id);
+END;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `addUserCategories` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addUserCategories`(IN user_id int(11), IN category_id int(11))
+BEGIN
+INSERT INTO User_Categories (FK_user, FK_categories) VALUES (user_id, category_id);
+END;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `addUserEstablishment` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addUserEstablishment`(IN user_id int(11), IN establishment_id int(11))
+BEGIN
+INSERT INTO User_Establishment (FK_user, FK_establishment) VALUES (user_id, establishment_id);
+END;;
+DELIMITER ;
+
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
