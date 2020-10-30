@@ -8,6 +8,7 @@ services:
         environment: 
             MYSQL_ROOT_PASSWORD: snowflake6365stark
             MYSQL_DATABASE: dp_sp
+            MYSQL_ROOT_HOST: '%'
         ports:
             - '3306:3306'
         expose:

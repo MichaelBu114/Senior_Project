@@ -2,3 +2,4 @@ Flask
 uWSGI
 flask-mysql
 mysql-client
+cryptography
