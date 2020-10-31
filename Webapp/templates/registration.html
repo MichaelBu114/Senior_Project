@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel = 'stylesheet'  href = '{{ url_for('static', filename = 'style.css')}}?version=4'>
+<link href="static/style.css" rel="stylesheet" type="text/css" />
+<link rel = 'stylesheet'  href = '{{ url_for('static', filename = 'style.css')}}?version=6'>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
@@ -9,20 +10,21 @@
 <body>
 <div id="container">
   <div class="header">
-    <div id="nav_link"><a href="/"><img src="static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
-    <div id="header_logo"><a href="/"><img src="static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
-    <div id="login_link"><a href="/login"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    <div id="nav_link"><a href="/"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
+    <div id="header_logo"><a href="/"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
+    <div id="login_link"><a href="/login"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
   </div>
   <!-- end .header -->
   <div class="content">
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-    <div class="registration">
+    <div class="floating-box" style="margin: 20px auto;">
         <h1>Register</h1>
-        <div class="links">
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('registration') }}" class="active">Registration</a>
+        <div class="links" style="color:#ffffff; margin: 20px;">
+            <a href="{{ url_for('login') }}">Login</a>  |  <strong>Registration</strong>
+            <!--<a href="{{ url_for('registration') }}" class="active">Registration</a>-->
         </div>
+        <div style="margin:20px;">
         <form action="{{ url_for('registration') }}" method="post" autocomplete="off">
             <label for="email">
                 <i class="fas fa-user"></i>
@@ -40,14 +42,16 @@
             </label>
             <input type="text" name='lastname' placeholder="Lastname" id="lastname" required> 
             <div class="msg">{{ msg }}</div>
-            <input type="submit" value="Register">
+            <input name="" type="submit" class="button" value="Register" />
+            <br /><br />
         </form>
+        </div>
     </div>
     <p>&nbsp;</p>
   </div>
   <!-- end .content -->
   
-  <div class="footer"> <img src="static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px" /> <img src="static/images/icon_google+.png" alt="google plus" /> <img src="static/images/icon_instagram.png" alt="instagram" /> <img src="static/images/icon_twitter.png" alt="twitter" /> </div>
+  <div class="footer"> <img src="/static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px" /> <img src="/static/images/icon_google+.png" alt="google plus" /> <img src="/static/images/icon_instagram.png" alt="instagram" /> <img src="/static/images/icon_twitter.png" alt="twitter" /> </div>
   <!-- end .footer --> 
 </div>
 <!-- end .container -->

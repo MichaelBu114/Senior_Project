@@ -1,7 +1,7 @@
 @charset "utf-8";
 body {
 	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
-	background-image: url(../static/images/Background.png);
+	background-image: url(images/Background.png);
 	margin: 0;
 	padding: 0;
 	color: #000;
@@ -17,6 +17,7 @@ ul, ol, dl { /* Due to variations between browsers, it's best practices to zero 
 }
 h1, h2, h3, h4, h5, h6, p {
 	margin-top: 0;	 /* removing the top margin gets around an issue where margins can escape from their containing div. The remaining bottom margin will hold it away from any elements that follow. */
+	color:#ffffff;
 	padding-right: 15px;
 	padding-left: 15px; /* adding the padding to the sides of the elements within the divs, instead of the divs themselves, gets rid of any box model math. A nested div with side padding can also be used as an alternate method. */
 }
@@ -142,6 +143,9 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 	height: 0;
 	font-size: 1px;
 	line-height: 0px;
+}
+.button {
+	margin: 10px 0;	
 }
 
 .floating-box {
