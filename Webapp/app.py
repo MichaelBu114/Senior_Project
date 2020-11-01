@@ -20,8 +20,6 @@ mysql.init_app(app)
 
 @app.route('/')
 def home():
-    if session.get('username') in session:
-        return render_template('index.html', username=session['username'])
     return render_template('index.html')
 
 @app.route('/login/', methods=['GET','POST'])
@@ -29,14 +27,16 @@ def login():
     error = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
-        password = hashlib.md5(request.form['password'])
+        password = request.form['password']
+        hashed = hashlib.sha256(password.encode('utf-8')).hexdigest()
         con = mysql.connect()
         cur = con.cursor()
-        login = cur.callproc('GetLogin', [username,password])
+        login = cur.callproc('GetLogin', [username,hashed])
         login = cur.fetchone()
         if login:
             session['username'] = username
-            return redirect(url_for('home'))
+            user = session['username']
+            return render_template('index_login.html', username=user)
         else:
             error = "Invalid username/password, try again."
     return render_template('login.html', error = error)
@@ -50,7 +50,8 @@ def logout():
 def registration():
     msg = ''
     if request.method == 'POST' and 'password' in request.form and 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
-        password = hashlib.md5(request.form['password'])
+        password = request.form['password']
+        hashed = hashlib.sha256(password.encode('utf-8')).hexdigest()
         email = request.form['email']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
@@ -64,7 +65,7 @@ def registration():
             sqlstat = "INSERT INTO Login (username,password,date_changed) VALUES (%s,%s,curdate())"
             sqlstat2 = "call addUser(%s,%s,%s,LAST_INSERT_ID())"
             args2 = (firstname,lastname,email)
-            args = (email, password)
+            args = (email, hashed)
             cur.execute(sqlstat, args)
             cur.execute(sqlstat2, args2)
             con.commit()

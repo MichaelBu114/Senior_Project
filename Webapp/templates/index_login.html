@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=4'>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Decide &amp; Dine</title>
+</head>
+
+<body>
+<div id="container">
+  <div class="header">
+    <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
+    <div id="header_logo"><a href="/"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
+    <div id="logout_link"><a href="/logout"> <strong>{{username}}</strong></a></div>
+  </div>
+  <!-- end .header -->
+  <div class="content">
+    <p><img src="/static/images/phrase_homepage.png" alt="Phrase" class="phrase" /></p>
+    <p align="center"><img src="/static/images/Logo.png" alt="Decide &amp; Dine Logo" class="logo" /></p>
+    <p>&nbsp;</p>
+    <div id="Buttons">
+      <div id="how_works">
+        <p><a href="#"><img src="/static/images/How it works.png" alt="How It Works" /></a></p>
+      </div>
+      <div id="features">
+        <p><a href="#"><img src="/static/images/features.png" alt="Features" /></a></p>
+      </div>
+      <div id="get_started">
+        <p><a href="/search"><img src="/static/images/get_started.png" alt="Get Started" /></a></p>
+      </div>
+      <p>&nbsp;</p>
+    </div>
+      <p>&nbsp;</p>
+  </div>
+  <!-- end .content -->
+  
+  <div class="footer"> <img src="/static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px" /> <img src="/static/images/icon_google+.png" alt="google plus" /> <img src="/static/images/icon_instagram.png" alt="instagram" /> <img src="/static/images/icon_twitter.png" alt="twitter" /> </div>
+  <!-- end .footer --> 
+</div>
+<!-- end .container -->
+</body>
+</html>
