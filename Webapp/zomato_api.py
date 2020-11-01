@@ -2,8 +2,8 @@ import sys
 import requests
 
 def search(ZIP, RADIUS, SORTING, CUISINES):
-    ZOMATO_API_KEY = ""
-    GOOGLE_MAPS_API_KEY = ""
+    ZOMATO_API_KEY = "eeb2c8d6b993c20bfd856f1b092ea075"
+    GOOGLE_MAPS_API_KEY = "AIzaSyBTIYFA8avWuLBtGteyCUXhFdDFrqlS648"
     
     ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/search"
     GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"

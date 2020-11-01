@@ -8,7 +8,7 @@ import zomato_api
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = 'SeniorProject'
-app.config['MYSQL_DATABASE_HOST'] = 'mysql-development'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
@@ -70,7 +70,7 @@ def registration():
             cur.execute(sqlstat, args)
             cur.execute(sqlstat2, args2)
             con.commit()
-            return redirect(url_for('search'))
+            return render_template('surveyForm.html', msg = msg)
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg = msg)
@@ -87,6 +87,8 @@ def search():
             msg += "Invalid input"
     
     return render_template('search.html', msg = msg)
+
+
 
 if __name__ == '__main__':
     app.run(debug = True)
