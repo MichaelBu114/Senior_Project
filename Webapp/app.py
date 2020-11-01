@@ -1,5 +1,6 @@
 import hashlib
 import re
+import secrets
 from flask import Flask, render_template, request, redirect, url_for, session
 from flaskext.mysql import MySQL
 from flask.helpers import flash
@@ -7,7 +8,7 @@ import zomato_api
 
 app = Flask(__name__)
 mysql = MySQL()
-app.secret_key = 'SeniorProject'
+app.secret_key = secrets.token_urlsafe(16)
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
@@ -19,7 +20,7 @@ mysql.init_app(app)
 
 @app.route('/')
 def home():
-    if 'login' in session:
+    if session.get('username') in session:
         return render_template('index.html', username=session['username'])
     return render_template('index.html')
 
@@ -28,13 +29,12 @@ def login():
     error = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
-        password = request.form['password']
+        password = hashlib.md5(request.form['password'])
         con = mysql.connect()
         cur = con.cursor()
         login = cur.callproc('GetLogin', [username,password])
         login = cur.fetchone()
         if login:
-            session['logged_in'] = True
             session['username'] = username
             return redirect(url_for('home'))
         else:
@@ -43,8 +43,6 @@ def login():
 
 @app.route('/logout/')
 def logout():
-    session.pop('loggedin', None)
-    session.pop('id', None)
     session.pop('username', None)
     return redirect(url_for('login'))
 
@@ -52,7 +50,7 @@ def logout():
 def registration():
     msg = ''
     if request.method == 'POST' and 'password' in request.form and 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
-        password = request.form['password']
+        password = hashlib.md5(request.form['password'])
         email = request.form['email']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
