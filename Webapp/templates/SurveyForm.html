@@ -3,19 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
-<link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=4' />
 </head>
 
 <body>
 <div id="container">
   <div class="header">
     <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
-    <div id="header_logo"><a href="#"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
-    <div id="login_link"><a href="#"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    <div id="header_logo"><a href="/"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
+    <div id="login_link"><a href="/login"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
   </div>
   <!-- end .header -->
   <div class="content">
-    <form action="submittedSurvey.html" method="post" enctype="multipart/form-data" name="survey">
+    <form action="{{url_for('survey')}}" method="post" enctype="multipart/form-data" name="survey">
       <div class="floating-box"> <strong class="question">Please Help Us Set Your Dining Preferences</strong>
         <hr />
         <div>

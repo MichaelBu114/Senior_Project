@@ -69,7 +69,7 @@ def registration():
             cur.execute(sqlstat, args)
             cur.execute(sqlstat2, args2)
             con.commit()
-            return render_template('surveyForm.html', msg = msg)
+            return render_template('SurveyForm.html', msg = msg)
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg = msg)
@@ -87,6 +87,16 @@ def search():
     
     return render_template('search.html', msg = msg)
 
+@app.route('/survey/' , methods = ['GET','POST'])
+def survey():
+    if request.method =='POST':
+        if 'zip' in request.form and 'radius' in request.form:
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
+            estab = request.form.getlist('EstCheckboxGroup')
+            cat = request.form.getlist('CuisCheckboxGroup')
+            cus = request.form.getlist('CatCheckboxGroup')
+            return redirect(url_for('search'))
+    return render_template('SurveyForm.html')
 
 
 if __name__ == '__main__':
