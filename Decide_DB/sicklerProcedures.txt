@@ -1,0 +1,31 @@
+*** When checkbox's are selected, output is stored in Array ([EstablishmentTypes] => Array([0]=>First Value Selected, [1]=>Second Value ...)[submit]=>Submit Values) ***
+*** Need to figure out how to pass in a collection instead of one range/rating/establishment ... value) Unless we can use a loop to call the ***
+*** procedure x amount of times if there are x options selected from survey ***
+
+CREATE
+    DEFINER = root@`%` PROCEDURE updateRange(IN FKrange int)
+BEGIN
+    INSERT INTO User (price_range)
+VALUES (FKrange);
+END;
+
+CREATE
+    DEFINER = root@`%` PROCEDURE updateRating(IN FKrating int)
+BEGIN
+    INSERT INTO User (user_rating)
+VALUES (FKrating);
+END;
+
+CREATE
+    DEFINER = root@`%` PROCEDURE updateCategory(IN FKcategory int)
+BEGIN
+    INSERT INTO User (FK_user_categories)
+VALUES (FKcategory);
+END;
+
+CREATE
+    DEFINER = root@`%` PROCEDURE updateEstablishment(IN FKestablishment int)
+BEGIN
+    INSERT INTO User (FK_user_establishment)
+VALUES (FKestablishment);
+END;
