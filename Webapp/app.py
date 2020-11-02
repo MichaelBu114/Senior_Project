@@ -80,15 +80,18 @@ def registration():
 @app.route('/search/', methods = ['GET', 'POST'])
 def search():
     msg = ""
+    data = []
     
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
             resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
-            msg += str(resp)
+            msg += str(resp["status"])
+            for i in range(int(resp["count"])):
+                data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
         else:
             msg += "Invalid input"
     
-    return render_template('search.html', msg = msg)
+    return render_template('search.html', msg = msg, data = data)
 
 @app.route('/survey/' , methods = ['GET','POST'])
 def survey():
