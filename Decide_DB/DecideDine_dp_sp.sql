@@ -231,14 +231,14 @@ CREATE TABLE `User` (
   `firstname` varchar(90) NOT NULL,
   `email` varchar(150) NOT NULL,
   `activity` tinyint(1) NOT NULL,
-  `distance` int(11) DEFAULT NULL,
+  `distance` int(11) NOT NULL,
   `price_range` int(11) DEFAULT NULL,
   `user_rating` int(11) DEFAULT NULL,
   `reservations` int(11) DEFAULT NULL,
   `FK_login_id` int(11) DEFAULT NULL,
   `FK_user_categories` int(11) DEFAULT NULL,
-  `FK_user_establishment` int(11) DEFAULT NULL,
-  `FK_comment` int(11) DEFAULT NULL,
+  `FK_user_establishment` int(11) NOT NULL,
+  `FK_comment` int(11) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `User_user_id_uindex` (`user_id`),
   KEY `User_Login_login_id_fk` (`FK_login_id`),
@@ -393,7 +393,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `addUser`(IN newFirstName varchar(90), IN newLastName varchar(90),
                                          IN newEmail varchar(150), IN FKLogin int)
 BEGIN
-    INSERT INTO User (lastname, firstname, email, activity, distance, price_range, user_rating, reservations, FK_login_id, FK_user_categories, FK_user_establishment, FK_comment)
+    INSERT INTO User (lastname, firstname, email, activity, distance, price_range, user_rating, reservations, FK_login, FK_user_categories, FK_user_establishment, FK_comment)
 VALUES (newLastName, newFirstName, newEmail, 1,null,null,null,null ,FKLogin,null,null,null);
 END ;;
 DELIMITER ;
