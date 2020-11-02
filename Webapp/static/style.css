@@ -68,8 +68,26 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 	width: 70%;
 	text-align: center;
 }
+
+#preferences {
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+#search {
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+#connect {
+    float: right;
+    width: 33%;
+    text-align: center;
+}
+
 .logo_image_hdr {
 }
+
 #login_link {
 	margin: 15;
 	float: right;
@@ -80,6 +98,10 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 	color: #ffffff;
 	vertical-align: central;
 }
+#logout_link {
+    margin: 4px 0 0 0;
+}
+
 .phrase {
 	margin: 75px 0 0 0;
 }
