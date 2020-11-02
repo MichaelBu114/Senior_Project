@@ -247,7 +247,7 @@ CREATE TABLE `User` (
   KEY `User_Comments_comment_id_fk_idx` (`FK_comment`),
   CONSTRAINT `User_Comments_comment_id_fk` FOREIGN KEY (`FK_comment`) REFERENCES `Comments` (`FK_user`),
   CONSTRAINT `User_Login_login_id_fk` FOREIGN KEY (`FK_login_id`) REFERENCES `Login` (`login_id`),
-  CONSTRAINT `User_User_Catgories_user_catgories_id_fk` FOREIGN KEY (`FK_user_categories`) REFERENCES `User_Catgeories` (`user_categories_id`),
+  CONSTRAINT `User_User_Catgories_user_catgories_id_fk` FOREIGN KEY (`FK_user_categories`) REFERENCES `User_Categories` (`user_categories_id`),
   CONSTRAINT `User_User_Establishment_user_establishment_fk` FOREIGN KEY (`FK_user_establishment`) REFERENCES `User_Establishment` (`user_establishment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
