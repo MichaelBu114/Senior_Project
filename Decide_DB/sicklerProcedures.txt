@@ -2,30 +2,50 @@
 *** Need to figure out how to pass in a collection instead of one range/rating/establishment ... value) Unless we can use a loop to call the ***
 *** procedure x amount of times if there are x options selected from survey ***
 
-CREATE
-    DEFINER = root@`%` PROCEDURE updateRange(IN userID int(11), IN FKrange int(11))
+/*Procedures for updating preferences */;
+CREATE DEFINER = root@`%` PROCEDURE updateRange(IN userID int(11), IN FKrange int(11))
 BEGIN
     INSERT INTO User (user_id, price_range)
 VALUES (FKrange);
 END;
 
-CREATE
-    DEFINER = root@`%` PROCEDURE updateRating(IN userID int(11), IN FKrating int(11))
+CREATE DEFINER = root@`%` PROCEDURE updateRating(IN userID int(11), IN FKrating int(11))
 BEGIN
     INSERT INTO User (user_id, user_rating)
 VALUES (FKrating);
 END;
 
-CREATE
-    DEFINER = root@`%` PROCEDURE updateCategory(IN userID int(11), IN FKcategory int(11))
+CREATE DEFINER = root@`%` PROCEDURE updateCategory(IN userID int(11), IN FKcategory int(11))
 BEGIN
     INSERT INTO User (user_id, FK_user_categories)
 VALUES (FKcategory);
 END;
 
-CREATE
-    DEFINER = root@`%` PROCEDURE updateEstablishment(IN userID int(11), IN FKestablishment int(11))
+CREATE DEFINER = root@`%` PROCEDURE updateEstablishment(IN userID int(11), IN FKestablishment int(11))
 BEGIN
     INSERT INTO User (user_id, FK_user_establishment)
 VALUES (FKestablishment);
+END;
+
+
+
+/*Procedures for pulling preferences based on user id */;
+CREATE DEFINER = root@`%` PROCEDURE getUserEstablishment(IN userID int(11))
+BEGIN
+    SELECT u.FK_user_establishment FROM User u WHERE u.user_id = userID
+END;
+
+CREATE DEFINER = root@`%` PROCEDURE getUserCategory(IN userID int(11))
+BEGIN
+    SELECT u.FK_user_categories FROM User u WHERE u.user_id = userID
+END;
+
+CREATE DEFINER = root@`%` PROCEDURE getUserRating(IN userID int(11))
+BEGIN
+    SELECT u.user_rating FROM User u WHERE u.user_id = userID
+END;
+
+CREATE DEFINER = root@`%` PROCEDURE getUserPriceRange(IN userID int(11))
+BEGIN
+    SELECT u.price_range FROM User u WHERE u.user_id = userID
 END;
