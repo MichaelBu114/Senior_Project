@@ -72,7 +72,10 @@ def registration():
             cur.execute(sqlstat, args)
             cur.execute(sqlstat2, args2)
             con.commit()
-            return render_template('SurveyForm.html', msg = msg)
+            name = cur.execute('Call GetName(%s)', (email))
+            name = cur.fetchone()
+            session['username'] = name[0]
+            return render_template('SurveyForm_login.html', msg = msg, username = session['username'])
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg = msg)
@@ -90,7 +93,8 @@ def search():
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
         else:
             msg += "Invalid input"
-    
+    if 'username' in session:
+        return render_template('search_login.html', msg = msg, username= session['username'])
     return render_template('search.html', msg = msg, data = data)
 
 @app.route('/survey/' , methods = ['GET','POST'])
