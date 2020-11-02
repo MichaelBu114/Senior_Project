@@ -102,6 +102,9 @@ a:hover { /* this group of selectors will give a keyboard navigator the same hov
 	width: 33%;
 	text-align: center;
 }
+#filters {
+  display: inline-block; margin-right: 10px;
+}
 #get_started {
 	float: right;
 	width: 33%;
