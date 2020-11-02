@@ -95,14 +95,21 @@ def search():
 
 @app.route('/survey/' , methods = ['GET','POST'])
 def survey():
+    msg =""
+    data = []
     if request.method =='POST':
         if 'zip' in request.form and 'radius' in request.form:
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
+            msg += str(resp["status"])
             estab = request.form.getlist('EstCheckboxGroup')
             cat = request.form.getlist('CuisCheckboxGroup')
             cus = request.form.getlist('CatCheckboxGroup')
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
-            return redirect(url_for('search'))
-    return render_template('SurveyForm.html')
+            for i in range(int(resp["count"])):
+                data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
+            return render_template('search.html', msg = msg, data = data)
+    if 'username' in session:
+        return render_template('SurveyForm_login.html', msg = msg, username= session['username'])
+    return render_template('SurveyForm.html', msg = msg)
 
 
 if __name__ == '__main__':
