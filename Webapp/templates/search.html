@@ -35,7 +35,7 @@
             <div class="msg">{{ "Response Status: " + msg }}</div>
             <ul>
             {% for i in data %}
-            <p><a href="{{ i[1] }}">{{ i[0] }}</a> - {{ i[2] }}</p>
+            <p style="border: 3px solid white"><a href="{{ i[1] }}">{{ i[0] }}</a> - {{ i[2] }}</p>
             {% endfor %}
             </ul>
             <input type="submit" value="Submit">
