@@ -3,29 +3,29 @@
 *** procedure x amount of times if there are x options selected from survey ***
 
 CREATE
-    DEFINER = root@`%` PROCEDURE updateRange(IN FKrange int)
+    DEFINER = root@`%` PROCEDURE updateRange(IN userID int(11), IN FKrange int(11))
 BEGIN
-    INSERT INTO User (price_range)
+    INSERT INTO User (user_id, price_range)
 VALUES (FKrange);
 END;
 
 CREATE
-    DEFINER = root@`%` PROCEDURE updateRating(IN FKrating int)
+    DEFINER = root@`%` PROCEDURE updateRating(IN userID int(11), IN FKrating int(11))
 BEGIN
-    INSERT INTO User (user_rating)
+    INSERT INTO User (user_id, user_rating)
 VALUES (FKrating);
 END;
 
 CREATE
-    DEFINER = root@`%` PROCEDURE updateCategory(IN FKcategory int)
+    DEFINER = root@`%` PROCEDURE updateCategory(IN userID int(11), IN FKcategory int(11))
 BEGIN
-    INSERT INTO User (FK_user_categories)
+    INSERT INTO User (user_id, FK_user_categories)
 VALUES (FKcategory);
 END;
 
 CREATE
-    DEFINER = root@`%` PROCEDURE updateEstablishment(IN FKestablishment int)
+    DEFINER = root@`%` PROCEDURE updateEstablishment(IN userID int(11), IN FKestablishment int(11))
 BEGIN
-    INSERT INTO User (FK_user_establishment)
+    INSERT INTO User (user_id, FK_user_establishment)
 VALUES (FKestablishment);
 END;
