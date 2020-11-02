@@ -1,0 +1,55 @@
+Test Case 1 Information: 
+	Login Info: 
+		Username: Test1
+		Password: testpassword
+	Survey Info:
+		Zip Code: 08028 (Glassboro)
+		Dining Distance: 25 miles (40233 meters)
+		Establishment Type(s): Cafe, Casual Dining, Fine Dining, Fast Casual
+		Preferred Cusine(s): American, Chinese, Italian, Mexican, Seafood, BBQ
+		Dining Categories: Dine-Out, Daily Menus, Lunch
+
+
+
+Test Case 1: 
+	Login Info: 
+		Username: Test1
+		Password: testpassword
+	Survey Info:
+		Zip Code: 08028
+		Dining Distance: 40233
+		Establishment = {1, 16, 18, 285}
+		Cuisine = {1, 25, 55, 73, 83, 193}
+		Categories = {2, 7, 9}
+
+
+
+
+
+
+
+
+
+Test Case 2 Description:
+	Login Info: 
+		Username: Test2
+		Password: TestPassword16!
+	Survey Info:
+		Zip Code: 10109 (Times Square)
+		Dining Distance: 15 miles (24140 meters)
+		Establishment Type(s): Lounge, Pub, Fine Dining, Food Court, Dessert Parlour, Deli, Bistro, Microbrewery, Fast Food, Juice Bar, Beer Garden, Noodle Shop, Steakhouse
+		Preferred Cusine(s): Asian, European, French, Korean, Mediterranean, Thai, Cantonese, Irish, Healthy Food, Tex-Mex, Soul Food, Southwestern
+		Dining Categories: Delivery, Nightlife, Catching-Up, Breakfast, Pubs & Bars, Pocket Friendly Delivery, Clubs & Lounges
+
+
+
+Test Case 2:
+	Login Info: 
+		Username: Test2
+		Password: TestPassword16!
+	Survey Info:
+		Zip Code: 10109
+		Dining Distance: 24140
+		Establishment = {5, 6, 18, 20, 23, 24, 91, 161, 281, 284, 292, 295, 309}
+		Cuisine = {3, 38, 45, 67, 70, 95, 121, 135, 143, 150, 461, 966}
+		Categories = {1, 3, 4, 8, 11, 13, 14}
