@@ -1,7 +1,7 @@
 import hashlib
 import re
 import secrets
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 import zomato_api
@@ -20,8 +20,6 @@ mysql.init_app(app)
 
 @app.route('/')
 def home():
-    if 'username' in session:
-        return render_template('index_login.html', username = session['username'])
     return render_template('index.html')
 
 @app.route('/login/', methods=['GET','POST'])
@@ -36,10 +34,9 @@ def login():
         login = cur.callproc('GetLogin', [username,hashed])
         login = cur.fetchone()
         if login:
-            name = cur.execute('Call GetName(%s)', (username))
-            name = cur.fetchone()
-            session['username'] = name[0]
-            return redirect(url_for('home'))
+            session['username'] = username
+            user = session['username']
+            return render_template('index_login.html', username=user)
         else:
             error = "Invalid username/password, try again."
     return render_template('login.html', error = error)
@@ -94,10 +91,10 @@ def search():
 def survey():
     if request.method =='POST':
         if 'zip' in request.form and 'radius' in request.form:
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
             estab = request.form.getlist('EstCheckboxGroup')
             cat = request.form.getlist('CuisCheckboxGroup')
             cus = request.form.getlist('CatCheckboxGroup')
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
             return redirect(url_for('search'))
     return render_template('SurveyForm.html')
 
