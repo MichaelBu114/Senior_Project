@@ -9,7 +9,7 @@ import zomato_api
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = secrets.token_urlsafe(16)
-app.config['MYSQL_DATABASE_HOST'] = 'mysql-development'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
@@ -39,6 +39,7 @@ def login():
             name = cur.execute('Call GetName(%s)', (username))
             name = cur.fetchone()
             session['username'] = name[0]
+            session['email'] = username
             return redirect(url_for('home'))
         else:
             error = "Invalid username/password, try again."
@@ -75,7 +76,8 @@ def registration():
             name = cur.execute('Call GetName(%s)', (email))
             name = cur.fetchone()
             session['username'] = name[0]
-            return render_template('SurveyForm_login.html', msg = msg, username = session['username'])
+            session['email'] = email
+            return render_template('SurveyForm.html', msg = msg, username = session['username'])
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg = msg)
@@ -106,8 +108,29 @@ def survey():
             resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
             msg += str(resp["status"])
             estab = request.form.getlist('EstCheckboxGroup')
-            cat = request.form.getlist('CuisCheckboxGroup')
-            cus = request.form.getlist('CatCheckboxGroup')
+            cus = request.form.getlist('CuisCheckboxGroup')
+            cat = request.form.getlist('CatCheckboxGroup')
+            con = mysql.connect()
+            cur = con.cursor()
+            fullname = session['username']
+            email = session['email']
+            name = cur.execute('Call GetUserId(%s, %s)', (fullname, email))
+            name = cur.fetchone()
+            for i in range(0, len(estab)):
+                args = (name[0], int(estab[i]))
+                sqlstat = 'Call addUserEstablishment(%s, %s)'
+                cur.execute(sqlstat, args)
+            con.commit()
+            for i in range(0, len(cat)):
+                args = (name[0], int(cat[i]))
+                sqlstat = 'Call addUserCategories(%s, %s)'
+                cur.execute(sqlstat, args)
+            con.commit()
+            for i in range(0, len(cus)):
+                args = (name[0], int(cus[i]))
+                sqlstat = 'Call addUserCuisine(%s, %s)'
+                cur.execute(sqlstat, args)
+            con.commit()
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
             return render_template('search.html', msg = msg, data = data)
