@@ -43,7 +43,7 @@
                     <br>
                     <div>
                         <label class="question">First Name&nbsp;&nbsp;&nbsp;</label>
-                        <label contentEditable="true" style="float: right; margin-right: 90px;">users first name</label>
+                        <label contentEditable="true" style="float: right; margin-right: 90px;"><strong>{{username}}</strong></label>
                     </div>
                     <br>
                     <div>
@@ -51,7 +51,7 @@
                         <label contentEditable="true" style="float: right; margin-right: 90px;">users last name</label>
                     </div>
                 <br>
-                        <input type="submit" value="Logout" href="{{url_for('logout')}}" style="float: right; margin-right: 90px;">
+                         <a href="{{url_for('logout')}}"><input type="submit" value="Logout" style="float: right; margin-right: 90px;"></a>
                  <br>
                 </div>
             </div>
