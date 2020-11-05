@@ -89,7 +89,7 @@ def search():
     
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", request.form['user_id'])
             msg += str(resp["status"])
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
