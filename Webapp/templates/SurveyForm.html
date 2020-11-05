@@ -11,7 +11,11 @@
   <div class="header">
     <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
     <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
-    <div id="login_link"><a href="{{url_for('login')}}"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    {% if 'username' in session %}
+    <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('logout')}}"><strong>{{username}}</strong></a></div>
+    {% else %}
+    <div id="login_link"><a href="{{url_for('login')}}"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    {% endif %}
   </div>
   <!-- end .header -->
   <div class="content">
@@ -153,7 +157,6 @@
         <hr />
         <div>
           <label class="question">4. Select your preferred Cuisines:</label>
-          <input type="checkbox" name="CuisCheckboxGroup_" value="233" id="CuisCheckboxGroup_32" />
           <table width="90%" style="margin: 0 30px; font-family:Verdana, Geneva, sans-serif; font-size:small; font-weight:bold; color:#ffffff;">
             <tr>
               <td width="90"><label>
@@ -263,89 +266,90 @@
                   <input type="checkbox" name="CuisCheckboxGroup" value="177" id="CuisCheckboxGroup_31" />
                   Sushi</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="491" id="CuisCheckboxGroup_30" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="491" id="CuisCheckboxGroup_32" />
                   Cajun</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="501" id="CuisCheckboxGroup_31" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="501" id="CuisCheckboxGroup_33" />
                   Frozen Yogurt</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="541" id="CuisCheckboxGroup_31" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="541" id="CuisCheckboxGroup_34" />
                   Diner</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="181" id="CuisCheckboxGroup_15" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="181" id="CuisCheckboxGroup_35" />
                   Grill</label></td>
             </tr>
             <tr>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="182" id="CuisCheckboxGroup_16" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="182" id="CuisCheckboxGroup_36" />
                   Breakfast</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="192" id="CuisCheckboxGroup_17" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="192" id="CuisCheckboxGroup_37" />
                   Deli</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="193" id="CuisCheckboxGroup_18" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="193" id="CuisCheckboxGroup_38" />
                   BBQ</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="207" id="CuisCheckboxGroup_19" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="207" id="CuisCheckboxGroup_39" />
                   Jamaican</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="219" id="CuisCheckboxGroup_20" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="219" id="CuisCheckboxGroup_40" />
                   Polish</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="227" id="CuisCheckboxGroup_21" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="227" id="CuisCheckboxGroup_41" />
                   Bar Food</label></td>
             </tr>
             <tr>
               <td><label>
-              Ice Cream</label></td>
+                  <input type="checkbox" name="CuisCheckboxGroup_" value="233" id="CuisCheckboxGroup_42" />
+                  Ice Creams</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="265" id="CuisCheckboxGroup_23" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="265" id="CuisCheckboxGroup_43" />
                   Jewish</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="298" id="CuisCheckboxGroup_24" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="298" id="CuisCheckboxGroup_44" />
                   Fish and Chips</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="304" id="CuisCheckboxGroup_25" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="304" id="CuisCheckboxGroup_45" />
                   Sandwich</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="308" id="CuisCheckboxGroup_26" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="308" id="CuisCheckboxGroup_46" />
                   Vegetarian</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="318" id="CuisCheckboxGroup_27" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="318" id="CuisCheckboxGroup_47" />
                   Fondue</label></td>
             </tr>
             <tr>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="361" id="CuisCheckboxGroup_28" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="361" id="CuisCheckboxGroup_48" />
                   Puerto Rican</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="461" id="CuisCheckboxGroup_29" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="461" id="CuisCheckboxGroup_49" />
                   Soul Food</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="921" id="CuisCheckboxGroup_25" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="921" id="CuisCheckboxGroup_50" />
                   Southern American</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="955" id="CuisCheckboxGroup_26" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="955" id="CuisCheckboxGroup_51" />
                   Bagels</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="959" id="CuisCheckboxGroup_27" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="959" id="CuisCheckboxGroup_52" />
                   Donuts</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="966" id="CuisCheckboxGroup_28" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="966" id="CuisCheckboxGroup_53" />
                   Southwestern</label></td>
             </tr>
             <tr>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="971" id="CuisCheckboxGroup_29" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="971" id="CuisCheckboxGroup_54" />
                   Chili</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="983" id="CuisCheckboxGroup_27" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="983" id="CuisCheckboxGroup_55" />
                   Pub Food</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="997" id="CuisCheckboxGroup_28" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="997" id="CuisCheckboxGroup_56" />
                   Taco</label></td>
               <td><label>
-                  <input type="checkbox" name="CuisCheckboxGroup" value="998" id="CuisCheckboxGroup_29" />
+                  <input type="checkbox" name="CuisCheckboxGroup" value="998" id="CuisCheckboxGroup_57" />
                   Salad</label></td>
             </tr>
           </table>

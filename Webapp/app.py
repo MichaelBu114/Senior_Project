@@ -9,7 +9,7 @@ import zomato_api
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = secrets.token_urlsafe(16)
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'mysql-development'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
@@ -21,7 +21,7 @@ mysql.init_app(app)
 @app.route('/')
 def home():
     if 'username' in session:
-        return render_template('index_login.html', username = session['username'])
+        return render_template('index.html', username = session['username'])
     return render_template('index.html')
 
 @app.route('/login/', methods=['GET','POST'])
@@ -94,7 +94,7 @@ def search():
         else:
             msg += "Invalid input"
     if 'username' in session:
-        return render_template('search_login.html', msg = msg, username= session['username'])
+        return render_template('search.html', msg = msg, username= session['username'])
     return render_template('search.html', msg = msg, data = data)
 
 @app.route('/survey/' , methods = ['GET','POST'])
@@ -112,7 +112,7 @@ def survey():
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
             return render_template('search.html', msg = msg, data = data)
     if 'username' in session:
-        return render_template('SurveyForm_login.html', msg = msg, username= session['username'])
+        return render_template('SurveyForm.html', msg = msg, username= session['username'])
     return render_template('SurveyForm.html', msg = msg)
 
 
