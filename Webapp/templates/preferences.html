@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Decide &amp; Dine</title>
+<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=1' />
+</head>
+
+<body>
+<div id="container">
+  <div class="header">
+    <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
+    <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
+    {% if 'username' in session %}
+    <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('logout')}}"><strong>{{username}}</strong></a></div>
+    {% else %}
+    <div id="login_link"><a href="{{url_for('login')}}"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    {% endif %}
+  </div>
+  <!-- end .header -->
+  <div class="content">
+    <form action="{{url_for('survey')}}" method="post" enctype="multipart/form-data" name="survey">
+      <div class="floating-box"> <strong class="question">Update Your Dining Preferences</strong>
+        <hr />
+        <div>
+          <label class="question"> 1. Update your default Zip Code: </label>
+          <input type="text" name = "zip" pattern="[0-9]{5}" title="Five digit zip code" value="{{userZipcode}}" />
+        </div>
+        <hr />
+        <div>
+          <label class="question">2. Update your default distance for dining search?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Within: </label>
+          <select name="radius" id="Distance_Group_1">
+            <option value="8046"{% if userDistance == 8046 %} selected {% endif }> 5 Miles</option>
+            <option value="16093"{% if userDistance == 16093 %} selected {% endif }>10 Miles</option>
+            <option value="24140"{% if userDistance == 24140 %} selected {% endif }>15 Miles</option>
+            <option value="32186"{% if userDistance == 32186 %} selected {% endif }>20 Miles</option>
+            <option value="40233"{% if userDistance == 40233 %} selected {% endif }>25 Miles</option>
+            <option value="56327"{% if userDistance == 56327 %} selected {% endif }>35 Miles</option>
+          </select>
+        </div>
+        <hr />
+        <div>
+          <label class="question">3. Update your preferred Establishment Types:</label>
+          <table width="90%" style="margin: 0 30px; font-family:Verdana, Geneva, sans-serif; font-size:small; font-weight:bold; color:#ffffff;">
+            <tr>
+              <td width="70"><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="1" id="EstCheckboxGroup_0"{% if 1 in estList %} checked {% endif } />
+                  Café</label></td>
+              <td width="87"><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="5" id="EstCheckboxGroup_1"{% if 5 in estList %} checked {% endif } />
+                  Lounge</label></td>
+              <td width="63"><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="6" id="EstCheckboxGroup_2"{% if 6 in estList %} checked {% endif } />
+                  Pub</label></td>
+              <td width="55"><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="7" id="EstCheckboxGroup_3"{% if 7 in estList %} checked {% endif } />
+                  Bar</label></td>
+              <td width="100"><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="8" id="EstCheckboxGroup_4"{% if 8 in estList %} checked {% endif } />
+                  Club</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="16" id="EstCheckboxGroup_5"{% if 16 in estList %} checked {% endif } />
+                  Casual Dining</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="18" id="EstCheckboxGroup_6"{% if 18 in estList %} checked {% endif } />
+                  Fine Dining</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="20" id="EstCheckboxGroup_7"{% if 20 in estList %} checked {% endif } />
+                  Food Court</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="21" id="EstCheckboxGroup_8"{% if 21 in estList %} checked {% endif } />
+                  Quick Bites</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="23" id="EstCheckboxGroup_9"{% if 23 in estList %} checked {% endif } />
+                  Dessert Parlour</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="24" id="EstCheckboxGroup_10"{% if 24 in estList %} checked {% endif } />
+                  Deli</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="31" id="EstCheckboxGroup_11"{% if 31 in estList %} checked {% endif } />
+                  Bakery</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="41" id="EstCheckboxGroup_12"{% if 41 in estList %} checked {% endif } />
+                  Beverage Shop</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="81" id="EstCheckboxGroup_13"{% if 81 in estList %} checked {% endif } />
+                  Food Truck</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="91" id="EstCheckboxGroup_14"{% if 91 in estList %} checked {% endif } />
+                  Bistro</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="101" id="EstCheckboxGroup_15"{% if 181 in estList %} checked {% endif } />
+                  Diner</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="161" id="EstCheckboxGroup_16"{% if 161 in estList %} checked {% endif } />
+                  Microbrewery</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="271" id="EstCheckboxGroup_17"{% if 271 in estList %} checked {% endif } />
+                  Sandwich Shop</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="272" id="EstCheckboxGroup_18"{% if 272 in estList %} checked {% endif } />
+                  Cocktail Bar</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="275" id="EstCheckboxGroup_19"{% if 275 in estList %} checked {% endif } />
+                  Pizzeria</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="278" id="EstCheckboxGroup_20"{% if 278 in estList %} checked {% endif } />
+                  Wine Bar</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="281" id="EstCheckboxGroup_21"{% if 281 in estList %} checked {% endif } />
+                  Fast Food</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="282" id="EstCheckboxGroup_22"{% if 282 in estList %} checked {% endif } />
+                  Taqueria</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="283" id="EstCheckboxGroup_23"{% if 283 in estList %} checked {% endif } />
+                  Brewery</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="284" id="EstCheckboxGroup_24"{% if 284 in estList %} checked {% endif } />
+                  Juice Bar</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="285" id="EstCheckboxGroup_25"{% if 285 in estList %} checked {% endif } />
+                  Fast Casual</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="286" id="EstCheckboxGroup_26"{% if 286 in estList %} checked {% endif } />
+                  Coffee Shop</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="290" id="EstCheckboxGroup_27"{% if 290 in estList %} checked {% endif } />
+                  Vineyard</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="291" id="EstCheckboxGroup_28"{% if 291 in estList %} checked {% endif } />
+                  Sweet Shop</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="292" id="EstCheckboxGroup_29"{% if 292 in estList %} checked {% endif } />
+                  Beer Garden</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="295" id="EstCheckboxGroup_30"{% if 295 in estList %} checked {% endif } />
+                  Noodle Shop</label></td>
+              <td><label>
+                  <input type="checkbox" name="EstCheckboxGroup" value="309" id="EstCheckboxGroup_31"{% if 309 in estList %} checked {% endif } />
+                  Steakhouse</label></td>
+            </tr>
+          </table>
+        </div>
+        <hr />
+        <div>
+          <label class="question">4. Update your preferred Cuisines:</label>
+          <table width="90%" style="margin: 0 30px; font-family:Verdana, Geneva, sans-serif; font-size:small; font-weight:bold; color:#ffffff;">
+            <tr>
+              <td width="90"><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="1" id="CuisCheckboxGroup_0"{% if 1 in cuisineList %} checked {% endif } />
+                  American</label></td>
+              <td width="87"><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="3" id="CuisCheckboxGroup_1"{% if 3 in cuisineList %} checked {% endif } />
+                  Asian</label></td>
+              <td width="90"><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="5" id="CuisCheckboxGroup_2"{% if 5 in cuisineList %} checked {% endif } />
+                  Bakery</label></td>
+              <td width="70"><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="25" id="CuisCheckboxGroup_3"{% if 25 in cuisineList %} checked {% endif } />
+                  Chinese</label></td>
+              <td width="70"><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="30" id="CuisCheckboxGroup_4"{% if 30 in cuisineList %} checked {% endif } />
+                  Cafe</label></td>
+              <td width="70"><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="38" id="CuisCheckboxGroup_5"{% if 38 in cuisineList %} checked {% endif } />
+                  European</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="40" id="CuisCheckboxGroup_6"{% if 40 in cuisineList %} checked {% endif } />
+                  Fast Food</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="45" id="CuisCheckboxGroup_7"{% if 45 in cuisineList %} checked {% endif } />
+                  French</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="55" id="CuisCheckboxGroup_8"{% if 55 in cuisineList %} checked {% endif } />
+                  Italian</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="60" id="CuisCheckboxGroup_9"{% if 60 in cuisineList %} checked {% endif } />
+                  Japanese</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="67" id="CuisCheckboxGroup_10"{% if 67 in cuisineList %} checked {% endif } />
+                  Korean</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="70" id="CuisCheckboxGroup_11"{% if 70 in cuisineList %} checked {% endif } />
+                  Mediterranean</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="73" id="CuisCheckboxGroup_12"{% if 73 in cuisineList %} checked {% endif } />
+                  Mexican</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="82" id="CuisCheckboxGroup_13"{% if 82 in cuisineList %} checked {% endif } />
+                  Pizza</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="83" id="CuisCheckboxGroup_14"{% if 83 in cuisineList %} checked {% endif } />
+                  Seafood</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="89" id="CuisCheckboxGroup_15"{% if 89 in cuisineList %} checked {% endif } />
+                  Spanish</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="95" id="CuisCheckboxGroup_16"{% if 95 in cuisineList %} checked {% endif } />
+                  Thai</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="99" id="CuisCheckboxGroup_17"{% if 99 in cuisineList %} checked {% endif } />
+                  Vietnamese</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="100" id="CuisCheckboxGroup_18"{% if 100 in cuisineList %} checked {% endif } />
+                  Desserts</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="121" id="CuisCheckboxGroup_19"{% if 121 in cuisineList %} checked {% endif }/>
+                  Cantonese</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="134" id="CuisCheckboxGroup_20"{% if 134 in cuisineList %} checked {% endif } />
+                  German</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="135" id="CuisCheckboxGroup_21"{% if 135 in cuisineList %} checked {% endif } />
+                  Irish</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="141" id="CuisCheckboxGroup_22"{% if 141 in cuisineList %} checked {% endif } />
+                  Steak</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="143" id="CuisCheckboxGroup_23"{% if 143 in cuisineList %} checked {% endif } />
+                  Healthy Food</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="148" id="CuisCheckboxGroup_24"{% if 148 in cuisineList %} checked {% endif } />
+                  Indian</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="150" id="CuisCheckboxGroup_25"{% if 150 in cuisineList %} checked {% endif } />
+                  Tex-Mex</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="152" id="CuisCheckboxGroup_26"{% if 152 in cuisineList %} checked {% endif } />
+                  African</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="153" id="CuisCheckboxGroup_27"{% if 153 in cuisineList %} checked {% endif } />
+                  Cuban</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="156" id="CuisCheckboxGroup_28"{% if 156 in cuisineList %} checked {% endif } />
+                  Greek</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="161" id="CuisCheckboxGroup_29"{% if 161 in cuisineList %} checked {% endif } />
+                  Coffee and Tea</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="168" id="CuisCheckboxGroup_30"{% if 168 in cuisineList %} checked {% endif } />
+                  Burger</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="177" id="CuisCheckboxGroup_31"{% if 177 in cuisineList %} checked {% endif } />
+                  Sushi</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="491" id="CuisCheckboxGroup_32"{% if 491 in cuisineList %} checked {% endif } />
+                  Cajun</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="501" id="CuisCheckboxGroup_33"{% if 501 in cuisineList %} checked {% endif } />
+                  Frozen Yogurt</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="541" id="CuisCheckboxGroup_34"{% if 541 in cuisineList %} checked {% endif } />
+                  Diner</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="181" id="CuisCheckboxGroup_35"{% if 181 in cuisineList %} checked {% endif } />
+                  Grill</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="182" id="CuisCheckboxGroup_36"{% if 182 in cuisineList %} checked {% endif } />
+                  Breakfast</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="192" id="CuisCheckboxGroup_37"{% if 192 in cuisineList %} checked {% endif } />
+                  Deli</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="193" id="CuisCheckboxGroup_38"{% if 193 in cuisineList %} checked {% endif } />
+                  BBQ</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="207" id="CuisCheckboxGroup_39"{% if 207 in cuisineList %} checked {% endif } />
+                  Jamaican</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="219" id="CuisCheckboxGroup_40"{% if 219 in cuisineList %} checked {% endif } />
+                  Polish</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="227" id="CuisCheckboxGroup_41"{% if 227 in cuisineList %} checked {% endif } />
+                  Bar Food</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup_" value="233" id="CuisCheckboxGroup_42"{% if 233 in cuisineList %} checked {% endif } />
+                  Ice Creams</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="265" id="CuisCheckboxGroup_43"{% if 265 in cuisineList %} checked {% endif } />
+                  Jewish</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="298" id="CuisCheckboxGroup_44"{% if 298 in cuisineList %} checked {% endif } />
+                  Fish and Chips</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="304" id="CuisCheckboxGroup_45"{% if 304 in cuisineList %} checked {% endif } />
+                  Sandwich</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="308" id="CuisCheckboxGroup_46"{% if 308 in cuisineList %} checked {% endif } />
+                  Vegetarian</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="318" id="CuisCheckboxGroup_47"{% if 318 in cuisineList %} checked {% endif } />
+                  Fondue</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="361" id="CuisCheckboxGroup_48"{% if 361 in cuisineList %} checked {% endif } />
+                  Puerto Rican</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="461" id="CuisCheckboxGroup_49"{% if 461 in cuisineList %} checked {% endif } />
+                  Soul Food</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="921" id="CuisCheckboxGroup_50"{% if 921 in cuisineList %} checked {% endif } />
+                  Southern American</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="955" id="CuisCheckboxGroup_51"{% if 955 in cuisineList %} checked {% endif } />
+                  Bagels</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="959" id="CuisCheckboxGroup_52"{% if 959 in cuisineList %} checked {% endif } />
+                  Donuts</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="966" id="CuisCheckboxGroup_53"{% if 966 in cuisineList %} checked {% endif } />
+                  Southwestern</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="971" id="CuisCheckboxGroup_54"{% if 971 in cuisineList %} checked {% endif } />
+                  Chili</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="983" id="CuisCheckboxGroup_55"{% if 983 in cuisineList %} checked {% endif } />
+                  Pub Food</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="997" id="CuisCheckboxGroup_56"{% if 997 in cuisineList %} checked {% endif } />
+                  Taco</label></td>
+              <td><label>
+                  <input type="checkbox" name="CuisCheckboxGroup" value="998" id="CuisCheckboxGroup_57"{% if 998 in cuisineList %} checked {% endif } />
+                  Salad</label></td>
+            </tr>
+          </table>
+        </div>
+        <hr />
+        <div>
+          <label class="question">5. Update your preferred dining Categories:</label>
+          <table width="90%" style="margin: 0 30px; font-family:Verdana, Geneva, sans-serif; font-size:small; font-weight:bold; color:#ffffff;">
+            <tr>
+              <td width="90"><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="1" id="CatCheckboxGroup_0"{% if 1 in categoryList %} checked {% endif } />
+                  Delivery</label></td>
+              <td width="60"><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="2" id="CatCheckboxGroup_1"{% if 2 in categoryList %} checked {% endif } />
+                  Dine-out</label></td>
+              <td width="60"><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="3" id="CatCheckboxGroup_2"{% if 3 in categoryList %} checked {% endif } />
+                  Nightlife</label></td>
+              <td width="80"><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="4" id="CatCheckboxGroup_3"{% if 4 in categoryList %} checked {% endif } />
+                  Catching-up</label></td>
+              <td width="70"><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="5" id="CatCheckboxGroup_4"{% if 5 in categoryList %} checked {% endif } />
+                  Takeaway</label></td>
+              <td width="100"><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="6" id="CatCheckboxGroup_5"{% if 6 in categoryList %} checked {% endif } />
+                  Cafes</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="7" id="CatCheckboxGroup_6"{% if 7 in categoryList %} checked {% endif } />
+                  Daily Menus</label></td>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="8" id="CatCheckboxGroup_7"{% if 8 in categoryList %} checked {% endif } />
+                  Breakfast</label></td>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="9" id="CatCheckboxGroup_8"{% if 9 in categoryList %} checked {% endif } />
+                  Lunch</label></td>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="10" id="CatCheckboxGroup_9"{% if 10 in categoryList %} checked {% endif } />
+                  Dinner</label></td>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="11" id="CatCheckboxGroup_10"{% if 11 in categoryList %} checked {% endif } />
+                  Pubs and Bars</label></td>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="13" id="CatCheckboxGroup_11"{% if 13 in categoryList %} checked {% endif } />
+                  Pocket Friendly Delivery</label></td>
+            </tr>
+            <tr>
+              <td><label>
+                  <input type="checkbox" name="CatCheckboxGroup" value="14" id="CatCheckboxGroup_12"{% if 14 in categoryList %} checked {% endif } />
+                  Clubs and Lounges</label></td>
+            </tr>
+          </table>
+        </div>
+        <div><label class="question">6. Update your preferred rating:&nbsp;</label>
+
+                        <select name="rating" id="Food_Rating">
+                            <option value="2"{% if userRating == 2 %} selected {% endif }>2 stars or less</option>
+                            <option value="3"{% if userRating == 3 %} selected {% endif }>3 Stars or less</option>
+                            <option value="4"{% if userRating == 4 %} selected {% endif }>4 Stars or less</option>
+                            <option value="5"{% if userRating == 5 %} selected {% endif }>5 Stars or less</option>
+                        </select>
+                    <br>
+                    <label class="question">7. Update your preferred cost for
+                        food:&nbsp;</label>
+
+                        <select name="cost" id="Food_Cost">
+                            <option value="1"{% if userRange == 1 %} selected {% endif }>$</option>
+                            <option value="2"{% if userRange == 2 %} selected {% endif }>$$</option>
+                            <option value="3"{% if userRange == 3 %} selected {% endif }>$$$</option>
+                            <option value="4"{% if userRange == 4 %} selected {% endif }>$$$$</option>
+                            <option value="5"{% if userRange == 5 %} selected {% endif }>$$$$$</option>
+                        </select>
+                    </div>
+
+        <div class="question">
+          <input name="submit" type="submit" value="Submit" /><br /><br /><br />
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- end .content -->
+
+  <div class="footer"> <img src="/static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px" /> <img src="/static/images/icon_google+.png" alt="google plus" /> <img src="/static/images/icon_instagram.png" alt="instagram" /> <img src="/static/images/icon_twitter.png" alt="twitter" /> </div>
+  <!-- end .footer -->
+</div>
+<!-- end .container -->
+</body>
+</html>
