@@ -38,8 +38,11 @@ def login():
         if login:
             name = cur.execute('Call GetName(%s)', (username))
             name = cur.fetchone()
+            sesId = cur.execute('Call GetUserId(%s, %s)', (name[0], username))
+            sesId = cur.fetchone()
             session['username'] = name[0]
             session['email'] = username
+            session['id'] = sesId[0]
             return redirect(url_for('home'))
         else:
             error = "Invalid username/password, try again."
@@ -75,8 +78,11 @@ def registration():
             con.commit()
             name = cur.execute('Call GetName(%s)', (email))
             name = cur.fetchone()
+            sesId = cur.execute('Call GetUserId(%s, %s)', (name[0], email))
+            sesId = cur.fetchone()
             session['username'] = name[0]
             session['email'] = email
+            session['id'] = sesId[0]
             return render_template('SurveyForm.html', msg = msg, username = session['username'])
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
@@ -86,7 +92,7 @@ def registration():
 def search():
     msg = ""
     data = []
-    
+    sesId = session['id']
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
             resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", request.form['user_id'])
@@ -105,38 +111,39 @@ def survey():
     data = []
     if request.method =='POST':
         if 'zip' in request.form and 'radius' in request.form:
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", "")
-            msg += str(resp["status"])
             estab = request.form.getlist('EstCheckboxGroup')
             cus = request.form.getlist('CuisCheckboxGroup')
             cat = request.form.getlist('CatCheckboxGroup')
             con = mysql.connect()
             cur = con.cursor()
-            fullname = session['username']
-            email = session['email']
-            name = cur.execute('Call GetUserId(%s, %s)', (fullname, email))
-            name = cur.fetchone()
+            sesId = session['id']
             for i in range(0, len(estab)):
-                args = (name[0], int(estab[i]))
+                args = (sesId, int(estab[i]))
                 sqlstat = 'Call addUserEstablishment(%s, %s)'
                 cur.execute(sqlstat, args)
             con.commit()
             for i in range(0, len(cat)):
-                args = (name[0], int(cat[i]))
+                args = (sesId, int(cat[i]))
                 sqlstat = 'Call addUserCategories(%s, %s)'
                 cur.execute(sqlstat, args)
             con.commit()
             for i in range(0, len(cus)):
-                args = (name[0], int(cus[i]))
+                args = (sesId, int(cus[i]))
                 sqlstat = 'Call addUserCuisine(%s, %s)'
                 cur.execute(sqlstat, args)
             con.commit()
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
+            msg += str(resp["status"])
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
             return render_template('search.html', msg = msg, data = data)
     if 'username' in session:
         return render_template('SurveyForm.html', msg = msg, username= session['username'])
     return render_template('SurveyForm.html', msg = msg)
+
+@app.route('/profile/', methods = ['GET','POST'])
+def profile():
+    return render_template('profile.html')
 
 
 if __name__ == '__main__':

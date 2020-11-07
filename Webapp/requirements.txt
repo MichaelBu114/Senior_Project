@@ -4,3 +4,4 @@ flask-mysql
 mysql-client
 cryptography
 requests
+mysql-connector

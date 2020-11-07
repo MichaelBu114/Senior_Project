@@ -8,10 +8,10 @@ GOOGLE_MAPS_API_KEY = "AIzaSyBTIYFA8avWuLBtGteyCUXhFdDFrqlS648"
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/search"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
-MYSQL_HOST = "127.0.0.1"
+MYSQL_HOST = "localhost"
 MYSQL_DATABASE = "dp_sp"
-MYSQL_USERNAME = ""
-MYSQL_PASSWORD = ""
+MYSQL_USERNAME = "root"
+MYSQL_PASSWORD = "snowflake6365stark"
 
 FORCE_ERROR = False
 
