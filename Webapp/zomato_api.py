@@ -8,10 +8,13 @@ GOOGLE_MAPS_API_KEY = "AIzaSyBTIYFA8avWuLBtGteyCUXhFdDFrqlS648"
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/search"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
-MYSQL_HOST = "localhost"
-MYSQL_DATABASE = "dp_sp"
-MYSQL_USERNAME = "root"
-MYSQL_PASSWORD = "snowflake6365stark"
+config = {
+    'user': 'root',
+    'password' : 'snowflake6365stark',
+    'host': 'mysql-development',
+    'database': 'dp_sp',
+    'auth_plugin': 'mysql_native_password'}
+
 
 FORCE_ERROR = False
 
@@ -20,21 +23,14 @@ def mysql_database_call(function, user_id):
     connection = None
     result = ""
     #print("Executing %s ..." % function)
-    
-    try:
-        connection = mysql.connector.connect(host=MYSQL_HOST, database=MYSQL_DATABASE, user=MYSQL_USERNAME, password=MYSQL_PASSWORD)
-        cursor = connection.cursor()
-        categories = cursor.callproc(function, [user_id])
-        for r in cursor.stored_results():
-            for i in list(r.fetchall()):
-                result += str(i[0]) + ","
-    except mysql.connector.Error as error:
-        print("Failed to execute %s" % function)
-    finally:
-        if (connection.is_connected()):
-            cursor.close()
-            connection.close()
-    return result[:-1]
+    connection = mysql.connector.connect(**config)
+    cursor = connection.cursor()
+    categories = cursor.callproc(function, args = [user_id])
+    for r in cursor.stored_results():
+        for i in list(r.fetchall()):
+            result += str(i[0]) + ","
+    connection.close()
+    return result
 
 def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start=0):
     url = ZOMATO_BASE_URL+"?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
@@ -71,9 +67,9 @@ def search(zip, radius, sorting, user_id):
     global response_json
     
     # Get user parameters
-    categories = mysql_database_call("getUserCategories", user_id)
-    cuisines = mysql_database_call("getUserCuisines", user_id)
-    establishments = mysql_database_call("getUserEstablishments", user_id)
+    categories = mysql_database_call('getUserCategories', user_id)
+    cuisines = mysql_database_call('getUserCuisines', user_id)
+    establishments = mysql_database_call('getUserEstablishments', user_id)
     
     # Convert zip code into coordinates
     maps_response = requests.get(GOOGLE_MAPS_BASE_URL+"?address=%s&key=%s" % (zip, GOOGLE_MAPS_API_KEY)).json()

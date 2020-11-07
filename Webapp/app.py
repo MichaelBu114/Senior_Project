@@ -9,7 +9,7 @@ import zomato_api
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = secrets.token_urlsafe(16)
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'mysql-development'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
@@ -43,6 +43,7 @@ def login():
             session['username'] = name[0]
             session['email'] = username
             session['id'] = sesId[0]
+            session['logged_in'] = True
             return redirect(url_for('home'))
         else:
             error = "Invalid username/password, try again."
@@ -51,6 +52,7 @@ def login():
 @app.route('/logout/')
 def logout():
     session.pop('username', None)
+    session.pop('logged_in', None)
     return redirect(url_for('login'))
 
 @app.route('/registration/', methods = ['GET', 'POST'])
@@ -83,6 +85,7 @@ def registration():
             session['username'] = name[0]
             session['email'] = email
             session['id'] = sesId[0]
+            session['logged_in'] = True
             return render_template('SurveyForm.html', msg = msg, username = session['username'])
     elif request.method == 'POST': 
         msg = 'Please fill out the form!'
@@ -92,17 +95,19 @@ def registration():
 def search():
     msg = ""
     data = []
-    sesId = session['id']
-    if request.method == 'POST':
-        if 'zip' in request.form and 'radius' in request.form:
+    if 'zip' in request.form and 'radius' in request.form and request.method == 'POST':
+        if 'logged_in' in session:
+            sesId = session['id']
             resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
             msg += str(resp["status"])
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
         else:
+            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", 0)
+    else:
             msg += "Invalid input"
     if 'username' in session:
-        return render_template('search.html', msg = msg, username= session['username'])
+        return render_template('search.html', msg = msg, data = data, username= session['username'])
     return render_template('search.html', msg = msg, data = data)
 
 @app.route('/survey/' , methods = ['GET','POST'])
@@ -116,23 +121,26 @@ def survey():
             cat = request.form.getlist('CatCheckboxGroup')
             con = mysql.connect()
             cur = con.cursor()
-            sesId = session['id']
-            for i in range(0, len(estab)):
-                args = (sesId, int(estab[i]))
-                sqlstat = 'Call addUserEstablishment(%s, %s)'
-                cur.execute(sqlstat, args)
-            con.commit()
-            for i in range(0, len(cat)):
-                args = (sesId, int(cat[i]))
-                sqlstat = 'Call addUserCategories(%s, %s)'
-                cur.execute(sqlstat, args)
-            con.commit()
-            for i in range(0, len(cus)):
-                args = (sesId, int(cus[i]))
-                sqlstat = 'Call addUserCuisine(%s, %s)'
-                cur.execute(sqlstat, args)
-            con.commit()
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
+            if 'logged_in' in session:
+                sesId = session['id']
+                for i in range(0, len(estab)):
+                    args = (sesId, int(estab[i]))
+                    sqlstat = 'Call addUserEstablishment(%s, %s)'
+                    cur.execute(sqlstat, args)
+                con.commit()
+                for i in range(0, len(cat)):
+                    args = (sesId, int(cat[i]))
+                    sqlstat = 'Call addUserCategories(%s, %s)'
+                    cur.execute(sqlstat, args)
+                con.commit()
+                for i in range(0, len(cus)):
+                    args = (sesId, int(cus[i]))
+                    sqlstat = 'Call addUserCuisine(%s, %s)'
+                    cur.execute(sqlstat, args)
+                con.commit()
+                resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
+            else:
+                resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", 0)
             msg += str(resp["status"])
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
