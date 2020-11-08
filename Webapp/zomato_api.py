@@ -57,10 +57,12 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
         response_json[id]["coordinates"]["lat"] = i["restaurant"]["location"]["latitude"]
         response_json[id]["coordinates"]["lng"] = i["restaurant"]["location"]["longitude"]
         response_json[id]["currency"] = i["restaurant"]["currency"]
-        response_json[id]["menu"] = i["restaurant"]["menu_url"]
+        response_json[id]["menu_url"] = i["restaurant"]["menu_url"]
         response_json[id]["cuisine"] = i["restaurant"]["cuisines"]
+        response_json[id]["aggregate_rating"] = i["restaurant"]["user_rating"]["aggregate_rating"]
+        response_json[id]["featured_image"] = i["restaurant"]["featured_image"]
         id += 1
-    
+
     return len(response["restaurants"])
     
 def search(zip, radius, sorting, user_id):
