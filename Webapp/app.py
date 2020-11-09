@@ -153,9 +153,9 @@ def survey():
                 cat.sort()
                 if 'logged_in' in session:
                     updateUserPref(pref, sesId,  UserZipCode, UserDistance, UserRating, UserRange)
-                    updateUserList(estList, estab, sesId)
-                    updateUserList(cuisineList, cus, sesId)
-                    updateUserList(categoryList, cat, sesId)
+                    updateUserList(estList, estab, sesId,'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
+                    updateUserList(cuisineList, cus, sesId,'Call addUserCuisine(%s,%s)','Call deleteUserCuisine (%s,%s)')
+                    updateUserList(categoryList, cat, sesId,'Call addUserCategories(%s,%s)', 'Call deleteUserCategories(%s,%s)')
                     resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
                 else:
                     resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0)
@@ -191,7 +191,7 @@ def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
         con.commit()
     con.close()
 
-def updateUserList(userList, userCheckBox, uId):
+def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
     con = mysql.connect()
     cur = con.cursor()
     if userList != userCheckBox:
@@ -200,12 +200,12 @@ def updateUserList(userList, userCheckBox, uId):
                 userCheckBox.remove(i)
             elif i not in userCheckBox:
                 args = (uId, i)
-                cur.execute('CALL deleteUserEstablishment(%s,%s)', args)
+                cur.execute(deleteFunction, args)
             con.commit()
         if userCheckBox:
             for i in userCheckBox:
                 args = (uId, i)
-                cur.execute('Call addUserEstablishment(%s,%s)', args)
+                cur.execute(addFunction, args)
             con.commit()
 
 if __name__ == '__main__':
