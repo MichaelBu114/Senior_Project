@@ -65,14 +65,19 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
 
     return len(response["restaurants"])
     
-def search(zip, radius, sorting, user_id):
+def search(zip, radius, sorting, user_id, userCat, userCus, userEst):
     global response_json
     
     # Get user parameters
-    categories = mysql_database_call('getUserCategories', user_id)
-    cuisines = mysql_database_call('getUserCuisines', user_id)
-    establishments = mysql_database_call('getUserEstablishments', user_id)
-    
+    if user_id != 0: 
+        categories = mysql_database_call('getUserCategories', user_id)
+        cuisines = mysql_database_call('getUserCuisines', user_id)
+        establishments = mysql_database_call('getUserEstablishments', user_id)
+    else:
+        categories = userCat
+        cuisines = userCus
+        establishments = userEst
+
     # Convert zip code into coordinates
     maps_response = requests.get(GOOGLE_MAPS_BASE_URL+"?address=%s&key=%s" % (zip, GOOGLE_MAPS_API_KEY)).json()
     lat = maps_response["results"][0]["geometry"]["location"]["lat"]

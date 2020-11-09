@@ -92,7 +92,7 @@ def registration():
             session['id'] = sesId[0]
             session['logged_in'] = True
             con.close()
-            return render_template('SurveyForm.html', msg=msg, username=session['username'])
+            return render_template('preferences.html', msg=msg, username=session['username'])
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
     return render_template('registration.html', msg=msg)
@@ -151,21 +151,40 @@ def survey():
                 cat = request.form.getlist('CatCheckboxGroup')
                 cat = [int(i) for i in cat]
                 cat.sort()
-                if 'logged_in' in session:
-                    updateUserPref(pref, sesId,  UserZipCode, UserDistance, UserRating, UserRange)
-                    updateUserList(estList, estab, sesId,'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
-                    updateUserList(cuisineList, cus, sesId,'Call addUserCuisine(%s,%s)','Call deleteUserCuisine (%s,%s)')
-                    updateUserList(categoryList, cat, sesId,'Call addUserCategories(%s,%s)', 'Call deleteUserCategories(%s,%s)')
-                    resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
-                else:
-                    resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0)
+                updateUserPref(pref, sesId,  UserZipCode, UserDistance, UserRating, UserRange)
+                updateUserList(estList, estab, sesId,'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
+                updateUserList(cuisineList, cus, sesId,'Call addUserCuisine(%s,%s)','Call deleteUserCuisine (%s,%s)')
+                updateUserList(categoryList, cat, sesId,'Call addUserCategories(%s,%s)', 'Call deleteUserCategories(%s,%s)')
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, 0, 0, 0)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
+                    data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"], resp[i]["phone_number"],
+                                resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"]])
                 return render_template('search.html', msg=msg, data=data)
-        return render_template('preferences.html', msg = msg, data = data, userRange = pref[3], userDistance = pref[1], userZipcode = str(pref[0]), userRating = pref[2], 
+        return render_template('preferences.html', msg = msg, data = data, username = session['username'],userRange = pref[3], userDistance = pref[1], userZipcode = str(pref[0]), userRating = pref[2], 
             estList = estList, cuisineList = cuisineList, categoryList = categoryList)
     else:
+        if request.method == 'POST':
+            if 'zip' in request.form and 'radius' in request.form:
+                UserZipCode = request.form['zip']
+                UserDistance = request.form['radius']
+                UserRating = request.form['rating']
+                UserRange = request.form['cost']
+                estab = request.form.getlist('EstCheckboxGroup')
+                estab = [int(i) for i in estab]
+                estab.sort()
+                cus = request.form.getlist('CuisCheckboxGroup')
+                cus =[int(i) for i in cus]
+                cus.sort()
+                cat = request.form.getlist('CatCheckboxGroup')
+                cat = [int(i) for i in cat]
+                cat.sort()
+                resp = zomato_api.search(UserZipCode,UserDistance, "real_distance", 0, cat, cus, estab)
+                msg += str(resp["status"])
+                for i in range(int(resp["count"])):
+                    data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"], resp[i]["phone_number"],
+                                resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"]])
+                return render_template('search.html', msg=msg, data=data)
         return render_template('preferences.html', msg=msg)
 
 
@@ -207,6 +226,7 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
                 args = (uId, i)
                 cur.execute(addFunction, args)
             con.commit()
+    con.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
