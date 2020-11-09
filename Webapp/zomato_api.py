@@ -11,7 +11,7 @@ GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 config = {
     'user': 'root',
     'password' : 'snowflake6365stark',
-    'host': 'mysql-development',
+    'host': 'localhost',
     'database': 'dp_sp',
     'auth_plugin': 'mysql_native_password'}
 

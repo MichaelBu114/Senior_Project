@@ -9,7 +9,7 @@ import zomato_api
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = secrets.token_urlsafe(16)
-app.config['MYSQL_DATABASE_HOST'] = 'mysql-development'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
 app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
@@ -44,6 +44,7 @@ def login():
             session['email'] = username
             session['id'] = sesId[0]
             session['logged_in'] = True
+            con.close()
             return redirect(url_for('home'))
         else:
             error = "Invalid username/password, try again."
@@ -54,6 +55,8 @@ def login():
 def logout():
     session.pop('username', None)
     session.pop('logged_in', None)
+    session.pop('email', None)
+    session.pop('id', None)
     return redirect(url_for('login'))
 
 
@@ -88,6 +91,7 @@ def registration():
             session['email'] = email
             session['id'] = sesId[0]
             session['logged_in'] = True
+            con.close()
             return render_template('SurveyForm.html', msg=msg, username=session['username'])
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
@@ -120,46 +124,89 @@ def search():
 def survey():
     msg = ""
     data = []
-    if request.method == 'POST':
-        if 'zip' in request.form and 'radius' in request.form:
-            estab = request.form.getlist('EstCheckboxGroup')
-            cus = request.form.getlist('CuisCheckboxGroup')
-            cat = request.form.getlist('CatCheckboxGroup')
-            con = mysql.connect()
-            cur = con.cursor()
-            if 'logged_in' in session:
-                sesId = session['id']
-                for i in range(0, len(estab)):
-                    args = (sesId, int(estab[i]))
-                    sqlstat = 'Call addUserEstablishment(%s, %s)'
-                    cur.execute(sqlstat, args)
-                con.commit()
-                for i in range(0, len(cat)):
-                    args = (sesId, int(cat[i]))
-                    sqlstat = 'Call addUserCategories(%s, %s)'
-                    cur.execute(sqlstat, args)
-                con.commit()
-                for i in range(0, len(cus)):
-                    args = (sesId, int(cus[i]))
-                    sqlstat = 'Call addUserCuisine(%s, %s)'
-                    cur.execute(sqlstat, args)
-                con.commit()
-                resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
-            else:
-                resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", 0)
-            msg += str(resp["status"])
-            for i in range(int(resp["count"])):
-                data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
-            return render_template('search.html', msg=msg, data=data)
     if 'username' in session:
-        return render_template('SurveyForm.html', msg=msg, username=session['username'])
-    return render_template('SurveyForm.html', msg=msg)
+        con = mysql.connect()
+        cur = con.cursor()
+        sesId = session['id']
+        pref = cur.execute('CALL getPreferences(%s)', (sesId))
+        pref = cur.fetchone()
+        cur.execute('Call getUserEstablishments(%s)', (sesId))
+        estList = [val for sublist in cur.fetchall() for val in sublist]
+        cur.execute('Call getUserCuisines(%s)', (sesId))
+        cuisineList = [val for sublist in cur.fetchall() for val in sublist]
+        cur.execute('Call getUserCategories(%s)', (sesId))
+        categoryList = [val for sublist in cur.fetchall() for val in sublist]
+        if request.method == 'POST':
+            if 'zip' in request.form and 'radius' in request.form:
+                UserZipCode = request.form['zip']
+                UserDistance = request.form['radius']
+                UserRating = request.form['rating']
+                UserRange = request.form['cost']
+                estab = request.form.getlist('EstCheckboxGroup')
+                estab = [int(i) for i in estab]
+                estab.sort()
+                cus = request.form.getlist('CuisCheckboxGroup')
+                cus =[int(i) for i in cus]
+                cus.sort()
+                cat = request.form.getlist('CatCheckboxGroup')
+                cat = [int(i) for i in cat]
+                cat.sort()
+                if 'logged_in' in session:
+                    updateUserPref(pref, sesId,  UserZipCode, UserDistance, UserRating, UserRange)
+                    updateUserList(estList, estab, sesId)
+                    updateUserList(cuisineList, cus, sesId)
+                    updateUserList(categoryList, cat, sesId)
+                    resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
+                else:
+                    resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0)
+                msg += str(resp["status"])
+                for i in range(int(resp["count"])):
+                    data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"]])
+                return render_template('search.html', msg=msg, data=data)
+        return render_template('preferences.html', msg = msg, data = data, userRange = pref[3], userDistance = pref[1], userZipcode = str(pref[0]), userRating = pref[2], 
+            estList = estList, cuisineList = cuisineList, categoryList = categoryList)
+    else:
+        return render_template('preferences.html', msg=msg)
 
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     return render_template('profile.html')
 
+#Updates the user preference if it was changeded on the survey page
+def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
+    con = mysql.connect()
+    cur = con.cursor()
+    if UserZip != str(pref[0]):
+        cur.execute('CALL updateZipcode(%s,%s)', (UserZip, uId))
+        con.commit()
+    if UserDis != pref[1]:
+        cur.execute('CALL updateDistance(%s,%s)', (UserDis, uId))
+        con.commit()
+    if UserRate != pref[2]:
+        cur.execute('CALL updateRange(%s,%s)', (UserRate, uId))
+        con.commit()
+    if UserRange != pref[3]:
+        cur.execute('CALL updateRating(%s,%s)', (UserRange, uId))
+        con.commit()
+    con.close()
+
+def updateUserList(userList, userCheckBox, uId):
+    con = mysql.connect()
+    cur = con.cursor()
+    if userList != userCheckBox:
+        for i in userList:
+            if i in userCheckBox:
+                userCheckBox.remove(i)
+            elif i not in userCheckBox:
+                args = (uId, i)
+                cur.execute('CALL deleteUserEstablishment(%s,%s)', args)
+            con.commit()
+        if userCheckBox:
+            for i in userCheckBox:
+                args = (uId, i)
+                cur.execute('Call addUserEstablishment(%s,%s)', args)
+            con.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)
