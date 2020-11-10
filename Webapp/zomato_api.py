@@ -65,7 +65,7 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
 
     return len(response["restaurants"])
     
-def search(zip, radius, sorting, user_id, userCat, userCus, userEst):
+def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEst = None):
     global response_json
     
     # Get user parameters
