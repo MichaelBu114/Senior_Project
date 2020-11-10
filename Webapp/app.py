@@ -122,6 +122,15 @@ def search():
         return render_template('search.html', msg=msg, data=data, username=session['username'])
     return render_template('search.html', msg=msg, data=data)
 
+@app.route('/details/', methods=['GET', 'POST'])
+def details():
+    msg = ""
+    
+    res_id = request.args.get('res_id')
+    resp = zomato_api.restaurant_details(res_id)
+    msg += str(resp)
+    
+    return render_template('details.html', msg=msg)
 
 @app.route('/survey/', methods=['GET', 'POST'])
 def survey():
