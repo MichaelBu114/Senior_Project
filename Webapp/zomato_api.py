@@ -42,10 +42,10 @@ def restaurant_details(res_id):
     url = ZOMATO_BASE_URL+"/restaurant?res_id=%s" % res_id
     print ("Calling " + url)
     response = requests.get(url, headers=header)
+    response_json = response.json()
+    response_json['status'] = 'OK'
     if check_response(response) == -1:
         return -1
-    
-    response = response.json()
     
     return response
 
