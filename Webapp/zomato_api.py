@@ -2,17 +2,16 @@ import sys
 import requests
 import mysql.connector
 
-ZOMATO_API_KEY = "eeb2c8d6b993c20bfd856f1b092ea075"
-GOOGLE_MAPS_API_KEY = "AIzaSyBTIYFA8avWuLBtGteyCUXhFdDFrqlS648"
+import config
 
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
 config = {
-    'user': 'root',
-    'password' : 'snowflake6365stark',
-    'host': 'localhost',
-    'database': 'dp_sp',
+    'user': MYSQL_USERNAME,
+    'password' : MYSQL_PASSWORD,
+    'host': MYSQL_HOST,
+    'database': MYSQL_DATABASE,
     'auth_plugin': 'mysql_native_password'}
 
 

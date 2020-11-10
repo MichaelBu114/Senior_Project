@@ -4,16 +4,18 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flaskext.mysql import MySQL
 from flask.helpers import flash
+
+import config
 import zomato_api
 
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = secrets.token_urlsafe(16)
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'snowflake6365stark'
-app.config['MYSQL_DATABASE_DB'] = 'dp_sp'
-app.config['MYSQL_DATABASE_PORT'] = 3306
+app.config['MYSQL_DATABASE_HOST'] = MYSQL_HOST
+app.config['MYSQL_DATABASE_USER'] = MYSQL_USERNAME
+app.config['MYSQL_DATABASE_PASSWORD'] = MYSQL_PASSWORD
+app.config['MYSQL_DATABASE_DB'] = MYSQL_DATABASE
+app.config['MYSQL_DATABASE_PORT'] = MYSQL_PORT
 mysql.init_app(app)
 
 
