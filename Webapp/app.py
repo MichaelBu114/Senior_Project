@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 
-import config
+from config import *
 import zomato_api
 
 app = Flask(__name__)

@@ -2,7 +2,7 @@ import sys
 import requests
 import mysql.connector
 
-import config
+from config import *
 
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
