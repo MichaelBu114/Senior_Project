@@ -5,7 +5,7 @@ import mysql.connector
 ZOMATO_API_KEY = "eeb2c8d6b993c20bfd856f1b092ea075"
 GOOGLE_MAPS_API_KEY = "AIzaSyBTIYFA8avWuLBtGteyCUXhFdDFrqlS648"
 
-ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/search"
+ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
 config = {
@@ -17,6 +17,13 @@ config = {
 
 
 FORCE_ERROR = False
+header = {"user-key" : ZOMATO_API_KEY}
+
+def check_response(response):
+    if response.status_code != 200 or FORCE_ERROR:
+        # Response error
+        response_json['status'] = "ERROR"
+        return -1
 
 def mysql_database_call(function, user_id):
     categories = None
@@ -32,14 +39,22 @@ def mysql_database_call(function, user_id):
     connection.close()
     return result
 
-def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start=0):
-    url = ZOMATO_BASE_URL+"?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
+def restaurant_details(res_id):
+    url = ZOMATO_BASE_URL+"/restaurant?res_id=%s" % res_id
     print ("Calling " + url)
-    header = {"user-key" : ZOMATO_API_KEY}
     response = requests.get(url, headers=header)
-    if response.status_code != 200 or FORCE_ERROR:
-        # Response error
-        response_json['status'] = "ERROR"
+    if check_response(response) == -1:
+        return -1
+    
+    response = response.json()
+    
+    return response
+
+def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start=0):
+    url = ZOMATO_BASE_URL+"/search?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
+    print ("Calling " + url)
+    response = requests.get(url, headers=header)
+    if check_response(response) == -1:
         return -1
     
     response = response.json()
@@ -61,6 +76,7 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
         response_json[id]["cuisine"] = i["restaurant"]["cuisines"]
         response_json[id]["aggregate_rating"] = i["restaurant"]["user_rating"]["aggregate_rating"]
         response_json[id]["featured_image"] = i["restaurant"]["featured_image"]
+        response_json[id]["rating_icon"] = str(round(float(i["restaurant"]["user_rating"]["aggregate_rating"]))) + "star.png"
         id += 1
 
     return len(response["restaurants"])

@@ -105,14 +105,15 @@ def search():
     if 'zip' in request.form and 'radius' in request.form and request.method == 'POST':
         if 'logged_in' in session:
             sesId = session['id']
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
-            msg += str(resp["status"])
-            for i in range(int(resp["count"])):
-                data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"], resp[i]["phone_number"],
-                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"]])
-                # data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"])
         else:
-            resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", 0)
+            sesId = 0
+        
+        resp = zomato_api.search(request.form['zip'], request.form['radius'], "real_distance", sesId)
+        msg += str(resp["status"])
+        for i in range(int(resp["count"])):
+            data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"], resp[i]["phone_number"],
+                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"], resp[i]["rating_icon"]])
+            # data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"])
     else:
         msg += "Invalid input"
     if 'username' in session:
