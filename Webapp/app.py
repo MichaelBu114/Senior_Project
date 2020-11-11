@@ -175,8 +175,9 @@ def survey():
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, 0, 0, 0)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"], resp[i]["phone_number"],
-                                resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"]])
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                                 resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                                 resp[i]["rating_icon"]])
                 return render_template('search.html', msg=msg, data=data)
         return render_template('preferences.html', msg = msg, data = data, username = session['username'],userRange = pref[3], userDistance = pref[1], userZipcode = str(pref[0]), userRating = pref[2], 
             estList = estList, cuisineList = cuisineList, categoryList = categoryList)
@@ -199,8 +200,9 @@ def survey():
                 resp = zomato_api.search(UserZipCode,UserDistance, "real_distance", 0, cat, cus, estab)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"], resp[i]["phone_number"],
-                                resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"]])
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                                 resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                                 resp[i]["rating_icon"]])
                 return render_template('search.html', msg=msg, data=data)
         return render_template('preferences.html', msg=msg)
 
