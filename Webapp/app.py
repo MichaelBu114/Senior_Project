@@ -116,7 +116,8 @@ def search():
         
         for i in range(int(resp["count"])):
             data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"], resp[i]["rating_icon"]])
+                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                         resp[i]["rating_icon"]])
             # data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"])
     if 'username' in session:
         return render_template('search.html', msg=msg, data=data, username=session['username'])
