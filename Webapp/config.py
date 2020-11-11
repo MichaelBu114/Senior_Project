@@ -1,8 +1,8 @@
 # MYSQL Configuration
 MYSQL_USERNAME = "root"
-MYSQL_PASSWORD = "password"
+MYSQL_PASSWORD = "snowflake6365stark"
 MYSQL_DATABASE = "dp_sp"
-MYSQL_HOST = "127.0.0.1"
+MYSQL_HOST = "mysql-development"
 MYSQL_PORT = 3306
 
 # API Keys
