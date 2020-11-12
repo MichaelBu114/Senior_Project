@@ -50,7 +50,7 @@ def login():
             return redirect(url_for('home'))
         else:
             error = "Invalid username/password, try again."
-    return render_template('login.html', error=error)
+    return render_template('index.html', msg=error)
 
 
 @app.route('/logout/')
@@ -97,7 +97,7 @@ def registration():
             return render_template('preferences.html', msg=msg, username=session['username'])
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
-    return render_template('registration.html', msg=msg)
+    return render_template('preferences.html', msg=msg)
 
 
 @app.route('/search/', methods=['GET', 'POST'])

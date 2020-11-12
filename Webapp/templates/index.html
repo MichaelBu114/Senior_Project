@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
+
 <body>
-
-  <div id="id01" class="modal">
-
+<!-- Modal for Login-->
+<div id="id01" class="modal">
   <form class="modal-content animate" action="{{ url_for('login') }}" method="post">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
@@ -23,19 +23,52 @@
 
       <label for="password"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="password" required>
-      <button type="submit">Login</button>
       <label>
         <input type="checkbox" checked="checked" name="remember"> Remember me
       </label>
-    </div>
+      <div class="msg">{{ msg }}</div>
+      <button type="submit">Login</button>
+      <button onclick="document.getElementById('id02').style.display='block';document.getElementById('id01').style.display='none'">Not A Member? Register Here</button>
+   </div>
 
     <div class="container1" style="background-color:#f1f1f1">
       <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-      <span class="psw">Forgot <a href="#">password?</a></span>
+      <span class="psw">Forgot <a href="#" style="color:dodgerblue">password?</a></span>
     </div>
   </form>
 </div>
+<!-- Modal for Registration-->
+<div id="id02" class="modal">
+  <form class="modal-content animate" action="{{ url_for('registration') }}" method="post">
+    <div class="container1">
+      <h1 style="color:black;">Register</h1>
+      <p style="color:black;">Please fill in this form to create an account.</p>
+      <hr>
 
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required>
+
+      <label for="password"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required>
+
+      <label for="psw-repeat"><b>Repeat Password</b></label>
+      <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+
+      <label>
+        <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+      </label>
+
+      <p style="color:black;">By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+
+      <div class="clearfix">
+        <div class="msg">{{ msg }}</div>
+        <button type="submit" >Register</button>
+        <button onclick="document.getElementById('id01').style.display='block';document.getElementById('id02').style.display='none'">Already Registered? Login Here</button>
+        <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
 
 <div id="container">
   <div class="header">
@@ -85,6 +118,7 @@
   <!-- end .footer --> 
 </div>
 <!-- end .container -->
+
 <script>
 // Get the modal
 var modal = document.getElementById('id01');
