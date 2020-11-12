@@ -120,8 +120,9 @@ def search():
         UserRange = request.form['cost']
 
         resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
+        
         if resp["status"] != 'OK':
-            msg += str(resp["status"])
+            msg += "API response error"
 
         for i in range(int(resp["count"])):
             data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -142,9 +143,7 @@ def details():
     res_id = request.args.get('res_id')
     resp = zomato_api.restaurant_details(res_id)
 
-    if resp["status"] == 'OK':
-        msg += str(resp)
-    else:
+    if resp["status"] != 'OK':
         msg += "API response error"
 
     return render_template('details.html', msg=msg)

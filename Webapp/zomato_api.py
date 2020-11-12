@@ -41,12 +41,38 @@ def mysql_database_call(function, user_id):
 def restaurant_details(res_id):
     global response_json
     
+    response_json = {'status' : 'OK', 'location' : {}, 'user_rating' : {}}
     url = ZOMATO_BASE_URL+"/restaurant?res_id=%s" % res_id
     print ("Calling " + url)
     response = requests.get(url, headers=header)
-    response_json = response.json()
-    response_json["status"] = 'OK'
-    check_response(response)
+    
+    if check_response(response) == -1:
+        return response_json
+    
+    response = response.json()
+    
+    response_json["id"] = response["id"]
+    response_json["name"] = response["name"]
+    response_json["phone_numbers"] = response["phone_numbers"].split(", ") # Convert string of phone numbers into list
+    response_json["location"]["address"] = response["location"]["address"]
+    response_json["location"]["latitude"] = response["location"]["latitude"]
+    response_json["location"]["longitude"] = response["location"]["longitude"]
+    response_json["location"]["locality_verbose"] = response["location"]["locality_verbose"]
+    response_json["cuisines"] = response["cuisines"]
+    response_json["timings"] = response["timings"]
+    response_json["average_cost_for_two"] = response["average_cost_for_two"]
+    response_json["price_range"] = response["price_range"]
+    response_json["currency"] = response["currency"]
+    response_json["highlights"] = response["highlights"]
+    response_json["user_rating"]["aggregate_rating"] = response["user_rating"]["aggregate_rating"]
+    response_json["user_rating"]["rating_text"] = response["user_rating"]["rating_text"]
+    response_json["menu_url"] = response["menu_url"]
+    response_json["featured_image"] = response["featured_image"]
+    response_json["has_online_delivery"] = response["has_online_delivery"]
+    response_json["is_delivering_now"] = response["is_delivering_now"]
+    response_json["is_table_reservation_supported"] = response["is_table_reservation_supported"]
+    response_json["has_table_booking"] = response["has_table_booking"]
+    response_json["establishment"] = response["establishment"]
     
     return response_json
 
