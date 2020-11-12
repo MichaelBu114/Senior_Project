@@ -44,6 +44,7 @@ def login():
             sesId = cur.fetchone()
             session['username'] = name[0]
             session['email'] = username
+            session['password'] = request.form['password']
             session['id'] = sesId[0]
             session['logged_in'] = True
             con.close()
@@ -91,6 +92,7 @@ def registration():
             sesId = cur.fetchone()
             session['username'] = name[0]
             session['email'] = email
+            session['password'] = request.form['password']
             session['id'] = sesId[0]
             session['logged_in'] = True
             con.close()
@@ -226,7 +228,8 @@ def survey():
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
-    return render_template('profile.html')
+    return render_template('profile.html', username = session['username'],
+            password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
 
 
 # Updates the user preference if it was changeded on the survey page

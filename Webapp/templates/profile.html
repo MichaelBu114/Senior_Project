@@ -33,22 +33,22 @@
                     <br>
                      <div>
                         <label class="question">Email&nbsp;&nbsp;&nbsp;</label>
-                        <label contentEditable="true" style="float: right; margin-right: 90px;">users email</label>
+                        <label contentEditable="true" style="float: right; margin-right: 90px;">{{email}}</label>
                     </div>
                     <br>
                     <div>
                         <label class="question">Password&nbsp;&nbsp;&nbsp;</label>
-                        <label contentEditable="true" style="float: right; margin-right: 90px;">users password*</label>
+                        <label type="password", name="password",contentEditable="true" style="float: right; margin-right: 90px;",>{{password}}</label>
                     </div>
                     <br>
                     <div>
                         <label class="question">First Name&nbsp;&nbsp;&nbsp;</label>
-                        <label contentEditable="true" style="float: right; margin-right: 90px;"><strong>{{username}}</strong></label>
+                        <label contentEditable="true" style="float: right; margin-right: 90px;">{{firstname}}</label>
                     </div>
                     <br>
                     <div>
                         <label class="question">Last Name&nbsp;&nbsp;&nbsp;</label>
-                        <label contentEditable="true" style="float: right; margin-right: 90px;">users last name</label>
+                        <label contentEditable="true" style="float: right; margin-right: 90px;">{{lastname}}</label>
                     </div>
                 <br>
                          <a href="{{url_for('logout')}}"><input type="submit" value="Logout" style="float: right; margin-right: 90px;"></a>
