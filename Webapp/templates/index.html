@@ -1,12 +1,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=4'>
+<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=5'>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
+
+  <div id="id01" class="modal">
+
+  <form class="modal-content animate" action="{{ url_for('login') }}" method="post">
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <img src="/static/images/Logo.png" alt="Avatar" class="avatar">
+    </div>
+
+    <div class="container1">
+      <label for="username"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="username" required>
+
+      <label for="password"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="password" required>
+      <button type="submit">Login</button>
+      <label>
+        <input type="checkbox" checked="checked" name="remember"> Remember me
+      </label>
+    </div>
+
+    <div class="container1" style="background-color:#f1f1f1">
+      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+      <span class="psw">Forgot <a href="#">password?</a></span>
+    </div>
+  </form>
+</div>
+
+
 <div id="container">
   <div class="header">
     <div id="nav_link"><a href="#"><img src="static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
@@ -14,10 +44,11 @@
     {% if 'username' in session %}
     <div id="profile_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{username}}</strong></a></div>
     {% else %}
-    <div id="login_link"><a href="{{url_for('login')}}"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    <div id="login_link"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block'" /></div>
     {% endif %}
   </div>
   <!-- end .header -->
+
   <div class="content">
     <p><img src="static/images/phrase_homepage.png" alt="Phrase" class="phrase" /></p>
     <p align="center"><img src="static/images/Logo.png" alt="Decide &amp; Dine Logo" class="logo" /></p>
@@ -54,5 +85,16 @@
   <!-- end .footer --> 
 </div>
 <!-- end .container -->
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
 </body>
 </html>

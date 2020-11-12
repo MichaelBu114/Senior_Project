@@ -4,22 +4,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
-
-<style>
-.button {
-  background-color: #f67b5f;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12px;
-  margin: 2px;
-  cursor: pointer;
-}
-</style>
-
 </head>
 
 <body>
@@ -28,7 +12,7 @@
     <div id="nav_link"><a href="/"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
     <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
     {% if 'username' in session %}
-    <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('logout')}}"><strong>{{username}}</strong></a></div>
+    <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{ username }}</strong></a></div>
     {% else %}
     <div id="login_link"><a href="{{url_for('login')}}"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
     {% endif %}  </div>
@@ -39,38 +23,37 @@
       <div class="floating-box" style="margin: 20px auto;">
         <h1>Search</h1>
         <form action="{{ url_for('search') }}" method="post" autocomplete="off">
-            <label for="ZIP">
-                <i class="fas fa-envelope"></i>
-            </label>
-            <input type="zip" name="zip" placeholder="ZIP Code" id="zip" required>
-            <label for="Radius">
-                <i class="fas fa-lock"></i>
-            </label>
-            <input type="radius" name="radius" placeholder="Radius" id="radius" required>
-           <div id="filters"><label class="question">Restaurant Rating:</label>
-          
-              <select name="rating" id="Food_Rating">
-                <option value="2">2 stars or less</option>
-                <option value="3">3 Stars or less</option>
-                <option value="4">4 Stars or less</option>
-                <option value="5" selected>5 Stars or less</option>
-              </select>
-          
-             <label class="question">Food Cost:</label>
-              <select name="cost" id="Food_Cost">
-                <option value="1">$</option>
-                <option value="2">$$</option>
-                <option value="3" selected>$$$</option>
-                <option value="4">$$$$</option>
-                <option value="5">$$$$$</option>
-              </select>
-          
+            <div id="filters">
+                <label for="Zip" class="question">Search Zip Code:</label>
+                <input type="zip" name="zip" placeholder="Enter ZIP Code" id="zip" required value="{{userZipcode}}">
+
+                <label for="Radius" class="question">Search Radius:</label>
+                <input type="radius" name="radius" placeholder="Enter Radius" id="radius" required value="{{userDistance}}">
+
+               <label class="question">Restaurant Rating:</label>
+                  <select name="rating" id="Food_Rating">
+                    <option value="2"{% if userRating == 2 %}selected{% endif %}>2 stars or less</option>
+                    <option value="3"{% if userRating == 3 %}selected{% endif %}>3 Stars or less</option>
+                    <option value="4"{% if userRating == 4 %}selected{% endif %}>4 Stars or less</option>
+                    <option value="5"{% if userRating == 5 %}selected{% endif %}>5 Stars or less</option>
+                  </select>
+
+                 <label class="question">Food Cost:</label>
+                  <select name="cost" id="Food_Cost">
+                    <option value="1"{% if userRange == 1 %}selected{% endif %}>$</option>
+                    <option value="2"{% if userRange == 2 %}selected{% endif %}>$$</option>
+                    <option value="3"{% if userRange == 3 %}selected{% endif %}>$$$</option>
+                    <option value="4"{% if userRange == 4 %}selected{% endif %}>$$$$</option>
+                    <option value="5"{% if userRange == 5 %}selected{% endif %}>$$$$$</option>
+                  </select>
             </div><br />
+
             <div class="msg">{{ msg }}</div>
             <input type="submit" value="Submit" style="margin:5px 0;">
+            <p>&nbsp;</p>
             <ul>
             {% for i in data %}
-                <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px;border-style: solid;border-radius:10px;border-color:#f67b5f;">
+                <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
                     <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: left;"><img src="{{ i[6] }}" height="100"></div>
                     <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
                        <p style="color: Gray;font-size:12px;">
@@ -78,7 +61,7 @@
                             <img src="/static/images/{{ i[7] }}star.png" height="13">
                             &nbsp; {{ i[4] }} Rating<br />
                             {{ i[2] }}<br />
-                            Call: {{ i[3] }}&nbsp;&nbsp;&nbsp;<a href="{{ i[5] }}" class="button">View Menu</a>
+                            Call: {{ i[3] }}&nbsp;&nbsp;&nbsp;<a href="{{ i[5] }}" class="menubutton">View Menu</a>
                         </p>
                     </div>
                 </div>
