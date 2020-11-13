@@ -1,0 +1,74 @@
+"""
+	The 'friends' table comes with 3 seperate columns. 
+		friends_id is for the friends id number
+		Fk_user is for the users id number
+		status is for the status of Fk_user's and friends_id's relationship
+			0 = Pending
+			1 = Accepted
+"""
+--
+-- Dumping data for table 'Friends'
+--
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE 'addFriend'(IN friend_id int(11), IN user_id int(11), IN new_status int(11))
+BEGIN
+INSERT INTO Friends (friends_id, Fk_user, status) VALUES (friend_id, user_id, new_status);
+END ;;
+DELIMITER ;
+
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN user_id int(11))
+BEGIN
+	SELECT friends_id
+	FROM Friends
+	WHERE FK_user = user_id;
+END ;;
+DELIMITER ;
+
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE 'deleteFriend'(IN friend_id int(11), IN user_id int(11))
+BEGIN
+	DELETE FROM Friends
+	WHERE friends_id = friend_id AND FK_user = user_id;
+END ;;
+DELIMITER ;
+
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE 'updateFriend'(IN friend_id int(11), IN user_id int(11), IN new_status int(11))
+BEGIN
+	UPDATE student_info
+   	SET status = new_status 
+	WHERE friends_id = friend_id AND FK_user = user_id;
+END ;;
+DELIMITER ;
+
+
+
+
+--
+-- Example from https://www.codedodle.com/2014/12/social-network-friends-database.html
+--
+INSERT INTO 'friends' ('friends_id', 'Fk_user', 'status') 
+	VALUES (1, 2, 0)
+	
+
+UPDATE 'friends' SET 'status' = 1
+	WHERE 'Fk_user' = 1 AND 'friends_id' = 2
+	
+  
+SELECT * FROM 'friends'
+	WHERE 'Fk_user' = 1 AND 'friends_id' = 2 
+	AND 'status' = 1
+	
+	
+SELECT * FROM 'friends'
+	WHERE ('Fk_user' = 1 OR 'friends_id' = 1)
+	AND 'status' = 1
+	
+SELECT * FROM 'friends'
+	WHERE ('Fk_user' = 1 OR 'friends_id' = 1)
+	AND 'status' = 0
