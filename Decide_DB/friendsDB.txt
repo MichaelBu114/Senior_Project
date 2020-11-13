@@ -11,9 +11,9 @@
 --
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE 'addFriend'(IN friend_id int(11), IN user_id int(11), IN status int(11))
+CREATE DEFINER=`root`@`%` PROCEDURE 'addFriend'(IN friend_id int(11), IN user_id int(11), IN new_status int(11))
 BEGIN
-INSERT INTO Friends (friends_id, Fk_user, status) VALUES (friend_id, user_id, status);
+INSERT INTO Friends (friends_id, Fk_user, status) VALUES (friend_id, user_id, new_status);
 END ;;
 DELIMITER ;
 
@@ -23,7 +23,7 @@ CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN user_id int(11))
 BEGIN
 	SELECT friends_id
 	FROM Friends
-	WHERE FK_user = user_id AND status = 1;
+	WHERE FK_user = user_id;
 END ;;
 DELIMITER ;
 
@@ -32,9 +32,21 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE 'deleteFriend'(IN friend_id int(11), IN user_id int(11))
 BEGIN
 	DELETE FROM Friends
-	WHERE friends_id = friend_id AND FK_user = user_id AND status = 1;
+	WHERE friends_id = friend_id AND FK_user = user_id;
 END ;;
 DELIMITER ;
+
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE 'updateFriend'(IN friend_id int(11), IN user_id int(11), IN new_status int(11))
+BEGIN
+	UPDATE student_info
+   	SET status = new_status 
+	WHERE friends_id = friend_id AND FK_user = user_id;
+END ;;
+DELIMITER ;
+
+
 
 
 --
