@@ -28,7 +28,7 @@ def home():
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
-    error = ''
+    msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
@@ -50,8 +50,10 @@ def login():
             con.close()
             return redirect(url_for('home'))
         else:
-            error = "Invalid username/password, try again."
-    return render_template('index.html', msg=error)
+            msg = "Invalid username/password, try again."
+            flash(msg)
+            con.close()
+    return redirect(url_for('home'))
 
 
 @app.route('/logout/')
@@ -60,46 +62,51 @@ def logout():
     session.pop('logged_in', None)
     session.pop('email', None)
     session.pop('id', None)
+    session.pop('password', None)
     return redirect(url_for('home'))
 
 
 @app.route('/registration/', methods=['GET', 'POST'])
 def registration():
     msg = ''
-    if request.method == 'POST' and 'password' in request.form and 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
-        password = request.form['password']
-        hashed = hashlib.sha256(password.encode('utf-8')).hexdigest()
-        email = request.form['email']
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        con = mysql.connect()
-        cur = con.cursor()
-        login = cur.callproc('GetUsername', [email])
-        login = cur.fetchone()
-        if login:
-            msg = 'Account already exists!'
+    if request.method == 'POST':
+        if 'psw' in request.form and 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form and 'psw-repeat' in request.form:
+            password = request.form['psw']
+            hashed = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            hRepeat = hashlib.sha256(request.form['psw-repeat'].encode('utf-8')).hexdigest()
+            email = request.form['email']
+            firstname = request.form['firstname']
+            lastname = request.form['lastname']
+            con = mysql.connect()
+            cur = con.cursor()
+            login = cur.callproc('GetUsername', [email])
+            login = cur.fetchone()
+            if login:
+                flash('Account already exists!')
+            elif hashed != hRepeat:
+                flash('Password dont match')
+            else:
+                sqlstat = "INSERT INTO Login (username,password,date_changed) VALUES (%s,%s,curdate())"
+                sqlstat2 = "call addUser(%s,%s,%s,LAST_INSERT_ID())"
+                args2 = (firstname, lastname, email)
+                args = (email, hashed)
+                cur.execute(sqlstat, args)
+                cur.execute(sqlstat2, args2)
+                con.commit()
+                name = cur.execute('Call GetName(%s)', (email))
+                name = cur.fetchone()
+                sesId = cur.execute('Call GetUserId(%s, %s)', (name[0], email))
+                sesId = cur.fetchone()
+                session['username'] = name[0]
+                session['email'] = email
+                session['password'] = request.form['password']
+                session['id'] = sesId[0]
+                session['logged_in'] = True
+                con.close()
+                return render_template('preferences.html',username=session['username'])
         else:
-            sqlstat = "INSERT INTO Login (username,password,date_changed) VALUES (%s,%s,curdate())"
-            sqlstat2 = "call addUser(%s,%s,%s,LAST_INSERT_ID())"
-            args2 = (firstname, lastname, email)
-            args = (email, hashed)
-            cur.execute(sqlstat, args)
-            cur.execute(sqlstat2, args2)
-            con.commit()
-            name = cur.execute('Call GetName(%s)', (email))
-            name = cur.fetchone()
-            sesId = cur.execute('Call GetUserId(%s, %s)', (name[0], email))
-            sesId = cur.fetchone()
-            session['username'] = name[0]
-            session['email'] = email
-            session['password'] = request.form['password']
-            session['id'] = sesId[0]
-            session['logged_in'] = True
-            con.close()
-            return render_template('preferences.html', msg=msg, username=session['username'])
-    elif request.method == 'POST':
-        msg = 'Please fill out the form!'
-    return render_template('preferences.html', msg=msg)
+            flash('Please fill out the form!')
+    return redirect(url_for('home'))
 
 
 @app.route('/search/', methods=['GET', 'POST'])
