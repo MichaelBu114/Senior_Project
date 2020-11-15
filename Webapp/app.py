@@ -235,6 +235,21 @@ def survey():
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
+    if request.method == 'POST':
+        if 'email' in request.form and 'password' in request.form and 'firstname' in request.form and 'lastname' in request.form:
+            con = mysql.connect()
+            cur = con.cursor()
+            sesId = session['id']
+            email = request.form['email']
+            hashed = hashlib.sha256(request.form['password'].encode('utf-8')).hexdigest()
+            fname = request.form['firstname']
+            lname = request.form['lastname']
+            args = (sesId, email, hashed, fname, lname)
+            profEdit = cur.execute('UpdateProfile(%s,%s,%s,%s,%s)', args)
+            session['username'] = (fname + " " + lname)
+            con.close()
+            return render_template('profile.html', username = session['username'],
+                password = hashed ,email = email ,firstname = fname, lastname = lname)
     return render_template('profile.html', username = session['username'],
             password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
 
