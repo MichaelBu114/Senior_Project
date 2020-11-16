@@ -6,7 +6,19 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Decide &amp; Dine</title>
+<style>
+ul {
+  list-style-type: none;
+  overflow: hidden;
+}
 
+li {
+  float: left;
+  
+}
+
+
+</style>
 </head>
 
 <body>
@@ -30,19 +42,56 @@
             <p>&nbsp;</p>
             <div class="search">
                 <div class="floating-box" style="margin: 20px auto">
-                    <h1>Friend Search</h1>
-                    <form action="{{ url_for('friend') }}" method="post" style="text-align: center" autocomplete="off">
-                        <label for="Friends" style="text-align: center;"> 
-                            <i class="fas fa-envelope"></i>
-                        </label>
-                                <input type="friends" name="friends" placeholder="Search by Email" id="friends" required>
-                                <input type="submit" value="Submit" style="margin:5px 0"> 
-                                
-                            </div>
-                    </div><br />
-                       
-                       
-                    </form>
+                    <ul>
+                        <li><button class="tablinks" onclick="openFriends(event, 'Friends')" id="defaultOpen">Friends</button></li>
+                        <li><button class="tablinks" onclick="openFriends(event, 'Pending')">Pending</button></li>
+                        <li><button class="tablinks" onclick="openFriends(event, 'FindFriends')">Search for Friends</button></li>
+                        <li><button class="tablinks" onclick="openFriends(event, 'GroupPage')">Groups Page</button></li>
+                    </ul>
+                    
+                    <div id="Friends" class="tabcontent">
+                        <h1>Friends</h1>
+                        <ul id='FriendList'>
+                            <li class='friend selected'>
+                                <img style="max-height:110px; margin: 5px 10px; position: inherit;" src='{{source}}' />
+                                <div class='name'>
+                                    Andres Perez
+                                </div>
+                            </li>
+                            <li class='friend'>
+                                <img style="max-height:110px; margin: 5px 10px; position: inherit;" src='https://i.imgur.com/0I4lkh9.jpg' />
+                                <div class='name'>
+                                    Leah Slaten
+                                </div>
+                            </li>
+                            <li class='friend'>
+                                <img style="max-height:110px; margin: 5px 10px; position: inherit;" src='https://i.imgur.com/s2WCwH2.jpg' />
+                                <div class='name'>
+                                    Mario Martinez
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div id="Pending" class="tabcontent">
+                        <h1>Pending Friend Requests</h1>
+                        <p>List will show here.</p>
+                    </div>
+                    
+                    <div id="FindFriends" class="tabcontent">
+                        <h1>Friend Search</h1>
+                        <form action="{{ url_for('friend') }}" method="post" style="text-align: center" autocomplete="off">
+                            <label for="Friends" style="text-align: center;">
+                                <i class="fas fa-envelope"></i>
+                            </label>
+                            <input type="friends" name="friends" placeholder="Search by Email" id="friends" required>
+                            <input type="submit" value="Submit" style="margin:5px 0">
+                        </form>
+                    </div>
+                    <div id="GroupPage" class="tabcontent">
+                        <h1>Groups Page</h1>
+                        <p>List will show here.</p>
+                    </div>
                 </div>
             </div>
             <p>&nbsp;</p>
@@ -55,6 +104,24 @@
         <!-- end .footer -->
     </div>
     <!-- end .container -->
+    <script>
+        function openFriends(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    </script>
 </body>
 
 </html>
