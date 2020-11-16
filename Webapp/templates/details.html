@@ -6,46 +6,56 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Decide &amp; Dine</title>
+    <style>
+        detail-header {
+            color: #ffffff;
+            font-size: medium;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
     <div id="container">
-        <div class="header">
-            <div id="nav_link"><a href="/"><img src="/static/images/nav_lines.png" width="42" height="28"
-                        alt="navmenu_lines" /></a></div>
-            <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png"
-                        alt="Decide &amp; Dine Logo" height="30" /></a></div>
-            {% if 'username' in session %}
-            <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon"
-                    style="margin-right:10px" valign="top"><a
-                    href="{{url_for('logout')}}"><strong>{{username}}</strong></a></div>
-            {% else %}
-            <div id="login_link"><a href="{{url_for('login')}}"><img src="static/images/login_hdr.png" alt="Login"
-                        height="20" style="padding: 5px 20px 5px 5px" /></a></div>
-            {% endif %}
-        </div>
-        <!-- end .header -->
+  <div class="header">
+    <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
+    <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
+    {% if 'username' in session %}
+    <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{username}}</strong></a></div>
+    {% else %}
+    <div id="login_link"><a href="{{url_for('login')}}"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" /></a></div>
+    {% endif %}
+  </div>
+  <!-- end .header -->
         <div class="content">
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <div class="detail">
                 <div class="floating-box" style="margin: 20px auto;">
                     <div class="msg">{{ msg }}</div> <!--for testing-->
-                    <div class="restaurant_name"><h1>Restaurant info<!--{{name}}--><img src="https://b.zmtcdn.com/data/pictures/8/16774318/b16e382e9f6696f911b600b7e5ca6839.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A" alt="Resphoto" width="300" height="300" style="float: right;"/><!--{{featured_image}}--></h1></div>
-                    <div class="address_link">Address: {{address}}</div>
-                    <div class="city_link">City: {{address}}</div> 
-                    <div class="phone_number">Phone Number: {{phone_numbers}}</div>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <h1 style="border-top: solid 2px;">Additional Information</h1>
-                    <div class="res_ratings">Average Ratings: {{rating_text}} {{aggregate_rating}}</div>
-                    <div class="hours">Hours: {{timings}}</div>
-                    <div class="cuisines">Cuisines: {{cuisines}}</div>
-                    <div class="menu_url">Menu: {{menu_url}}</div>
-                    <div class="highlights">Highlights: {{highlights}}</div>
+                    {% if featured_image == '' %}
+                    <img src="/static/images/noImgAvailable.png" alt="No Photo Available" width="300" style="float: right;"/>
+                    {% else %}
+                    <img src="{{featured_image}}" alt="{{name}} Photo" width="300" style="float: right;"/>
+                    {% endif %}
+                    <h1>{{name}}</h1>
+                    <p><span class="detail-header">Address:&nbsp;</span>{{address}}<br/>
+                        <span class="detail-header">City:&nbsp;</span>{{city}}<br/>
+                        <span class="detail-header">Phone Number(s):&nbsp;</span>{% for num in phone_numbers %}{{num}}, {% endfor %}<br/>
+                        <img src="https://www.google.com/maps/@?api=1&map_action=map&query={{latitude}},{{longitude}}"/><br/><br/>
+                        <span class="detail-header">Average Cost for two guests:&nbsp;</span>${{average_cost_for_two}}<br/>
+                    <br/>
+                    <br/>
+                        <br/>
+                    </p>
+                    <h1>Additional Information</h1>
+                    <p>
+                    <span class="detail-header">Average Ratings:&nbsp;</span>{{rating_text}} {{aggregate_rating}} out of 5<br/>
+                    <span class="detail-header">Hours:&nbsp;</span>{{timings}}<br/>
+                    <span class="detail-header">Cuisines:&nbsp;</span>{{cuisines}}<br/>
+                        <span class="detail-header">Menu:&nbsp;</span><a href="{{menu_url}}" target="_blank">View Menu</a><br/>
+                    <span class="detail-header">Highlights:&nbsp;</span>{% for item in highlights %}{{item}},&nbsp;{% endfor%}<br/>
+                </p>
                 </div>
             </div>
             <p>&nbsp;</p>
