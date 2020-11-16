@@ -46,7 +46,6 @@ def login():
             session['email'] = username
             session['password'] = password
             session['id'] = sesId[0]
-            session['logged_in'] = True
             con.close()
             return redirect(url_for('home'))
         else:
@@ -99,7 +98,7 @@ def registration():
                 sesId = cur.fetchone()
                 session['username'] = name[0]
                 session['email'] = email
-                session['password'] = request.form['password']
+                session['password'] = password
                 session['id'] = sesId[0]
                 session['logged_in'] = True
                 con.close()
@@ -236,22 +235,24 @@ def survey():
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     if request.method == 'POST':
-        if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
-            con = mysql.connect()
-            cur = con.cursor()
-            hashed =  hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
-            sesId = session['id']
-            email = request.form['email']
-            fname = request.form['firstname']
-            lname = request.form['lastname']
-            args = (sesId, email, hashed, fname, lname)
-            print(args)
-            cur.execute('CALL updateProfile(%s,%s,%s,%s,%s)', args)
-            con.commit()
-            session['username'] = (fname + " " + lname)
-            con.close()
-            return render_template('profile.html', username = session['username'],
-                password = hashed,email = email ,firstname = fname, lastname = lname)
+        if request.form['button'] == 'Save Changes':
+            if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
+                con = mysql.connect()
+                cur = con.cursor()
+                hashed =  hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
+                sesId = session['id']
+                email = request.form['email']
+                fname = request.form['firstname']
+                lname = request.form['lastname']
+                args = (sesId, email, hashed, fname, lname)
+                cur.execute('CALL updateProfile(%s,%s,%s,%s,%s)', args)
+                con.commit()
+                session['username'] = (fname + " " + lname)
+                con.close()
+                return render_template('profile.html', username = session['username'],
+                    password = hashed,email = email ,firstname = fname, lastname = lname)
+        elif request.form['button'] == "Logout":
+            return redirect(url_for('logout'))
     return render_template('profile.html', username = session['username'],
             password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
 

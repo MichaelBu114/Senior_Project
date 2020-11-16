@@ -48,12 +48,14 @@
                         </div>
                     <br>
                             <input type="submit" name="button" value="Save Changes" style="float: left; margin-right: 90px;">
-                            <a href="{{url_for('logout')}}"><input type="submit" value="Logout" style="float: right; margin-right: 90px;"></a>
+            </form>
+                        <form action = "{{url_for('profile')}}" method="post">
+                            <input type="submit" name="button" value="Logout" style="float: right; margin-right: 90px;"></a>
+                        </form>
                     <br>
                     </div>
                 </div>
                 <p>&nbsp;</p>
-            </form>
         </div>
         <!-- end .content -->
 
