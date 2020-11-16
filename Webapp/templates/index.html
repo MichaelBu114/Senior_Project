@@ -5,8 +5,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.alert-error {
+  padding: 8px;
+  background-color: red;
+  color: white;
+}
+</style>
 </head>
-
 
 <body>
 <!-- Modal for Login-->
@@ -28,18 +34,15 @@
       <div class="error">{{ messsage }}</div>
       <button type="submit">Login</button>
       <button onclick="document.getElementById('id02').style.display='block';document.getElementById('id01').style.display='none'">Not A Member? Register Here</button>
-      <style>
-        .alert-error {
-          padding: 8px;
-          background-color: red;
-          color: white;
-        }
-      </style>
-          {% for message in get_flashed_messages() %}
-            <div class="alert-error">
-              Error: {{ message }}</div>
-              <script type = "text/javascript">document.getElementById('id01').style.display='block'</script>
-          {% endfor %}
+        {% for message in get_flashed_messages() %}
+              <div class="alert-error">
+                Error: {{ message }}</div>
+          {% if 'match' not in message %}
+                <script type = "text/javascript">document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';</script>
+          {% else %}
+                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
+          {% endif %}
+        {% endfor %}
    </div>
 
     <div class="container1" style="background-color:#f1f1f1">
@@ -79,18 +82,15 @@
       <div class="clearfix">
         <button type="submit" >Register</button>
         <button onclick="document.getElementById('id01').style.display='block';document.getElementById('id02').style.display='none'">Already Registered? Login Here</button>
-        <style>
-          .alert-error {
-            padding: 8px;
-            background-color: red;
-            color: white;
-          }
-        </style>
-            {% for message in get_flashed_messages() %}
+        {% for message in get_flashed_messages() %}
               <div class="alert-error">
                 Error: {{ message }}</div>
-                <script type = "text/javascript">document.getElementById('id02').style.display='block'</script>
-            {% endfor %}
+          {% if 'Invalid' not in message %}
+                <script type = "text/javascript">document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';</script>
+          {% else %}
+                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
+          {% endif %}
+        {% endfor %}
         <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
       </div>
     </div>
