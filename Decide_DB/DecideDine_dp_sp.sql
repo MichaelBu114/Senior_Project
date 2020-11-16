@@ -130,11 +130,14 @@ DROP TABLE IF EXISTS `Friends`;
 CREATE TABLE `Friends` (
   `friends_id` int(11) NOT NULL AUTO_INCREMENT,
   `Fk_user` int(11) DEFAULT NULL,
+  `Fk_friend` int(11) DEFAULT NULL,
   `status` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`friends_id`),
   KEY `Friends_User_user_id_fk` (`Fk_user`),
+  KEY `Friends_User_friend_user_id_fk_idx` (`Fk_friend`),
+  CONSTRAINT `Friends_User_friend_user_id_fk` FOREIGN KEY (`Fk_friend`) REFERENCES `User` (`user_id`),
   CONSTRAINT `Friends_User_user_id_fk` FOREIGN KEY (`Fk_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,6 +146,7 @@ CREATE TABLE `Friends` (
 
 LOCK TABLES `Friends` WRITE;
 /*!40000 ALTER TABLE `Friends` DISABLE KEYS */;
+INSERT INTO `Friends` VALUES (1,3,2,1),(3,3,1,1),(4,2,1,0),(5,2,3,1);
 /*!40000 ALTER TABLE `Friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -156,6 +160,7 @@ DROP TABLE IF EXISTS `Groups`;
 CREATE TABLE `Groups` (
   `group_id` int(11) NOT NULL,
   `group_name` varchar(45) NOT NULL,
+  `group_owner_id` int(11) NOT NULL,
   PRIMARY KEY (`group_id`),
   UNIQUE KEY `Groups_group_id_uindex` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -253,7 +258,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,NULL,NULL,NULL,NULL,NULL,7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'08028',40233,3,3,NULL,8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,9,NULL,NULL,NULL);
+INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,NULL,NULL,NULL,NULL,NULL,7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,9,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,7 +307,7 @@ CREATE TABLE `User_Cuisine` (
   KEY `FK_cuisine_idx` (`FK_cuisine`),
   CONSTRAINT `User_Cuisine_Cuisine_cuisine_id_fk` FOREIGN KEY (`FK_cuisine`) REFERENCES `Cuisine` (`cuisine_id`),
   CONSTRAINT `User_Cuisine_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,7 +316,7 @@ CREATE TABLE `User_Cuisine` (
 
 LOCK TABLES `User_Cuisine` WRITE;
 /*!40000 ALTER TABLE `User_Cuisine` DISABLE KEYS */;
-INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(4,2,73),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966);
+INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82);
 /*!40000 ALTER TABLE `User_Cuisine` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -331,7 +336,7 @@ CREATE TABLE `User_Establishment` (
   KEY `FK_establishmentuser_idx` (`FK_establishment`),
   CONSTRAINT `User_Establishment_Establishment_establishment_id_fk` FOREIGN KEY (`FK_establishment`) REFERENCES `Establishment` (`id`),
   CONSTRAINT `User_Establishment_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -340,7 +345,7 @@ CREATE TABLE `User_Establishment` (
 
 LOCK TABLES `User_Establishment` WRITE;
 /*!40000 ALTER TABLE `User_Establishment` DISABLE KEYS */;
-INSERT INTO `User_Establishment` VALUES (18,2,1),(19,2,16),(20,2,18),(21,2,285),(22,3,5),(23,3,6),(24,3,18),(25,3,20),(26,3,23),(27,3,24),(28,3,91),(29,3,161),(30,3,281),(31,3,284),(32,3,292),(33,3,295),(34,3,309);
+INSERT INTO `User_Establishment` VALUES (18,2,1),(19,2,16),(21,2,285),(22,3,5),(23,3,6),(24,3,18),(25,3,20),(26,3,23),(27,3,24),(28,3,91),(29,3,161),(30,3,281),(31,3,284),(32,3,292),(33,3,295),(34,3,309),(42,2,41);
 /*!40000 ALTER TABLE `User_Establishment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,6 +384,25 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'dp_sp'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `addFriend` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addFriend`(IN userid int(11), IN friendid int(11), IN newstatus int(1))
+BEGIN
+	INSERT INTO Friends (Fk_user, Fk_friend, status) VALUES (userid, friendid, newstatus);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `addUser` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -451,6 +475,26 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `addUserEstablishment`(IN user_id int(11), IN establishment_id int(11))
 BEGIN
 INSERT INTO User_Establishment (FK_user, FK_establishment) VALUES (user_id, establishment_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `deleteFriend` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `deleteFriend`(IN userid int(11), IN friendid int(11))
+BEGIN
+	DELETE from Friends
+    WHERE Fk_user = userid AND Fk_friend = friendid;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -531,6 +575,27 @@ CREATE DEFINER=`root`@`%` PROCEDURE `deleteUserGroup`(IN userid int(11), IN FKgr
 BEGIN
 	DELETE FROM User_Group
 	WHERE FK_user = userid AND FK_categories = FKgroup;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getFriends` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN userid int(11))
+BEGIN
+	SELECT u.firstname, u.lastname, u.email
+    FROM Friends f JOIN User u ON u.user_id=f.Fk_friend
+    WHERE f.Fk_user = userid;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -743,6 +808,52 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `updateFriend` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `updateFriend`(IN friendid int(11), IN userid int(11), IN newstatus int(11))
+BEGIN
+	UPDATE Friends
+   	SET status = newstatus 
+	WHERE Fk_friend = friendid AND Fk_user = userid;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `updateProfile` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `updateProfile`(IN uId int, IN newEmail varchar(150), IN newPassword varchar(90),
+	IN newFirstName varchar(90), IN newLastName varchar(90))
+BEGIN
+    UPDATE Login
+        SET username = newEmail, password = newPassword
+    WHERE login_id = (SELECT u.FK_login_id FROM User u WHERE u.user_id = uId);
+    UPDATE User
+        SET email = newEmail, firstname = newFirstName, lastname = newLastName
+    WHERE user_id = uId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `updateRange` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -816,4 +927,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-08 12:41:53
+-- Dump completed on 2020-11-16  0:19:15
