@@ -44,7 +44,7 @@ def login():
             sesId = cur.fetchone()
             session['username'] = name[0]
             session['email'] = username
-            session['password'] = request.form['password']
+            session['password'] = password
             session['id'] = sesId[0]
             session['logged_in'] = True
             con.close()
@@ -239,23 +239,24 @@ def profile():
         if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
             con = mysql.connect()
             cur = con.cursor()
+            hashed =  hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
             sesId = session['id']
             email = request.form['email']
             fname = request.form['firstname']
             lname = request.form['lastname']
-            args = (sesId, email, session['password'], fname, lname)
+            args = (sesId, email, hashed, fname, lname)
             print(args)
             cur.execute('CALL updateProfile(%s,%s,%s,%s,%s)', args)
             con.commit()
             session['username'] = (fname + " " + lname)
             con.close()
             return render_template('profile.html', username = session['username'],
-                password = session['password'],email = email ,firstname = fname, lastname = lname)
+                password = hashed,email = email ,firstname = fname, lastname = lname)
     return render_template('profile.html', username = session['username'],
             password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
 
-@app.route('/friends/' , methods = ['GET', 'POST'])
-def friend():
+@app.route('/connect/' , methods = ['GET', 'POST'])
+def connect():
     return render_template('AddFriends.html')
 
 # Updates the user preference if it was changeded on the survey page
