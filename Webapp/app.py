@@ -303,7 +303,40 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
                 cur.execute(addFunction, args)
             con.commit()
     con.close()
+    
 
+@app.route('/friends/')
+def addFriend(friends_id, Fk_user):
+    con = mysql.connect()
+    cur = con.cursor()
+    status = 1
+    if(status != 1 and friends_id != Fk_user):
+        cur.execute('CALL addFriend(%d,%d,%d)', (friends_id, Fk_user, status))
+        con.commit()
+    con.close()
+    
+def getFriends(Fk_user):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL getFriend(%d)', (Fk_user))
+    con.commit()
+    con.close()
+
+def deleteFriend(friends_id, Fk_user, status):
+    con = mysql.connect()
+    cur = con.cursor()
+    if(status == 1 and friends_id != Fk_user):
+        cur.execute('CALL deleteFriend(%d, %d)', (friends_id, Fk_user))
+        con.commit()
+    con.close()
+
+def updateFriend(friends_id, Fk_user, status):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL updateFriend(%d, %d, %d)', (friends_id, Fk_user, status))
+    con.commit()
+    con.close()
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
