@@ -11,41 +11,40 @@
 --
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE 'addFriend'(IN friend_id int(11), IN user_id int(11), IN new_status int(11))
+CREATE DEFINER=`root`@`%` PROCEDURE `addFriend`(IN userid int(11), IN friendid int(11), IN newstatus int(1))
 BEGIN
-INSERT INTO Friends (friends_id, Fk_user, status) VALUES (friend_id, user_id, new_status);
+	INSERT INTO Friends (Fk_user, Fk_friend, status) VALUES (userid, friendid, newstatus);
 END ;;
 DELIMITER ;
 
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN user_id int(11))
+CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN userid int(11))
 BEGIN
-	SELECT friends_id
-	FROM Friends
-	WHERE FK_user = user_id;
+	SELECT u.firstname, u.lastname, u.email
+    FROM Friends f JOIN User u ON u.user_id=f.Fk_friend
+    WHERE f.Fk_user = userid;
 END ;;
 DELIMITER ;
 
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE 'deleteFriend'(IN friend_id int(11), IN user_id int(11))
+CREATE DEFINER=`root`@`%` PROCEDURE `deleteFriend`(IN userid int(11), IN friendid int(11))
 BEGIN
-	DELETE FROM Friends
-	WHERE friends_id = friend_id AND FK_user = user_id;
+	DELETE from Friends
+    WHERE Fk_user = userid AND Fk_friend = friendid;
 END ;;
 DELIMITER ;
 
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE 'updateFriend'(IN friend_id int(11), IN user_id int(11), IN new_status int(11))
+CREATE DEFINER=`root`@`%` PROCEDURE `updateFriend`(IN friendid int(11), IN userid int(11), IN newstatus int(11))
 BEGIN
-	UPDATE student_info
-   	SET status = new_status 
-	WHERE friends_id = friend_id AND FK_user = user_id;
+	UPDATE Friends
+   	SET status = newstatus 
+	WHERE Fk_friend = friendid AND Fk_user = userid;
 END ;;
 DELIMITER ;
-
 
 
 
