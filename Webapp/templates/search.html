@@ -48,33 +48,33 @@
                   </select>
             </div><br />
 
-            <div class="msg">{{ msg }}</div>
+            {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
             <input type="submit" value="Submit" style="margin:5px 0;">
             <p>&nbsp;</p>
-            <ul>
-            {% for i in data %}
-                <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                    <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: left;"><img src="{{ i[6] }}" height="100"></div>
-                    <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
-                       <p style="color: Gray;font-size:12px;">
-                            <a href="/details/?res_id={{ i[1] }}" style="font-size: x-large; font-weight: bold; color: #f67b5f;">{{ i[0] }}</a><br />
-                            <img src="/static/images/{{ i[7] }}star.png" height="13">
-                            &nbsp; {{ i[4] }} Rating<br />
-                            {{ i[2] }}<br />
-                            Call: {{ i[3] }}&nbsp;&nbsp;&nbsp;<a href="{{ i[5] }}" class="menubutton">View Menu</a>
-                        </p>
+                <ul>
+                {% for i in data %}
+                    <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
+                        <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
+                        <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                           <p style="color: Gray;font-size:12px;">
+                                <a href="/details/?res_id={{ i[1] }}" style="font-size: x-large; font-weight: bold; color: #f67b5f;">{{ i[0] }}</a><br />
+                                <img src="/static/images/{{ i[7] }}star.png" height="13">
+                                &nbsp; {{ i[4] }} Rating<br />
+                                {{ i[2] }}<br />
+                                Call: {{ i[3] }}&nbsp;&nbsp;&nbsp;<a href="{{ i[5] }}" class="menubutton">View Menu</a>
+                            </p>
+                        </div>
                     </div>
-                </div>
-<!--            <p style="border: 3px solid white"><a href="{{ i[1] }}">{{ i[0] }}</a> - {{ i[2] }}</p>-->
-            {% endfor %}
-            </ul>
-        </form>
+    <!--            <p style="border: 3px solid white"><a href="{{ i[1] }}">{{ i[0] }}</a> - {{ i[2] }}</p>-->
+                {% endfor %}
+                </ul>
+         </form>
       </div>
     </div>
     <p>&nbsp;</p>
   </div>
   <!-- end .content -->
-  
+
   <div class="footer"> <img src="/static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px" /> <img src="/static/images/icon_google+.png" alt="google plus" /> <img src="/static/images/icon_instagram.png" alt="instagram" /> <img src="/static/images/icon_twitter.png" alt="twitter" /> </div>
   <!-- end .footer --> 
 </div>

@@ -147,7 +147,7 @@ def search():
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
-
+    mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
     res_id = request.args.get('res_id')
     resp = zomato_api.restaurant_details(res_id)
 
@@ -161,7 +161,8 @@ def details():
                            aggregate_rating=resp["aggregate_rating"], rating_text=resp["rating_text"], menu_url=resp["menu_url"],
                            featured_image=resp["featured_image"], has_online_delivery=resp["has_online_delivery"],
                            is_delivering_now=resp["is_delivering_now"], is_table_reservation_supported=resp["is_table_reservation_supported"],
-                           has_table_booking=resp["has_table_booking"], establishment=resp["establishment"], username=session['username'],)
+                           has_table_booking=resp["has_table_booking"], establishment=resp["establishment"], username=session['username'],
+                           mapimageapikey=mapapikey)
 
 
 @app.route('/survey/', methods=['GET', 'POST'])
@@ -303,7 +304,7 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
                 cur.execute(addFunction, args)
             con.commit()
     con.close()
-    
+
 
 @app.route('/friends/')
 def addFriend(friends_id, Fk_user):
@@ -314,13 +315,15 @@ def addFriend(friends_id, Fk_user):
         cur.execute('CALL addFriend(%d,%d,%d)', (friends_id, Fk_user, status))
         con.commit()
     con.close()
-    
+
+
 def getFriends(Fk_user):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL getFriend(%d)', (Fk_user))
     con.commit()
     con.close()
+
 
 def deleteFriend(friends_id, Fk_user, status):
     con = mysql.connect()
@@ -330,13 +333,14 @@ def deleteFriend(friends_id, Fk_user, status):
         con.commit()
     con.close()
 
+
 def updateFriend(friends_id, Fk_user, status):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL updateFriend(%d, %d, %d)', (friends_id, Fk_user, status))
     con.commit()
     con.close()
-    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
