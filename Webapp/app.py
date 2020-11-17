@@ -4,7 +4,6 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flaskext.mysql import MySQL
 from flask.helpers import flash
-
 from config import *
 import zomato_api
 
@@ -58,7 +57,6 @@ def login():
 @app.route('/logout/')
 def logout():
     session.pop('username', None)
-    session.pop('logged_in', None)
     session.pop('email', None)
     session.pop('id', None)
     session.pop('password', None)
@@ -100,7 +98,6 @@ def registration():
                 session['email'] = email
                 session['password'] = password
                 session['id'] = sesId[0]
-                session['logged_in'] = True
                 con.close()
                 return render_template('preferences.html',username=session['username'])
         else:
@@ -112,33 +109,24 @@ def registration():
 def search():
     msg = ""
     data = []
-    UserZipCode = ""
-    UserDistance = ""
-    UserRating = ""
-    UserRange = ""
-
-    if 'zip' in request.form and 'radius' in request.form and request.method == 'POST':
-        if 'logged_in' in session:
-            sesId = session['id']
-        else:
-            sesId = 0
-        UserZipCode = request.form['zip']
-        UserDistance = request.form['radius']
-        UserRating = request.form['rating']
-        UserRange = request.form['cost']
-
-        resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
-        
-        if resp["status"] != 'OK':
-            msg += "API response error"
-
-        for i in range(int(resp["count"])):
-            data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+    if request.method == 'POST':
+        if 'zip' in request.form and 'radius' in request.form:
+            UserZipCode = request.form['zip']
+            UserDistance = request.form['radius']
+            UserRating = request.form['rating']
+            UserRange = request.form['cost']
+            if 'username' in session:
+                sesId = session['id']
+            else:
+                sesId = 0
+            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
+            if resp["status"] != 'OK':
+                msg += "API response error"
+            for i in range(int(resp["count"])):
+                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
-            # data.append([resp[i]["name"], resp[i]["url"], resp[i]["address"] + " - " + resp[i]["phone_number"])
-    if 'username' in session:
-        return render_template('search.html', msg=msg, data=data, username=session['username'],
+            return render_template('search.html', msg=msg, data=data, username=session['username'],
                                userZipcode=UserZipCode, userDistance=UserDistance,
                                userRating=UserRating, userRange=UserRange)
     return render_template('search.html', msg=msg, data=data)
@@ -263,9 +251,6 @@ def profile():
     return render_template('profile.html', username = session['username'],
             password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
 
-@app.route('/connect/' , methods = ['GET', 'POST'])
-def connect():
-    return render_template('AddFriends.html')
 
 # Updates the user preference if it was changeded on the survey page
 def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
@@ -305,24 +290,33 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
     con.close()
     
 
-@app.route('/friends/')
-def addFriend(friends_id, Fk_user):
+@app.route('/connect/', methods = ['GET', 'POST'])
+def connect():
+    if request.method == 'POST':
+        return render_template('AddFriends.html')
+    else:
+        friendList = getFriends(session['id'])
+        return render_template('AddFriends.html', friends = friendList)
+
+def addFriend(friendId, userId):
     con = mysql.connect()
     cur = con.cursor()
-    status = 1
-    if(status != 1 and friends_id != Fk_user):
-        cur.execute('CALL addFriend(%d,%d,%d)', (friends_id, Fk_user, status))
+    status = 0
+    if(status != 1 and friendId != userId):
+        cur.execute('CALL addFriend(%d,%d,%d)', (friendId, userId, status))
         con.commit()
     con.close()
     
-def getFriends(Fk_user):
+def getFriends(userId):
     con = mysql.connect()
     cur = con.cursor()
-    cur.execute('CALL getFriend(%d)', (Fk_user))
+    friendsList = cur.execute('CALL getFriend(%d)', (userId))
+    friendsList = cur.fetchall()
     con.commit()
     con.close()
+    return friendsList
 
-def deleteFriend(friends_id, Fk_user, status):
+def deleteFriend(friendId, userId, status):
     con = mysql.connect()
     cur = con.cursor()
     if(status == 1 and friends_id != Fk_user):
@@ -330,7 +324,7 @@ def deleteFriend(friends_id, Fk_user, status):
         con.commit()
     con.close()
 
-def updateFriend(friends_id, Fk_user, status):
+def updateFriend(friendId, userId, status):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL updateFriend(%d, %d, %d)', (friends_id, Fk_user, status))
