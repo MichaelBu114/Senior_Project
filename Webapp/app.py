@@ -312,7 +312,7 @@ def addFriend(friendId, userId):
 def getFriends(Fk_user):
     con = mysql.connect()
     cur = con.cursor()
-    friendsList = cur.execute('CALL getFriend(%d)', (userId))
+    friendsList = cur.execute('CALL getFriend(%d)', (Fk_user))
     friendsList = cur.fetchall()
     con.commit()
     con.close()
