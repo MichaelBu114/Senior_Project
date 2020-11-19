@@ -140,12 +140,12 @@ def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEs
     response_json = {'status' : 'OK', 'count' : 0}
     
     total_count = 0
-    start = 21
+    start = 20
 
     items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines)
     response_json['count'] += items
     
-    while items == 20 and start < 101:
+    while items == 20 and start < 100:
         items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start)
         response_json['count'] += items
         start += 20
