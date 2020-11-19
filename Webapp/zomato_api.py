@@ -17,6 +17,8 @@ config = {
 
 FORCE_ERROR = False
 header = {"user-key" : ZOMATO_API_KEY}
+s = requests.Session()
+s.headers.update({"user-key" : ZOMATO_API_KEY})
 
 def format(list):
     result = ""
@@ -52,7 +54,7 @@ def restaurant_details(res_id):
     response_json = {'status' : 'OK', 'location' : {}, 'user_rating' : {}}
     url = ZOMATO_BASE_URL+"/restaurant?res_id=%s" % res_id
     print ("Calling " + url)
-    response = requests.get(url, headers=header)
+    response = s.get(url, headers=header)
     
     if check_response(response) == -1:
         return response_json
@@ -88,7 +90,7 @@ def restaurant_details(res_id):
 def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start=0):
     url = ZOMATO_BASE_URL+"/search?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
     print ("Calling " + url)
-    response = requests.get(url, headers=header)
+    response = s.get(url, headers=header)
     if check_response(response) == -1:
         return -1
     
