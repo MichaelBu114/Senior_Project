@@ -46,7 +46,7 @@ def mysql_database_call(function, user_id):
         for i in list(r.fetchall()):
             result += str(i[0]) + ","
     connection.close()
-    return result
+    return result[:-1]
 
 def restaurant_details(res_id):
     global response_json
