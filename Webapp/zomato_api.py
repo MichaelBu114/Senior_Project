@@ -1,6 +1,7 @@
 import sys
 import requests
 import mysql.connector
+import random
 
 from config import *
 
@@ -16,27 +17,53 @@ config = {
 
 
 FORCE_ERROR = False
+DEBUG = True
 header = {"user-key" : ZOMATO_API_KEY}
+s = requests.Session()
+s.headers.update({"user-key" : ZOMATO_API_KEY})
+
+def choose_random(total_count):
+    num = random.randint(0, total_count-1) # Get random ID
+    response_json['random'] = response_json[num]
+    
+    if DEBUG:
+        print("Random restaurant: " + response_json['random']['name'])
+
+def format(list):
+    if list == None:
+        return None
+    
+    result = ""
+    
+    for i in list:
+        result += str(i) + ","
+    
+    return result[:-1]
 
 def check_response(response):
     if response.status_code != 200 or FORCE_ERROR:
         # Response error
-        response_json['status'] = "ERROR"
+        response_json['status'] = "ERROR1"
         return -1
 
 def mysql_database_call(function, user_id):
     categories = None
     connection = None
     result = ""
-    #print("Executing %s ..." % function)
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    categories = cursor.callproc(function, args = [user_id])
-    for r in cursor.stored_results():
-        for i in list(r.fetchall()):
-            result += str(i[0]) + ","
-    connection.close()
-    return result
+    if DEBUG:
+        print("Executing %s ..." % function)
+    try:
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        categories = cursor.callproc(function, args = [user_id])
+        for r in cursor.stored_results():
+            for i in list(r.fetchall()):
+                result += str(i[0]) + ","
+        connection.close()
+        assert FORCE_ERROR == False
+    except:
+        return -1
+    return result[:-1]
 
 def restaurant_details(res_id):
     global response_json
@@ -44,7 +71,7 @@ def restaurant_details(res_id):
     response_json = {'status' : 'OK', 'location' : {}, 'user_rating' : {}}
     url = ZOMATO_BASE_URL+"/restaurant?res_id=%s" % res_id
     print ("Calling " + url)
-    response = requests.get(url, headers=header)
+    response = s.get(url, headers=header)
     
     if check_response(response) == -1:
         return response_json
@@ -80,7 +107,7 @@ def restaurant_details(res_id):
 def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start=0):
     url = ZOMATO_BASE_URL+"/search?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
     print ("Calling " + url)
-    response = requests.get(url, headers=header)
+    response = s.get(url, headers=header)
     if check_response(response) == -1:
         return -1
     
@@ -108,36 +135,41 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
 
     return len(response["restaurants"])
     
-def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEst = None):
+def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEst = None, start = 20):
     global response_json
     
+    response_json = {'status' : 'OK', 'count' : 0}
+    
     # Get user parameters
-    if user_id != 0: 
+    if user_id != 0:
         categories = mysql_database_call('getUserCategories', user_id)
         cuisines = mysql_database_call('getUserCuisines', user_id)
         establishments = mysql_database_call('getUserEstablishments', user_id)
     else:
-        categories = userCat
-        cuisines = userCus
-        establishments = userEst
-
+        categories = format(userCat)
+        cuisines = format(userCus)
+        establishments = format(userEst)
+    
+    for i in [categories, cuisines, establishments]:
+        if i == -1: # API Error
+            response_json['status'] = "ERROR2"
+            return response_json
+    
     # Convert zip code into coordinates
     maps_response = requests.get(GOOGLE_MAPS_BASE_URL+"?address=%s&key=%s" % (zip, GOOGLE_MAPS_API_KEY)).json()
     lat = maps_response["results"][0]["geometry"]["location"]["lat"]
     lon = maps_response["results"][0]["geometry"]["location"]["lng"]
     meters = int(radius) * 1609
-    
-    response_json = {'status' : 'OK', 'count' : 0}
-    
-    total_count = 0
-    start = 21
 
     items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines)
     response_json['count'] += items
     
-    while items == 20 and start < 101:
+    while items == 20 and start < 100:
         items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start)
         response_json['count'] += items
         start += 20
+    
+    if response_json['count'] > 0: # Get random restaurant if there are results
+        choose_random(response_json['count'])
     
     return response_json
