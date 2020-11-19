@@ -1,6 +1,7 @@
 import sys
 import requests
 import mysql.connector
+import random
 
 from config import *
 
@@ -15,11 +16,18 @@ config = {
     'auth_plugin': 'mysql_native_password'}
 
 
-FORCE_ERROR = True
-DEBUG = False
+FORCE_ERROR = False
+DEBUG = True
 header = {"user-key" : ZOMATO_API_KEY}
 s = requests.Session()
 s.headers.update({"user-key" : ZOMATO_API_KEY})
+
+def choose_random(total_count):
+    num = random.randint(0, total_count-1) # Get random ID
+    response_json['random'] = response_json[num]
+    
+    if DEBUG:
+        print("Random restaurant: " + response_json['random']['name'])
 
 def format(list):
     if list == None:
@@ -152,8 +160,6 @@ def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEs
     lat = maps_response["results"][0]["geometry"]["location"]["lat"]
     lon = maps_response["results"][0]["geometry"]["location"]["lng"]
     meters = int(radius) * 1609
-    
-    total_count = 0
 
     items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines)
     response_json['count'] += items
@@ -162,5 +168,8 @@ def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEs
         items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start)
         response_json['count'] += items
         start += 20
+    
+    if response_json['count'] > 0: # Get random restaurant if there are results
+        choose_random(response_json['count'])
     
     return response_json
