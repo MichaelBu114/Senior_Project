@@ -18,6 +18,14 @@ config = {
 FORCE_ERROR = False
 header = {"user-key" : ZOMATO_API_KEY}
 
+def format(list):
+    result = ""
+    
+    for i in list:
+        result += str(i) + ","
+    
+    return result[:-1]
+
 def check_response(response):
     if response.status_code != 200 or FORCE_ERROR:
         # Response error
@@ -117,9 +125,9 @@ def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEs
         cuisines = mysql_database_call('getUserCuisines', user_id)
         establishments = mysql_database_call('getUserEstablishments', user_id)
     else:
-        categories = userCat
-        cuisines = userCus
-        establishments = userEst
+        categories = format(userCat)
+        cuisines = format(userCus)
+        establishments = format(userEst)
 
     # Convert zip code into coordinates
     maps_response = requests.get(GOOGLE_MAPS_BASE_URL+"?address=%s&key=%s" % (zip, GOOGLE_MAPS_API_KEY)).json()
