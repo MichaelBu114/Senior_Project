@@ -15,12 +15,16 @@ config = {
     'auth_plugin': 'mysql_native_password'}
 
 
-FORCE_ERROR = False
+FORCE_ERROR = True
+DEBUG = False
 header = {"user-key" : ZOMATO_API_KEY}
 s = requests.Session()
 s.headers.update({"user-key" : ZOMATO_API_KEY})
 
 def format(list):
+    if list == None:
+        return None
+    
     result = ""
     
     for i in list:
@@ -31,21 +35,26 @@ def format(list):
 def check_response(response):
     if response.status_code != 200 or FORCE_ERROR:
         # Response error
-        response_json['status'] = "ERROR"
+        response_json['status'] = "ERROR1"
         return -1
 
 def mysql_database_call(function, user_id):
     categories = None
     connection = None
     result = ""
-    #print("Executing %s ..." % function)
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    categories = cursor.callproc(function, args = [user_id])
-    for r in cursor.stored_results():
-        for i in list(r.fetchall()):
-            result += str(i[0]) + ","
-    connection.close()
+    if DEBUG:
+        print("Executing %s ..." % function)
+    try:
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        categories = cursor.callproc(function, args = [user_id])
+        for r in cursor.stored_results():
+            for i in list(r.fetchall()):
+                result += str(i[0]) + ","
+        connection.close()
+        assert FORCE_ERROR == False
+    except:
+        return -1
     return result[:-1]
 
 def restaurant_details(res_id):
@@ -118,11 +127,13 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
 
     return len(response["restaurants"])
     
-def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEst = None):
+def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEst = None, start = 20):
     global response_json
     
+    response_json = {'status' : 'OK', 'count' : 0}
+    
     # Get user parameters
-    if user_id != 0: 
+    if user_id != 0:
         categories = mysql_database_call('getUserCategories', user_id)
         cuisines = mysql_database_call('getUserCuisines', user_id)
         establishments = mysql_database_call('getUserEstablishments', user_id)
@@ -130,17 +141,19 @@ def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEs
         categories = format(userCat)
         cuisines = format(userCus)
         establishments = format(userEst)
-
+    
+    for i in [categories, cuisines, establishments]:
+        if i == -1: # API Error
+            response_json['status'] = "ERROR2"
+            return response_json
+    
     # Convert zip code into coordinates
     maps_response = requests.get(GOOGLE_MAPS_BASE_URL+"?address=%s&key=%s" % (zip, GOOGLE_MAPS_API_KEY)).json()
     lat = maps_response["results"][0]["geometry"]["location"]["lat"]
     lon = maps_response["results"][0]["geometry"]["location"]["lng"]
     meters = int(radius) * 1609
     
-    response_json = {'status' : 'OK', 'count' : 0}
-    
     total_count = 0
-    start = 20
 
     items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines)
     response_json['count'] += items
