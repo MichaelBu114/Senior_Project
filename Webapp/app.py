@@ -144,6 +144,10 @@ def details():
 
     if resp["status"] != 'OK':
         msg += resp["status"]
+    if 'username' in session:
+        username = session['username']
+    else:
+        username = ''
 
     return render_template('details.html', msg=msg, name=resp['name'], address=resp['address'], city=resp["city"], phone_numbers=resp["phone_numbers"],
                            latitude=resp["latitude"], longitude=resp["longitude"], locality_verbose=resp["locality_verbose"],
@@ -152,7 +156,7 @@ def details():
                            aggregate_rating=resp["aggregate_rating"], rating_text=resp["rating_text"], menu_url=resp["menu_url"],
                            featured_image=resp["featured_image"], has_online_delivery=resp["has_online_delivery"],
                            is_delivering_now=resp["is_delivering_now"], is_table_reservation_supported=resp["is_table_reservation_supported"],
-                           has_table_booking=resp["has_table_booking"], establishment=estList, username=session['username'],
+                           has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
                            mapimageapikey=mapapikey)
 
 
@@ -200,10 +204,8 @@ def survey():
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
-                con.close()
                 return render_template('search.html', msg=msg, data=data, username=session['username'], userRange=newPref[3],
-                               userDistance=round(newPref[1]/1609), userZipcode=newPref[0], userRating=newPref[2],
-                               estList=estList, cuisineList=cuisineList, categoryList=categoryList)
+                               userDistance=round(newPref[1]/1609), userZipcode=newPref[0], userRating=newPref[2])
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'], userRange= pref[3],
                                userDistance=pref[1], userZipcode=str(pref[0]), userRating= pref[2],
@@ -212,7 +214,7 @@ def survey():
         if request.method == 'POST':
             if 'zip' in request.form and 'radius' in request.form:
                 UserZipCode = request.form['zip']
-                UserDistance = request.form['radius']
+                UserDistance = int(request.form['radius'])
                 UserRating = int(request.form['rating'])
                 UserRange = int(request.form['cost'])
                 estab = request.form.getlist('EstCheckboxGroup')
@@ -230,34 +232,39 @@ def survey():
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
-                con.close()
-                return render_template('search.html', msg=msg, data=data)
+                return render_template('search.html', msg=msg, data=data, userRange=UserRange, userDistance = round(UserDistance/1609), 
+                    userZipcode = UserZipCode, userRating = UserRating)
         return render_template('preferences.html', msg=msg)
 
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
+    msg = ''
     if request.method == 'POST':
         if request.form['button'] == 'Save Changes':
-            if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
+            if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form and 'pwd' in request.form and 'pwd-rpt' in request.form:
                 con = mysql.connect()
                 cur = con.cursor()
-                hashed =  hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
-                sesId = session['id']
-                email = request.form['email']
-                fname = request.form['firstname']
-                lname = request.form['lastname']
-                args = (sesId, email, hashed, fname, lname)
-                cur.execute('CALL updateProfile(%s,%s,%s,%s,%s)', args)
-                con.commit()
-                session['username'] = (fname + " " + lname)
-                con.close()
-                return render_template('profile.html', username = session['username'],
-                    password = hashed,email = email ,firstname = fname, lastname = lname)
-        elif request.form['button'] == "Logout":
+                hashed =  hashlib.sha256(session['pwd'].encode('utf-8')).hexdigest()
+                rptHashed = hashlib.sha256(session['pwd-rpt'].encode('utf-8')).hexdigest()
+                if hashed != rptHashed:
+                    msg = 'Password do not match'
+                else:
+                    sesId = session['id']
+                    email = request.form['email']
+                    fname = request.form['firstname']
+                    lname = request.form['lastname']
+                    args = (sesId, email, hashed, fname, lname)
+                    cur.execute('CALL updateProfile(%s,%s,%s,%s,%s)', args)
+                    con.commit()
+                    session['username'] = (fname + " " + lname)
+                    con.close()
+                    return render_template('profile.html', username = session['username'], msg = msg,
+                        password = hashed,email = email ,firstname = fname, lastname = lname)
+        elif request.form['button'] == 'Logout':
             return redirect(url_for('logout'))
     return render_template('profile.html', username = session['username'],
-            password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
+            msg = msg ,password = session['password'] ,email = session['email'] ,firstname = session['username'].split()[0], lastname = session['username'].split()[-1])
 
 
 # Updates the user preference if it was changeded on the survey page
@@ -319,27 +326,27 @@ def connect():
     if request.method == 'POST':
         if 'Friends' in request.form:
             friendList = getFriends(sesId)
-            return render_template('AddFriends.html', friends = friendList)
+            return render_template('AddFriends.html', username = session['username'] ,friends = friendList)
         elif 'FindFriends' in request.form:
             if 'friend' in request.form:
                 friend = request.form['friend']
-                con = MySQL.connect();
-                cur = con.cursor();
+                con = MySQL.connect()
+                cur = con.cursor()
                 name = cur.execute('Call GetName(%s)', (friend))
                 name = cur.fetchone()
                 if name[0] == '':
-                    error = ('No Results Found for ' + '"' + friend + '"')
-                    return render_template('AddFriends.html', msg = msg)
+                    msg = ('No Results Found for ' + '"' + friend + '"')
+                    return render_template('AddFriends.html', username = session['username'], msg = msg)
                 else:
                     friendId = cur.execute('Call GetUserId(%s, %s)', (name[0], friend))
                     friendId = cur.fetchone()
                     addFriend(friendId[0], sesId)
                     con.close
-                    msg = 'Friend request sent'
-                    return render_template('addFriends.html', msg = msg)
+                    msg = ('Friend request sent')
+                    return render_template('addFriends.html', username = session['username'], msg = msg)
     else:
         friendList = getFriends(sesId)
-        return render_template('AddFriends.html', friends = friendList)
+        return render_template('AddFriends.html', username = session['username'] ,friends = friendList)
 
 def addFriend(friendId, userId):
     con = mysql.connect()
@@ -354,7 +361,7 @@ def addFriend(friendId, userId):
 def getFriends(Fk_user):
     con = mysql.connect()
     cur = con.cursor()
-    friendsList = cur.execute('CALL getFriend(%d)', (Fk_user))
+    friendsList = cur.execute('CALL getFriends(%s)', (Fk_user))
     friendsList = cur.fetchall()
     con.commit()
     con.close()
