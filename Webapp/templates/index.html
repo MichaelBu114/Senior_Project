@@ -16,86 +16,9 @@
 
 <body>
 <!-- Modal for Login-->
-<div id="id01" class="modal">
-  <form class="modal-content animate" action="{{ url_for('login') }}" method="post">
-    <div class="imgcontainer">
-      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-      <img src="/static/images/Logo.png" alt="Avatar" class="avatar">
-    </div>
-    <div class="container1">
-      <label for="username"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="username" required>
-
-      <label for="password"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="password" required>
-      <label>
-        <input type="checkbox" checked="checked" name="remember"> Remember me
-      </label>
-      <div class="error">{{ messsage }}</div>
-      <button type="submit">Login</button>
-      <button onclick="document.getElementById('id02').style.display='block';document.getElementById('id01').style.display='none';">Not A Member? Register Here</button>
-        {% for message in get_flashed_messages() %}
-              <div class="alert-error">
-                Error: {{ message }}</div>
-          {% if 'match' not in message %}
-                <script type = "text/javascript">document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';</script>
-          {% else %}
-                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
-          {% endif %}
-        {% endfor %}
-   </div>
-
-    <div class="container1" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-      <span class="psw">Forgot <a href="#" style="color:dodgerblue">password?</a></span>
-    </div>
-  </form>
-</div>
+{% include 'loginModal.html' %}
 <!-- Modal for Registration-->
-<div id="id02" class="modal">
-  <form class="modal-content animate" action="{{ url_for('registration') }}" method="post">
-    <div class="container1">
-      <h1 style="color:black;">Register</h1>
-      <p style="color:black;">Please fill in this form to create an account.</p>
-      <hr>
-      <label for="fistname"><b>First Name</b></label>
-      <input type="text" placeholder="Enter First Name" name="firstname" required>
-
-      <label for="lastname"><b>Last Name</b></label>
-      <input type="text" placeholder="Enter Last Name" name="lastname" required>
-
-      <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required>
-
-      <label for="password"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
-
-      <label for="psw-repeat"><b>Repeat Password</b></label>
-      <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
-
-      <label>
-        <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
-      </label>
-
-      <p style="color:black;">By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
-
-      <div class="clearfix">
-        <button type="submit" >Register</button>
-        <button onclick="document.getElementById('id01').style.display='block';document.getElementById('id02').style.display='none';">Already Registered? Login Here</button>
-        {% for message in get_flashed_messages() %}
-              <div class="alert-error">
-                Error: {{ message }}</div>
-          {% if 'Invalid' not in message %}
-                <script type = "text/javascript">document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';</script>
-          {% else %}
-                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
-          {% endif %}
-        {% endfor %}
-        <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
-      </div>
-    </div>
-  </form>
-</div>
+{% include 'registrationModal.html' %}
 
 <div id="container">
   <div class="header">
@@ -104,11 +27,10 @@
     {% if 'username' in session %}
     <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{username}}</strong></a></div>
     {% else %}
-    <div id="login_link"><img src="static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block'" /></div>
+    <div id="login_link"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block'" /></div>
     {% endif %}
   </div>
   <!-- end .header -->
-
   <div class="content">
     <p><img src="static/images/phrase_homepage.png" alt="Phrase" class="phrase" /></p>
     <p align="center"><img src="static/images/Logo.png" alt="Decide &amp; Dine Logo" class="logo" /></p>
@@ -140,22 +62,9 @@
       <p>&nbsp;</p>
   </div>
   <!-- end .content -->
-  
-  <div class="footer"> <img src="static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px" /> <img src="static/images/icon_google+.png" alt="google plus" /> <img src="static/images/icon_instagram.png" alt="instagram" /> <img src="static/images/icon_twitter.png" alt="twitter" /> </div>
-  <!-- end .footer --> 
+{% include 'footer.html' %}
 </div>
 <!-- end .container -->
-
-<script>
-// Get the modal
-var modal = document.getElementById('id01');
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-</script>
+{% include 'popupScript.js' %}
 </body>
 </html>
