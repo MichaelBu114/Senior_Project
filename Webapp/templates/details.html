@@ -12,22 +12,7 @@
 </head>
 <body>
 <div id="container">
-    <div class="header">
-        <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28"
-                                            alt="navmenu_lines"/></a></div>
-        <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png"
-                                                                 alt="Decide &amp; Dine Logo" height="30"/></a></div>
-        {% if 'username' in session %}
-        <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon"
-                                   style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{username}}</strong></a>
-        </div>
-        {% else %}
-        <div id="login_link"><a href="{{url_for('login')}}"><img src="/static/images/login_hdr.png" alt="Login"
-                                                                 height="20" style="padding: 5px 20px 5px 5px"/></a>
-        </div>
-        {% endif %}
-    </div>
-    <!-- end .header -->
+    {% include 'header.html' %}
     <div class="content">
         <p>&nbsp;</p>
         <div class="detail">
@@ -39,14 +24,13 @@
                 <img src="{{featured_image}}" alt="{{name}} Photo" height="250" align="right" />
                 {% endif %}
                 <h1>{{name}}</h1>
-                <p><span class="detail-header">Establishment Type(s): </span>{% for each in establishment %}{{each}},{% endfor %}<br/></p>
+                <p><span class="detail-header">Establishment Type(s): </span>{{establishment}}<br/></p>
                 <p><span class="detail-header">Address:&nbsp;</span>{{address}}<br/>
-                    <span class="detail-header">Phone Number(s):&nbsp;</span>{% for num in phone_numbers %}{{num}},
-                    {% endfor %}<br/>
+                    <span class="detail-header">Phone Number(s):&nbsp;</span>{{phone_numbers}}<br/>
                     <span class="detail-header">Hours:&nbsp;</span>{{timings}}<br/>
                     <span class="detail-header">Average Rating:&nbsp;</span>{{rating_text}} {% if rating_text != "Not rated" %}({{aggregate_rating}} stars){% endif %}<br/>
                     <span class="detail-header">Dining Price Range: </span>{% if price_range == 1 %}${%elif price_range == 2 %}$${%elif price_range == 3 %}$$${%else%}$$$${%endif%}<br/>
-                    <span class="detail-header">Average Cost for two guests:&nbsp;</span>${{average_cost_for_two}}<br/>
+                    <span class="detail-header">Average Cost for two guests (approx.):&nbsp;</span>${{average_cost_for_two}}<br/>
                     <span class="detail-header">Currency Accepted: </span>{{currency}}<br/>
                     {% if has_online_delivery == 1 %}<span class="detail-header">Accepting Online Orders: </span>{% if is_delivering_now == 1 %}Yes{%else%}No{%endif%}<br/>{%endif%}
                     {% if is_table_reservation_supported == 1 %}<span class="detail-header">Currently Booking Reservations: </span>{% if has_table_booking == 1 %}Yes{%else%}No{%endif%}<br/>{%endif%}
@@ -56,23 +40,18 @@
                 <p>
                     <span class="detail-header">Cuisine Types:&nbsp;</span>{{cuisines}}<br/>
                     <span class="detail-header">Menu:&nbsp;</span><a href="{{menu_url}}" target="_blank">View Menu</a><br/>
-                    <span class="detail-header">Highlights:&nbsp;</span>{% for item in highlights %}{{item}},&nbsp;{%endfor%}<br/><br/>
-                    <span class="detail-header">City:&nbsp;</span>{{city}} ({{locality_verbose}})<br/>
+                    <span class="detail-header">Highlights:&nbsp;</span>{{highlights}}<br/><br/>
+                    <span class="detail-header">Location:&nbsp;</span>{{city}} ({{locality_verbose}})<br/>
                     <br/>
                     <strong>(Click Map to get Directions)</strong><br/>
                     <a href="https://www.google.com/maps/place/{{address.replace(' ', '+')}}/@{{latitude}},{{longitude}}" target="_blank"><img width="600" height="300" style="margin-bottom:-20px" src="https://maps.geoapify.com/v1/staticmap?style=klokantech-basic&width=600&height=300&center=lonlat:{{longitude}},{{latitude}}&zoom=15&marker=lonlat:{{longitude}},{{latitude}};type:material;color:red;icon:utensils;icontype:awesome&apiKey={{mapimageapikey}}" alt="MAP for {{name}}"></a><br/><br/>
-
                 </p>
             </div>
         </div>
         <p>&nbsp;</p>
     </div>
     <!-- end .content -->
-    <div class="footer"><img src="/static/images/icon_facebook.png" alt="facebook" style="margin-left: 10px"/>
-        <img src="/static/images/icon_google+.png" alt="google plus"/> <img src="/static/images/icon_instagram.png"
-                                                                            alt="instagram"/> <img
-                src="/static/images/icon_twitter.png" alt="twitter"/></div>
-    <!-- end .footer -->
+{% include 'footer.html' %}
 </div>
 <!-- end .container -->
 </body>

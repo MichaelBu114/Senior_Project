@@ -139,6 +139,8 @@ def details():
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
     res_id = request.args.get('res_id')
     resp = zomato_api.restaurant_details(res_id)
+    estList = str(resp["establishment"]).lstrip("[").rstrip("]").replace("'","")
+    highlightsList = str(resp["highlights"]).lstrip("[").rstrip("]").replace("'", "")
 
     if resp["status"] != 'OK':
         msg += resp["status"]
@@ -146,11 +148,11 @@ def details():
     return render_template('details.html', msg=msg, name=resp['name'], address=resp['address'], city=resp["city"], phone_numbers=resp["phone_numbers"],
                            latitude=resp["latitude"], longitude=resp["longitude"], locality_verbose=resp["locality_verbose"],
                            cuisines=resp["cuisines"], timings=resp["timings"], average_cost_for_two=resp["average_cost_for_two"],
-                           price_range=resp["price_range"], currency=resp["currency"], highlights=resp["highlights"],
+                           price_range=resp["price_range"], currency=resp["currency"], highlights=highlightsList,
                            aggregate_rating=resp["aggregate_rating"], rating_text=resp["rating_text"], menu_url=resp["menu_url"],
                            featured_image=resp["featured_image"], has_online_delivery=resp["has_online_delivery"],
                            is_delivering_now=resp["is_delivering_now"], is_table_reservation_supported=resp["is_table_reservation_supported"],
-                           has_table_booking=resp["has_table_booking"], establishment=resp["establishment"], username=session['username'],
+                           has_table_booking=resp["has_table_booking"], establishment=estList, username=session['username'],
                            mapimageapikey=mapapikey)
 
 
