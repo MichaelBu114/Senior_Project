@@ -410,7 +410,7 @@
 
                         <select name="rating" id="Food_Rating">
                             <option value="2"{% if userRating == 2 %} selected {% endif %}>2 stars or less</option>
-                            <option value="3" selected{% if userRating == 3 %} selected {% endif %}>3 Stars or less</option>
+                            <option value="3"{% if userRating == 3 %} selected {% endif %}>3 Stars or less</option>
                             <option value="4"{% if userRating == 4 %} selected {% endif %}>4 Stars or less</option>
                             <option value="5"{% if userRating == 5 %} selected {% endif %}>5 Stars or less</option>
                         </select>
@@ -421,7 +421,7 @@
                         <select name="cost" id="Food_Cost">
                             <option value="1"{% if userRange == 1 %} selected {% endif %}>$</option>
                             <option value="2"{% if userRange == 2 %} selected {% endif %}>$$</option>
-                            <option value="3" selected{% if userRange == 3 %} selected {% endif %}>$$$</option>
+                            <option value="3"{% if userRange == 3 %} selected {% endif %}>$$$</option>
                             <option value="4"{% if userRange == 4 %} selected {% endif %}>$$$$</option>
                             <option value="5"{% if userRange == 5 %} selected {% endif %}>$$$$$</option>
                         </select>

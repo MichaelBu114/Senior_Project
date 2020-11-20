@@ -113,8 +113,8 @@ def search():
         if 'zip' in request.form and 'radius' in request.form:
             UserZipCode = request.form['zip']
             UserDistance = request.form['radius']
-            UserRating = request.form['rating']
-            UserRange = request.form['cost']
+            UserRating = int(request.form['rating'])
+            UserRange = int(request.form['cost'])
             if 'username' in session:
                 sesId = session['id']
             else:
@@ -127,9 +127,10 @@ def search():
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
             return render_template('search.html', msg=msg, data=data, username=session['username'],
-                               userZipcode=UserZipCode, userDistance=UserDistance,
-                               userRating=UserRating, userRange=UserRange)
-    return render_template('search.html', msg=msg, data=data)
+                               userZipcode = UserZipCode, userDistance=UserDistance,
+                               userRating = UserRating, userRange = UserRange)
+    else:
+        return render_template('search.html', msg=msg, data=data)
 
 
 @app.route('/details/', methods=['GET', 'POST'])
@@ -163,6 +164,7 @@ def survey():
         sesId = session['id']
         pref = cur.execute('CALL getPreferences(%s)', (sesId))
         pref = cur.fetchone()
+        print(pref)
         cur.execute('Call getUserEstablishments(%s)', (sesId))
         estList = [val for sublist in cur.fetchall() for val in sublist]
         cur.execute('Call getUserCuisines(%s)', (sesId))
@@ -184,7 +186,7 @@ def survey():
                 cat = request.form.getlist('CatCheckboxGroup')
                 cat = [int(i) for i in cat]
                 cat.sort()
-                updateUserPref(pref, sesId, UserZipCode, UserDistance, UserRating, UserRange)
+                newPref = updateUserPref(pref, sesId, UserZipCode, int(UserDistance), int(UserRating), int(UserRange))
                 updateUserList(estList, estab, sesId, 'Call addUserEstablishment(%s,%s)',
                                'CALL deleteUserEstablishment(%s,%s)')
                 updateUserList(cuisineList, cus, sesId, 'Call addUserCuisine(%s,%s)', 'Call deleteUserCuisine (%s,%s)')
@@ -196,19 +198,21 @@ def survey():
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
-                return render_template('search.html', msg=msg, data=data, username=session['username'], userRange=pref[3],
-                               userDistance=round(pref[1]/1609), userZipcode=str(pref[0]), userRating=pref[2],
+                con.close()
+                return render_template('search.html', msg=msg, data=data, username=session['username'], userRange=newPref[3],
+                               userDistance=round(newPref[1]/1609), userZipcode=newPref[0], userRating=newPref[2],
                                estList=estList, cuisineList=cuisineList, categoryList=categoryList)
-        return render_template('preferences.html', msg=msg, data=data, username=session['username'], userRange=pref[3],
-                               userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[2],
+        else:
+            return render_template('preferences.html', msg=msg, data=data, username=session['username'], userRange= pref[3],
+                               userDistance=pref[1], userZipcode=str(pref[0]), userRating= pref[2],
                                estList=estList, cuisineList=cuisineList, categoryList=categoryList)
     else:
         if request.method == 'POST':
             if 'zip' in request.form and 'radius' in request.form:
                 UserZipCode = request.form['zip']
                 UserDistance = request.form['radius']
-                UserRating = request.form['rating']
-                UserRange = request.form['cost']
+                UserRating = int(request.form['rating'])
+                UserRange = int(request.form['cost'])
                 estab = request.form.getlist('EstCheckboxGroup')
                 estab = [int(i) for i in estab]
                 estab.sort()
@@ -224,6 +228,7 @@ def survey():
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
+                con.close()
                 return render_template('search.html', msg=msg, data=data)
         return render_template('preferences.html', msg=msg)
 
@@ -258,18 +263,32 @@ def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
     con = mysql.connect()
     cur = con.cursor()
     if UserZip != str(pref[0]):
-        cur.execute('CALL updateZipcode(%s,%s)', (UserZip, uId))
+        cur.execute('CALL updateZipcode(%s,%s)', (int(UserZip), uId))
         con.commit()
+        newZip = UserZip
+    else:
+        newZip = str(pref[0])
     if UserDis != pref[1]:
         cur.execute('CALL updateDistance(%s,%s)', (UserDis, uId))
         con.commit()
-    if UserRate != pref[2]:
+        newDis = UserDis
+    else:
+        newDis = pref[1]
+    if UserRate != pref[3]:
         cur.execute('CALL updateRange(%s,%s)', (UserRate, uId))
         con.commit()
-    if UserRange != pref[3]:
+        newRate = UserRate
+    else:
+        newRate = pref[3]
+    if UserRange != pref[2]:
         cur.execute('CALL updateRating(%s,%s)', (UserRange, uId))
         con.commit()
+        newRange = UserRange
+    else:
+        newRange = pref[2]
+    con.commit()
     con.close()
+    return [newZip, newDis, newRate, newRange]
 
 
 def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
@@ -293,10 +312,31 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
 
 @app.route('/connect/', methods = ['GET', 'POST'])
 def connect():
+    msg = ''
+    sesId = session['id']
     if request.method == 'POST':
-        return render_template('AddFriends.html')
+        if 'Friends' in request.form:
+            friendList = getFriends(sesId)
+            return render_template('AddFriends.html', friends = friendList)
+        elif 'FindFriends' in request.form:
+            if 'friend' in request.form:
+                friend = request.form['friend']
+                con = MySQL.connect();
+                cur = con.cursor();
+                name = cur.execute('Call GetName(%s)', (friend))
+                name = cur.fetchone()
+                if name[0] == '':
+                    error = ('No Results Found for ' + '"' + friend + '"')
+                    return render_template('AddFriends.html', msg = msg)
+                else:
+                    friendId = cur.execute('Call GetUserId(%s, %s)', (name[0], friend))
+                    friendId = cur.fetchone()
+                    addFriend(friendId[0], sesId)
+                    con.close
+                    msg = 'Friend request sent'
+                    return render_template('addFriends.html', msg = msg)
     else:
-        friendList = getFriends(session['id'])
+        friendList = getFriends(sesId)
         return render_template('AddFriends.html', friends = friendList)
 
 def addFriend(friendId, userId):
