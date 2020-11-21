@@ -25,3 +25,4 @@ BEGIN
     INSERT INTO Login (username,password,date_changed) VALUES (newUsername,newPassword,curdate());
     call addUser(firstName,lastName,Email,LAST_INSERT_ID());
 END;
+

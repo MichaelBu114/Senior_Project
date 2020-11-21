@@ -16,12 +16,39 @@ li {
   float: left;
   
 }
-
+ .grouplist{
+     float: initial;
+ }
 
 </style>
 </head>
 
 <body>
+    <!-- Modal for Groups-->
+    <div id="id03" class="modal">
+      <form class="modal-content animate" action="{{ url_for('connect') }}" method="post">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+          <img src="/static/images/Logo.png" alt="Avatar" class="avatar">
+        </div>
+        <div class="container1">
+          <label for="username"><b>Group Name</b></label>
+          <input type="text" placeholder="Enter Group Name" name="groupname" required>
+          <label for="username"><b>By creating a group you acknowledge you will be given the role of group owner</b></label>
+          <p> </p>
+          <label>
+            <input type="checkbox" checked="checked" name="owner"> I understand
+          </label>
+          <div class="error">{{ messsage }}</div>
+          <button type="submit">Done</button>
+       </div>
+
+        <div class="container1" style="background-color:#f1f1f1">
+          <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+
     <div id="container">
   {% include 'header.html' with context %}
         <div class="content">
@@ -76,7 +103,31 @@ li {
                     </div>
                     <div id="GroupPage" class="tabcontent">
                         <h1>Groups Page</h1>
-                        <p>List will show here.</p>
+                        <ol id='GroupList'>
+                            <li class='grouplist'>
+                                <div class='usergroupname'>
+                                    Test Group 1
+                                    <input type="button" value="Edit" style="margin:5px 0">
+                                    <input type="button" value="Delete" style="margin:5px 0">
+                                </div>
+                            </li>
+                            <li class='grouplist'>
+                                <div class='usergroupname'>
+                                    Coworkers
+                                    <input type="button" value="Edit" style="margin:5px 0">
+                                    <input type="button" value="Delete" style="margin:5px 0">
+                                </div>
+                            </li>
+                            <li class='grouplist'>
+                                <div class='usergroupname'>
+                                    Family
+                                    <input type="button" value="Edit" style="margin:5px 0">
+                                    <input type="button" value="Delete" style="margin:5px 0">
+                                </div>
+                            </li>
+                        </ol>
+                        <p> </p>
+                        <input id="create_group" type="button" value="Create Group" style="margin:5px 0" onclick="document.getElementById('id03').style.display='block'">
                     </div>
                 </div>
             </div>

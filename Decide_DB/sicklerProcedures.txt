@@ -49,3 +49,18 @@ CREATE DEFINER = root@`%` PROCEDURE getUserPriceRange(IN userID int(11))
 BEGIN
     SELECT u.price_range FROM User u WHERE u.user_id = userID
 END;
+
+
+
+/*Procedures for groups page */;
+CREATE DEFINER = root@`%` PROCEDURE createGroup(IN FKgroupname varchar(90), IN userID int(11))
+BEGIN
+    INSERT INTO Groups (group_name, group_owner_id)
+VALUES (FKgroupname, userID);
+END;
+
+CREATE DEFINER = root@`%` PROCEDURE addToGroup(IN groupID int(11), IN userID int(11))
+BEGIN
+    INSERT INTO User_Group WHERE user_group_id = groupID (fk_user)
+VALUES (userID);
+END;
