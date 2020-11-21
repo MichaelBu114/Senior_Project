@@ -2,15 +2,21 @@
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <link rel='stylesheet' type="text/css" href='{{ url_for('static', filename = 'style.css')}}?version=1' />
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Decide &amp; Dine</title>
     <style>
         .detail-header { color: #ffffff; font-size: medium; font-weight: bold; }
+        #rating { font-size: 0; }
+        #rating span { font-size: 30px; }
+        #rating span::before { content: "☆"; }
+        #rating span.active::before {content: "★";color:gold }
+        #rating span:hover { cursor: pointer; }
     </style>
 </head>
 <body>
+<!-- Modal for Comment-->
+{% include 'commentModal.html' with context %}
 <div id="container">
   {% include 'header.html' with context %}
     <div class="content">
@@ -24,10 +30,10 @@
                 <img src="{{featured_image}}" alt="{{name}} Photo" height="250" align="right" />
                 {% endif %}
                 <h1>{{name}}</h1>
-                <p><span class="detail-header">Establishment Type(s): </span>{{establishment}}<br/></p>
+                {% if establishment != '' %}<p><span class="detail-header">Establishment Type(s): </span>{{establishment}}<br/></p>{%endif%}
                 <p><span class="detail-header">Address:&nbsp;</span>{{address}}<br/>
                     <span class="detail-header">Phone Number(s):&nbsp;</span>{{phone_numbers}}<br/>
-                    <span class="detail-header">Hours:&nbsp;</span>{{timings}}<br/>
+                    <span class="detail-header">Hours:&nbsp;</span>{% if timings != '' %}{{timings}}{%else%}Not Available{%endif%}<br/>
                     <span class="detail-header">Average Rating:&nbsp;</span>{{rating_text}} {% if rating_text != "Not rated" %}({{aggregate_rating}} stars){% endif %}<br/>
                     <span class="detail-header">Dining Price Range: </span>{% if price_range == 1 %}${%elif price_range == 2 %}$${%elif price_range == 3 %}$$${%else%}$$$${%endif%}<br/>
                     <span class="detail-header">Average Cost for two guests (approx.):&nbsp;</span>${{average_cost_for_two}}<br/>
@@ -37,6 +43,7 @@
                 </p>
                 <hr/>
                 <h2>Additional Information</h2>
+                <div style="float:right;"><button class="menubutton" style="border: solid 1px white;" onclick="document.getElementById('id03').style.display='block'">Leave A Comment</button></div>
                 <p>
                     <span class="detail-header">Cuisine Types:&nbsp;</span>{{cuisines}}<br/>
                     <span class="detail-header">Menu:&nbsp;</span><a href="{{menu_url}}" target="_blank">View Menu</a><br/>
@@ -54,6 +61,15 @@
 {% include 'footer.html' %}
 </div>
 <!-- end .container -->
+  <script>
+      document.querySelector('#rating').addEventListener('click', function (e) {
+        let action = 'add';
+        for (const span of this.children) {
+            span.classList[action]('active');
+            if (span === e.target) action = 'remove';
+        }
+      });
+  </script>
 </body>
 
 </html>

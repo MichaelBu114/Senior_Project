@@ -154,7 +154,7 @@ def details():
     else:
         username = ''
 
-    return render_template('details.html', msg=msg, name=resp['name'], address=resp['address'], city=resp["city"], phone_numbers=resp["phone_numbers"],
+    return render_template('details.html', msg=msg, restaurantID=resp["id"], name=resp['name'], address=resp['address'], city=resp["city"], phone_numbers=resp["phone_numbers"],
                            latitude=resp["latitude"], longitude=resp["longitude"], locality_verbose=resp["locality_verbose"],
                            cuisines=resp["cuisines"], timings=resp["timings"], average_cost_for_two=resp["average_cost_for_two"],
                            price_range=resp["price_range"], currency=resp["currency"], highlights=highlightsList,
@@ -163,6 +163,28 @@ def details():
                            is_delivering_now=resp["is_delivering_now"], is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
                            mapimageapikey=mapapikey)
+
+
+@app.route('/comment/', methods=['GET', 'POST'])
+def comment():
+    msg = ""
+    data = []
+
+    if request.method == 'POST' and 'username' in session:
+        print('Posted:')
+        # rating = request.form['rating']
+        rating = 3
+        commentVal = request.form['comment']
+        restID = request.form["restaurantID"]
+        print('Rating: ' + str(rating) + ' - Comment: ' + commentVal + ' - restID: ' + str(restID))
+        con = mysql.connect()
+        cur = con.cursor()
+        cur.execute('CALL addComment(%d,%d,%s,%d)', (session["id"], int(rating), commentVal, int(restID)))
+        con.commit()
+        flash(restID)
+        con.close()
+
+    return redirect(url_for('details'))
 
 
 @app.route('/survey/', methods=['GET', 'POST'])
@@ -323,7 +345,6 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
             con.commit()
     con.close()
 
-
 @app.route('/connect/', methods = ['GET', 'POST'])
 def connect():
     msg = ''
@@ -353,7 +374,7 @@ def connect():
         friendList = getFriends(sesId)
         return render_template('AddFriends.html', username = session['username'] ,friends = friendList)
 
-    #Need to determine if group calls go here or inside request.method.
+ #Need to determine if group calls go here or inside request.method.
 
 def addFriend(friendId, userId):
     con = mysql.connect()
