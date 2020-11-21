@@ -109,16 +109,21 @@ def registration():
 def search():
     msg = ""
     data = []
+    if 'username' in session:
+        sesId = session['id']
+        uname = session['username']
+    else:
+        sesId = 0
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
             UserZipCode = request.form['zip']
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
             UserRange = int(request.form['cost'])
-            if 'username' in session:
-                sesId = session['id']
-            else:
-                sesId = 0
+            # if 'username' in session:
+            #     sesId = session['id']
+            # else:
+            #     sesId = 0
             resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
             if resp["status"] != 'OK':
                 msg += resp["status"]
@@ -126,11 +131,11 @@ def search():
                 data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
-            return render_template('search.html', msg=msg, data=data, username=session['username'],
+            return render_template('search.html', msg=msg, data=data, username=uname,
                                userZipcode = UserZipCode, userDistance=UserDistance,
                                userRating = UserRating, userRange = UserRange)
     else:
-        return render_template('search.html', msg=msg, data=data)
+        return render_template('search.html', msg=msg, data=data, username=uname)
 
 
 @app.route('/details/', methods=['GET', 'POST'])

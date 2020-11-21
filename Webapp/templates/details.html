@@ -12,14 +12,14 @@
 </head>
 <body>
 <div id="container">
-    {% include 'header.html' %}
+  {% include 'header.html' with context %}
     <div class="content">
         <p>&nbsp;</p>
         <div class="detail">
             <div class="floating-box" style="margin: 10px auto;min-height:auto;">
                 {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
                 {% if featured_image == '' %}
-                <img src="/static/images/noImgAvailable.png" alt="No Photo Available" height="300" align="right"/>
+                <img src="/static/images/noImgAvailable.png" alt="No Photo Available" height="250" align="right"/>
                 {% else %}
                 <img src="{{featured_image}}" alt="{{name}} Photo" height="250" align="right" />
                 {% endif %}
