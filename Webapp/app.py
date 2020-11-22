@@ -179,7 +179,7 @@ def comment():
         print('Rating: ' + str(rating) + ' - Comment: ' + commentVal + ' - restID: ' + str(restID))
         con = mysql.connect()
         cur = con.cursor()
-        cur.execute('CALL addComment(%d,%d,%s,%d)', (session["id"], int(rating), commentVal, int(restID)))
+        cur.execute('CALL addComment(%s,%s,%s,%s)', (session["id"], int(rating), commentVal, int(restID)))
         con.commit()
         flash(restID)
         con.close()
@@ -197,7 +197,6 @@ def survey():
         sesId = session['id']
         pref = cur.execute('CALL getPreferences(%s)', (sesId))
         pref = cur.fetchone()
-        print(pref)
         cur.execute('Call getUserEstablishments(%s)', (sesId))
         estList = [val for sublist in cur.fetchall() for val in sublist]
         cur.execute('Call getUserCuisines(%s)', (sesId))
