@@ -14,40 +14,73 @@ ul {
 
 li {
   float: left;
-  
 }
- .grouplist{
-     float: initial;
- }
+
+form {
+    margin-left: 20px;
+}
+
+form input[type=text] {
+    width: 250px;
+    height: 35px;
+    border: none;
+    outline: none;
+    padding: 0px 0px 0px 15px;
+}
+
+form button {
+    width: 50px;
+    height: 35px;
+    border: none;
+    padding: 0px;
+    background: white;
+    outline: none;
+    cursor: pointer;
+}
+
+ .tabcontent ol {
+    width: 300px;
+    padding: 0;
+}
+
+ol li {
+    float:initial;
+    background: #fff;
+    width: 100%;
+    height: 35px;
+    border: none;
+    line-height: 35px;
+    cursor: pointer;
+    position: relative;
+    padding: 0 5px;
+    display: block;
+    margin: 5px 20px;
+    box-shadow: -3px 6px 4px #222;
+    transition: 0.5s linear;
+}
+
+ol li span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    text-align: center;
+    background: #e00;
+}
+
+ol li img {
+    position: absolute;
+    top: 0;
+    right: 50px;
+    width: 50px;
+    height: 35px;
+    background: #28a745;
+}
 
 </style>
 </head>
 
 <body>
-    <!-- Modal for Groups-->
-    <div id="id03" class="modal">
-      <form class="modal-content animate" action="{{ url_for('connect') }}" method="post">
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
-          <img src="/static/images/Logo.png" alt="Avatar" class="avatar">
-        </div>
-        <div class="container1">
-          <label for="username"><b>Group Name</b></label>
-          <input type="text" placeholder="Enter Group Name" name="groupname" required>
-          <label for="username"><b>By creating a group you acknowledge you will be given the role of group owner</b></label>
-          <p> </p>
-          <label>
-            <input type="checkbox" checked="checked" name="owner"> I understand
-          </label>
-          <div class="error">{{ messsage }}</div>
-          <button type="submit">Done</button>
-       </div>
-
-        <div class="container1" style="background-color:#f1f1f1">
-          <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Cancel</button>
-        </div>
-      </form>
-    </div>
 
     <div id="container">
   {% include 'header.html' with context %}
@@ -103,31 +136,16 @@ li {
                     </div>
                     <div id="GroupPage" class="tabcontent">
                         <h1>Groups Page</h1>
-                        <ol id='GroupList'>
-                            <li class='grouplist'>
-                                <div class='usergroupname'>
-                                    Test Group 1
-                                    <input type="button" value="Edit" style="margin:5px 0">
-                                    <input type="button" value="Delete" style="margin:5px 0">
-                                </div>
-                            </li>
-                            <li class='grouplist'>
-                                <div class='usergroupname'>
-                                    Coworkers
-                                    <input type="button" value="Edit" style="margin:5px 0">
-                                    <input type="button" value="Delete" style="margin:5px 0">
-                                </div>
-                            </li>
-                            <li class='grouplist'>
-                                <div class='usergroupname'>
-                                    Family
-                                    <input type="button" value="Edit" style="margin:5px 0">
-                                    <input type="button" value="Delete" style="margin:5px 0">
-                                </div>
-                            </li>
-                        </ol>
-                        <p> </p>
-                        <input id="create_group" type="button" value="Create Group" style="margin:5px 0" onclick="document.getElementById('id03').style.display='block'">
+                        <form>
+                            <input type="text" name="addgoup" id="addgroup" required>
+                            <button type="submit" class="btn-list">
+                                <img src="/static/images/plussign.png" width="30" height="25" alt="plussign"/>
+                            </button>
+                        </form>
+                        <div id="activegroups">
+                            <ol>
+                            </ol>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,6 +157,39 @@ li {
     </div>
     <!-- end .container -->
     <script>
+        const inputText = document.querySelector('#addgroup');
+        const addButton = document.querySelector('.btn-list');
+        const groupList = document.querySelector('#activegroups ol');
+
+        addButton.addEventListener('click', (e)=>{
+           if(inputText.value != ""){
+               e.preventDefault();
+               //create list element
+               const myLi = document.createElement('li');
+               myLi.innerHTML = inputText.value;
+               groupList.appendChild(myLi);
+               //create edit image
+               const myEdit = document.createElement('img');
+               myEdit.src="/static/images/editlogo.png";
+               myLi.appendChild(myEdit);
+               //create span
+               const mySpan = document.createElement('span');
+               mySpan.innerHTML = 'x';
+               myLi.appendChild(mySpan);
+           }
+           const remove = document.querySelectorAll('span');
+           for(let i = 0; i < remove.length; i++){
+                remove[i].addEventListener('click', ()=>{
+                    remove[i].parentElement.style.opacity = 0;
+                    setTimeout(()=>{
+                        remove[i].parentElement.style.display = "none";
+                        remove[i].parentElement.style.remove();
+                    }, 500);
+                });
+            }
+           inputText.value = "";
+        });
+
         function openFriends(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
