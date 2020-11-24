@@ -17,6 +17,7 @@
 <body>
 <!-- Modal for Comment-->
 {% include 'commentModal.html' with context %}
+{% include 'viewCommentsModal.html' with context %}
 <div id="container">
   {% include 'header.html' with context %}
     <div class="content">
@@ -42,8 +43,9 @@
                     {% if is_table_reservation_supported == 1 %}<span class="detail-header">Currently Booking Reservations: </span>{% if has_table_booking == 1 %}Yes{%else%}No{%endif%}<br/>{%endif%}
                 </p>
                 <hr/>
-                <h2>Additional Information</h2>
+                <div style="float:right;"><button class="menubutton" style="border: solid 1px white;" onclick="document.getElementById('id04').style.display='block'">View Member Comments</button></div>
                 <div style="float:right;"><button class="menubutton" style="border: solid 1px white;" onclick="document.getElementById('id03').style.display='block'">Leave A Comment</button></div>
+                <h2>Additional Information</h2>
                 <p>
                     <span class="detail-header">Cuisine Types:&nbsp;</span>{{cuisines}}<br/>
                     <span class="detail-header">Menu:&nbsp;</span><a href="{{menu_url}}" target="_blank">View Menu</a><br/>

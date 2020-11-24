@@ -184,7 +184,7 @@ def comment():
         flash(restID)
         con.close()
 
-    return redirect(url_for('details'))
+    return redirect(url_for('details', res_id=restID))
 
 
 @app.route('/survey/', methods=['GET', 'POST'])

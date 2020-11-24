@@ -50,15 +50,17 @@ DROP TABLE IF EXISTS `Comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Comments` (
-  `comment_id` int(11) NOT NULL,
+  `comment_id` int(11) NOT NULL AUTO_INCREMENT,
   `FK_user` int(11) NOT NULL,
-  `comment` varchar(1500) DEFAULT NULL,
   `restaurant_id` int(11) NOT NULL,
+  `comment` varchar(1500) DEFAULT NULL,
+  `rating` int(1) DEFAULT '0',
+  `comment_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`comment_id`),
   UNIQUE KEY `Comments_comment_id_uindex` (`comment_id`),
   KEY `User_Comments_FK_idx` (`FK_user`),
   CONSTRAINT `User_Comments_FK` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +69,7 @@ CREATE TABLE `Comments` (
 
 LOCK TABLES `Comments` WRITE;
 /*!40000 ALTER TABLE `Comments` DISABLE KEYS */;
+INSERT INTO `Comments` VALUES (2,20,18269843,'testing',3,'2020-11-21 20:17:33'),(3,20,18269843,'test again',3,'2020-11-24 02:40:23'),(4,20,18482422,'Testing',3,'2020-11-24 02:42:59'),(5,20,18482422,'rreessderft',3,'2020-11-24 02:44:53');
 /*!40000 ALTER TABLE `Comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,6 +135,7 @@ CREATE TABLE `Friends` (
   `Fk_user` int(11) DEFAULT NULL,
   `Fk_friend` int(11) DEFAULT NULL,
   `status` tinyint(4) DEFAULT NULL,
+  `date_updated` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`friends_id`),
   KEY `Friends_User_user_id_fk` (`Fk_user`),
   KEY `Friends_User_friend_user_id_fk_idx` (`Fk_friend`),
@@ -146,7 +150,7 @@ CREATE TABLE `Friends` (
 
 LOCK TABLES `Friends` WRITE;
 /*!40000 ALTER TABLE `Friends` DISABLE KEYS */;
-INSERT INTO `Friends` VALUES (1,3,2,1),(3,3,1,1),(4,2,1,0),(5,2,3,1);
+INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,0,'2020-11-21 20:17:33'),(5,2,3,1,'2020-11-21 20:17:33');
 /*!40000 ALTER TABLE `Friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -158,12 +162,13 @@ DROP TABLE IF EXISTS `Groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Groups` (
-  `group_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(45) NOT NULL,
   `group_owner_id` int(11) NOT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`group_id`),
   UNIQUE KEY `Groups_group_id_uindex` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,6 +177,7 @@ CREATE TABLE `Groups` (
 
 LOCK TABLES `Groups` WRITE;
 /*!40000 ALTER TABLE `Groups` DISABLE KEYS */;
+INSERT INTO `Groups` VALUES (1,'Sam Test Group',20,'2020-11-24 02:19:56');
 /*!40000 ALTER TABLE `Groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +195,7 @@ CREATE TABLE `Login` (
   `date_changed` date NOT NULL,
   PRIMARY KEY (`login_id`),
   UNIQUE KEY `Login_username_uindex` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +204,7 @@ CREATE TABLE `Login` (
 
 LOCK TABLES `Login` WRITE;
 /*!40000 ALTER TABLE `Login` DISABLE KEYS */;
-INSERT INTO `Login` VALUES (7,'jsmith@gmail.com','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-02'),(8,'test1@gmail.com','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-02'),(9,'test2@gmail.com','262f30c8a91241c31e144b286c3aad30d7ef9af6030b68201d54421c681285b6','2020-11-02');
+INSERT INTO `Login` VALUES (7,'jsmith@gmail.com','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-02'),(8,'test1@gmail.com','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-02'),(9,'test2@gmail.com','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-02'),(11,'lunskj9@students.rowan.edu','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20'),(12,'panseraj3@students.rowan.edu','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20'),(13,'ewerch47@students.rowan.edu ','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20'),(14,'burkem35@students.rowan.edu','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20'),(15,'pinizz68@students.rowan.edu','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20'),(16,'sicklerc4@students.rowan.edu','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20'),(17,'dascenzos9@students.rowan.edu','9f735e0df9a1ddc702bf0a1a7b83033f9f7153a00c29de82cedadc9957289b05','2020-11-20');
 /*!40000 ALTER TABLE `Login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -241,6 +247,7 @@ CREATE TABLE `User` (
   `price_range` int(11) DEFAULT NULL,
   `user_rating` int(11) DEFAULT NULL,
   `reservations` int(11) DEFAULT NULL,
+  `date_updated` datetime DEFAULT CURRENT_TIMESTAMP,
   `FK_login_id` int(11) DEFAULT NULL,
   `FK_user_categories` int(11) DEFAULT NULL,
   `FK_user_establishment` int(11) DEFAULT NULL,
@@ -249,7 +256,7 @@ CREATE TABLE `User` (
   UNIQUE KEY `User_user_id_uindex` (`user_id`),
   KEY `User_Login_login_id_fk_idx` (`FK_login_id`),
   CONSTRAINT `User_Login_login_id_fk` FOREIGN KEY (`FK_login_id`) REFERENCES `Login` (`login_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +265,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,NULL,NULL,NULL,NULL,NULL,7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,9,NULL,NULL,NULL);
+INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,'08226',24140,2,3,NULL,'2020-11-21 20:17:33',7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,'2020-11-21 20:17:33',8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,'2020-11-21 20:17:33',9,NULL,NULL,NULL),(16,'Lunsk','Josh','lunskj9@students.rowan.edu',1,'48185',16093,3,3,NULL,'2020-11-21 20:17:33',11,NULL,NULL,NULL),(17,'Pansera','John','panseraj3@students.rowan.edu',1,'37013',32186,1,4,NULL,'2020-11-21 20:17:33',12,NULL,NULL,NULL),(18,'Ewer','Christian','ewerch47@students.rowan.edu ',1,'33445',8046,2,2,NULL,'2020-11-21 20:17:33',13,NULL,NULL,NULL),(19,'Burke','Michael','burkem35@students.rowan.edu',1,'18901',8046,3,4,NULL,'2020-11-21 20:17:33',14,NULL,NULL,NULL),(20,'Pinizzotto','Samuel','pinizz68@students.rowan.edu',1,'34221',16093,4,3,NULL,'2020-11-24 03:19:26',15,NULL,NULL,NULL),(21,'Sickler','Chris','sicklerc4@students.rowan.edu',1,'91387',16093,1,4,NULL,'2020-11-21 20:17:33',16,NULL,NULL,NULL),(22,'D\'Ascenzo','Stephen','dascenzos9@students.rowan.edu',1,'55068',32186,2,3,NULL,'2020-11-21 20:17:33',17,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,7 +285,7 @@ CREATE TABLE `User_Categories` (
   KEY `FK_categoriesuser_idx` (`FK_categories`),
   CONSTRAINT `User_Categories_Categories_categories_id_fk` FOREIGN KEY (`FK_categories`) REFERENCES `Categories` (`id`),
   CONSTRAINT `User_Categories_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -287,7 +294,7 @@ CREATE TABLE `User_Categories` (
 
 LOCK TABLES `User_Categories` WRITE;
 /*!40000 ALTER TABLE `User_Categories` DISABLE KEYS */;
-INSERT INTO `User_Categories` VALUES (1,2,2),(2,2,7),(3,2,9),(4,3,1),(5,3,3),(6,3,4),(7,3,8),(8,3,11),(9,3,13),(10,3,14);
+INSERT INTO `User_Categories` VALUES (1,2,2),(2,2,7),(3,2,9),(4,3,1),(5,3,3),(6,3,4),(7,3,8),(8,3,11),(9,3,13),(10,3,14),(11,20,1),(12,20,8);
 /*!40000 ALTER TABLE `User_Categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -307,7 +314,7 @@ CREATE TABLE `User_Cuisine` (
   KEY `FK_cuisine_idx` (`FK_cuisine`),
   CONSTRAINT `User_Cuisine_Cuisine_cuisine_id_fk` FOREIGN KEY (`FK_cuisine`) REFERENCES `Cuisine` (`cuisine_id`),
   CONSTRAINT `User_Cuisine_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -316,7 +323,7 @@ CREATE TABLE `User_Cuisine` (
 
 LOCK TABLES `User_Cuisine` WRITE;
 /*!40000 ALTER TABLE `User_Cuisine` DISABLE KEYS */;
-INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82);
+INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82),(25,2,73),(26,20,1),(27,20,40);
 /*!40000 ALTER TABLE `User_Cuisine` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -336,7 +343,7 @@ CREATE TABLE `User_Establishment` (
   KEY `FK_establishmentuser_idx` (`FK_establishment`),
   CONSTRAINT `User_Establishment_Establishment_establishment_id_fk` FOREIGN KEY (`FK_establishment`) REFERENCES `Establishment` (`id`),
   CONSTRAINT `User_Establishment_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -345,7 +352,7 @@ CREATE TABLE `User_Establishment` (
 
 LOCK TABLES `User_Establishment` WRITE;
 /*!40000 ALTER TABLE `User_Establishment` DISABLE KEYS */;
-INSERT INTO `User_Establishment` VALUES (18,2,1),(19,2,16),(21,2,285),(22,3,5),(23,3,6),(24,3,18),(25,3,20),(26,3,23),(27,3,24),(28,3,91),(29,3,161),(30,3,281),(31,3,284),(32,3,292),(33,3,295),(34,3,309),(42,2,41);
+INSERT INTO `User_Establishment` VALUES (18,2,1),(19,2,16),(21,2,285),(22,3,5),(23,3,6),(24,3,18),(25,3,20),(26,3,23),(27,3,24),(28,3,91),(29,3,161),(30,3,281),(31,3,284),(32,3,292),(33,3,295),(34,3,309),(42,2,41),(43,20,16);
 /*!40000 ALTER TABLE `User_Establishment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,12 +367,14 @@ CREATE TABLE `User_Group` (
   `user_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `Fk_user` int(11) NOT NULL,
   `Fk_group` int(11) NOT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_group_id`),
+  UNIQUE KEY `user_group_id_UNIQUE` (`user_group_id`),
   KEY `User_Group_Groups_group_id_fk` (`Fk_group`),
   KEY `User_Group_User_user_id_fk` (`Fk_user`),
   CONSTRAINT `User_Group_Groups_group_id_fk` FOREIGN KEY (`Fk_group`) REFERENCES `Groups` (`group_id`),
   CONSTRAINT `User_Group_User_user_id_fk` FOREIGN KEY (`Fk_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,6 +383,7 @@ CREATE TABLE `User_Group` (
 
 LOCK TABLES `User_Group` WRITE;
 /*!40000 ALTER TABLE `User_Group` DISABLE KEYS */;
+INSERT INTO `User_Group` VALUES (1,19,1,'2020-11-24 02:23:00');
 /*!40000 ALTER TABLE `User_Group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,6 +394,28 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'dp_sp'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `addComment` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addComment`(IN sesId int(11), IN rating int(1), IN commentVal varchar(1500), IN restID int(11))
+BEGIN
+	INSERT INTO Comments
+	(`FK_user`, `rating`, `comment`, `restaurant_id`)
+	VALUES
+	(sesId, rating, commentVal, restID);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `addFriend` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -397,6 +429,52 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `addFriend`(IN userid int(11), IN friendid int(11), IN newstatus int(1))
 BEGIN
 	INSERT INTO Friends (Fk_user, Fk_friend, status) VALUES (userid, friendid, newstatus);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `addGroup` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addGroup`(IN groupname varchar(90), IN userID int(11))
+BEGIN
+	INSERT INTO `Groups` (group_name, group_owner_id)
+	VALUES (groupname, userID);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `addToGroup` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `addToGroup`(IN groupID int(11), IN userID int(11), OUT status varchar(100))
+BEGIN
+	IF ((SELECT Fk_user FROM `User_Group` WHERE Fk_user = userID AND Fk_group = groupID) IS NULL) THEN
+		INSERT INTO `User_Group` (Fk_user, Fk_group)
+		VALUES (userID, groupID);
+        SET status = 'SUCCESS: Added to the Group';
+	ELSE
+		SET status = 'ERROR: Already in the Group';
+	END IF;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -495,6 +573,26 @@ CREATE DEFINER=`root`@`%` PROCEDURE `deleteFriend`(IN userid int(11), IN friendi
 BEGIN
 	DELETE from Friends
     WHERE Fk_user = userid AND Fk_friend = friendid;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `deleteFromGroup` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `deleteFromGroup`(IN groupID int(11), IN userID int(11))
+BEGIN
+	DELETE FROM `User_Groups`
+    WHERE Fk_group = groupID AND Fk_user = userID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -821,7 +919,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `updateFriend`(IN friendid int(11), IN userid int(11), IN newstatus int(11))
 BEGIN
 	UPDATE Friends
-   	SET status = newstatus 
+   	SET status = newstatus, date_updated = current_timestamp()
 	WHERE Fk_friend = friendid AND Fk_user = userid;
 END ;;
 DELIMITER ;
@@ -846,7 +944,7 @@ BEGIN
         SET username = newEmail, password = newPassword
     WHERE login_id = (SELECT u.FK_login_id FROM User u WHERE u.user_id = uId);
     UPDATE User
-        SET email = newEmail, firstname = newFirstName, lastname = newLastName
+        SET email = newEmail, firstname = newFirstName, lastname = newLastName, date_updated = current_timestamp()
     WHERE user_id = uId;
 END ;;
 DELIMITER ;
@@ -927,4 +1025,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-16  0:19:15
+-- Dump completed on 2020-11-23 22:26:46
