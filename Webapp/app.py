@@ -146,6 +146,12 @@ def details():
     resp = zomato_api.restaurant_details(res_id)
     estList = str(resp["establishment"]).lstrip("[").rstrip("]").replace("'","")
     highlightsList = str(resp["highlights"]).lstrip("[").rstrip("]").replace("'", "")
+    con = mysql.connect()
+    cur = con.cursor()
+    commentsList = cur.callproc('getComments', [res_id])
+    commentsList = cur.fetchall()
+    if not commentsList:
+        commentsList = 'empty'
 
     if resp["status"] != 'OK':
         msg += resp["status"]
@@ -162,7 +168,7 @@ def details():
                            featured_image=resp["featured_image"], has_online_delivery=resp["has_online_delivery"],
                            is_delivering_now=resp["is_delivering_now"], is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
-                           mapimageapikey=mapapikey)
+                           mapimageapikey=mapapikey, commentsList=commentsList)
 
 
 @app.route('/comment/', methods=['GET', 'POST'])
@@ -174,12 +180,13 @@ def comment():
         print('Posted:')
         # rating = request.form['rating']
         rating = 3
+        commentTitle = request.form['title']
         commentVal = request.form['comment']
         restID = request.form["restaurantID"]
         print('Rating: ' + str(rating) + ' - Comment: ' + commentVal + ' - restID: ' + str(restID))
         con = mysql.connect()
         cur = con.cursor()
-        cur.execute('CALL addComment(%s,%s,%s,%s)', (session["id"], int(rating), commentVal, int(restID)))
+        cur.execute('CALL addComment(%s,%s,%s,%s,%s)', (session["id"], int(rating), commentTitle, commentVal, int(restID)))
         con.commit()
         flash(restID)
         con.close()

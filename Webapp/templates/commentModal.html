@@ -5,17 +5,16 @@
       <p style="color:black;">Please fill in this form to comment on this establishment.</p>
       <hr>
       <label for="rating"><b>Rating:</b></label>
-      <div id='rating'>
-        <span value="1"></span>
-        <span value="2"></span>
-        <span value="3"></span>
-        <span value="4"></span>
-        <span value="5"></span>
+      <div id='rating' name="rating">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
       <input name="restaurantID" type="hidden" value="{{restaurantID}}">
-      <label for="comment"><b>Enter Your Comment</b></label>
+      <input type="text" placeholder="Enter Your Comment Title" name="title" id="title" required>
       <textarea placeholder="Enter Your Comment" name="comment" id="comment" cols="100" rows="8" required></textarea>
-
       <div class="clearfix">
         <button type="submit" >Submit Comment</button>
         <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Cancel</button>
