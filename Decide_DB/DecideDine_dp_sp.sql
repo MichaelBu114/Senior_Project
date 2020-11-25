@@ -53,6 +53,7 @@ CREATE TABLE `Comments` (
   `comment_id` int(11) NOT NULL AUTO_INCREMENT,
   `FK_user` int(11) NOT NULL,
   `restaurant_id` int(11) NOT NULL,
+  `title` varchar(75) NOT NULL,
   `comment` varchar(1500) DEFAULT NULL,
   `rating` int(1) DEFAULT '0',
   `comment_date` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -60,7 +61,7 @@ CREATE TABLE `Comments` (
   UNIQUE KEY `Comments_comment_id_uindex` (`comment_id`),
   KEY `User_Comments_FK_idx` (`FK_user`),
   CONSTRAINT `User_Comments_FK` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +70,7 @@ CREATE TABLE `Comments` (
 
 LOCK TABLES `Comments` WRITE;
 /*!40000 ALTER TABLE `Comments` DISABLE KEYS */;
-INSERT INTO `Comments` VALUES (2,20,18269843,'testing',3,'2020-11-21 20:17:33'),(3,20,18269843,'test again',3,'2020-11-24 02:40:23'),(4,20,18482422,'Testing',3,'2020-11-24 02:42:59'),(5,20,18482422,'rreessderft',3,'2020-11-24 02:44:53');
+INSERT INTO `Comments` VALUES (2,20,18269843,'Test Comment','testing',3,'2020-11-21 20:17:33'),(3,20,18269843,'Test Comment','test again',3,'2020-11-24 02:40:23'),(4,20,18482422,'Test Comment','Testing',3,'2020-11-24 02:42:59'),(5,20,18482422,'Test Comment','rreessderft',3,'2020-11-24 02:44:53'),(6,20,18795165,'Test Comment','Rem iste in deserunt aut qui sunt. Doloribus quam molestias qui praesentium ab sint. Ipsum magni voluptas voluptas nostrum. Eligendi quia consequatur nam officia sint error.\r\n\r\nSed voluptatem ut cumque qui eaque. Voluptatum error in velit voluptatum similique corporis repellat possimus. Error corporis eos facilis fuga nemo autem ut. Blanditiis et necessitatibus et et ullam reprehenderit.\r\n\r\nError aut iusto magni. Est quo sequi eos numquam enim blanditiis. Necessitatibus rerum est illum. Inventore voluptatem eos laboriosam.\r\n\r\nVoluptatem dicta tempora consectetur non et repudiandae. Reprehenderit tenetur incidunt quae est. Illo aut dolorem eaque laudantium ut suscipit veritatis temporibus. Sit quas et non quisquam maxime non ipsa ducimus. Facere exercitationem qui commodi.\r\n\r\nPraesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',3,'2020-11-24 16:51:09'),(7,20,17097707,'Testing KFC Comment','Rem iste in deserunt aut qui sunt. Doloribus quam molestias qui praesentium ab sint. Ipsum magni voluptas voluptas nostrum. Eligendi quia consequatur nam officia sint error.\r\n\r\nSed voluptatem ut cumque qui eaque. Voluptatum error in velit voluptatum similique corporis repellat possimus. Error corporis eos facilis fuga nemo autem ut. Blanditiis et necessitatibus et et ullam reprehenderit.',3,'2020-11-24 18:26:35');
 /*!40000 ALTER TABLE `Comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -404,12 +405,12 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `addComment`(IN sesId int(11), IN rating int(1), IN commentVal varchar(1500), IN restID int(11))
+CREATE DEFINER=`root`@`%` PROCEDURE `addComment`(IN sesId int(11), IN rating int(1), IN commentTitle varchar(75), IN commentVal varchar(1500), IN restID int(11))
 BEGIN
 	INSERT INTO Comments
-	(`FK_user`, `rating`, `comment`, `restaurant_id`)
+	(`FK_user`, `rating`, `title`, `comment`, `restaurant_id`)
 	VALUES
-	(sesId, rating, commentVal, restID);
+	(sesId, rating, commentTitle, commentVal, restID);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -673,6 +674,28 @@ CREATE DEFINER=`root`@`%` PROCEDURE `deleteUserGroup`(IN userid int(11), IN FKgr
 BEGIN
 	DELETE FROM User_Group
 	WHERE FK_user = userid AND FK_categories = FKgroup;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getComments` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `getComments`(IN restID int(11))
+BEGIN
+	SELECT c.title, c.comment, c.rating, DATE_FORMAT(c.comment_date,'%Y-%m-%d - %h:%i:%s %p') AS commentDate, u.firstname, substring(u.lastname,1,1) AS lastInitial
+	FROM Comments c 
+	INNER JOIN User u ON c.FK_user = u.user_id 
+	WHERE c.restaurant_id = restID;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1025,4 +1048,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-23 22:26:46
+-- Dump completed on 2020-11-24 23:01:41
