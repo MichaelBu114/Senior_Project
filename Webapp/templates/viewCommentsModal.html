@@ -1,5 +1,5 @@
 <div id="id04" class="modal">
-  <form class="modal-content animate">
+  <form id="viewCommentsFORM" class="modal-content animate">
     <div class="container1">
       <h2 style="color:black;">Comments for {{name}}</h2>
       <hr>
@@ -15,7 +15,7 @@
           </div>
         {% endfor %}
       <div class="clearfix">
-        <button type="button" onclick="document.getElementById('id04').style.display='none'" class="cancelbtn">Close</button>
+        <button type="button" onclick="document.getElementById('id04').style.display='none';document.getElementById('viewCommentsFORM').reset();" class="cancelbtn">Close</button>
       </div>
     </div>
   </form>

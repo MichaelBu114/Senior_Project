@@ -4,7 +4,7 @@
     {% if 'username' in session %}
     <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{username}}</strong></a></div>
     {% else %}
-    <div id="login_link"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block'" /></div>
+    <div id="login_link"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block';document.getElementById('password').value = '';document.getElementById('username').focus();" /></div>
     {% endif %}
   </div>
   <!-- end .header -->

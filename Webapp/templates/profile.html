@@ -1,11 +1,18 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel='stylesheet' type="text/css" href='{{ url_for('static', filename = 'style.css')}}?version=1'>
+<link rel='stylesheet' type="text/css" href="{{ url_for('static', filename = 'style.css')}}?version=1">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Decide &amp; Dine</title>
+    <style>
+        .alert-error {
+          padding: 8px;
+          background-color: red;
+          color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,36 +21,33 @@
         <div class="content">
             <form action="{{url_for('profile')}}" method="post">
                 <p>&nbsp;</p>
-                <p>&nbsp;</p>
                 <div class="search">
                     <div class="floating-box" style="margin: 20px auto;">
                         <h1>Profile</h1>
-                    <br>
+                        {% if msg != '' %}<div class="alert-error">Error: {{ msg }}</div>{%endif%}
+                    <br/>
                         <div>
                             <label class="question">Email&nbsp;&nbsp;&nbsp;</label>
-                            <input type="text" placeholder={{email}} name="email" id="email">
+                            <input type="text" placeholder="{{email}}" name="email" id="email">
                         </div>
                     <br>
                         <div>
                             <label class="question">First Name&nbsp;&nbsp;&nbsp;</label>
-                            <input type="text" placeholder={{firstname}} name="firstname" id="fname">
+                            <input type="text" placeholder="{{firstname}}" name="firstname" id="firstname">
                         </div>
                     <br>
                         <div>
                             <label class="question">Last Name&nbsp;&nbsp;&nbsp;</label>
-                            <input type="text" placeholder={{lastname}} name="lastname" id="lname">
+                            <input type="text" placeholder="{{lastname}}" name="lastname" id="lastname">
                         </div>
                     <br>
-                            <input type="submit" name="button" value="Save Changes" style="float: left; margin-right: 90px;">
+                        <input type="submit" name="button" value="Save Changes" style="float: left; margin-right: 90px;">&nbsp;
+                        <input type="submit" name="button" value="Modify Preferences" style="float: left; margin-right: 90px;">&nbsp;
+                        <input type="submit" name="button" value="Logout" style="float: right; margin-right: 90px;">
             </form>
-                        <form action = "{{url_for('profile')}}" method="post">
-                            <input type="submit" name="button" value="Logout" style="float: right; margin-right: 90px;"></a>
-                        </form>
-                    <br>
-                    </div>
-                </div>
-                <p>&nbsp;</p>
-        </div>
+            <br>
+        <p>&nbsp;</p>
+    </div>
         <!-- end .content -->
 {% include 'footer.html' %}
     </div>

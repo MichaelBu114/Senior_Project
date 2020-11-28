@@ -1,12 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel = 'stylesheet' type = "text/css" href = '{{ url_for('static', filename = 'style.css')}}?version=2'>
+<link rel = 'stylesheet' type = "text/css" href = "{{ url_for('static', filename = 'style.css')}}?version=1">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
+<style>
+.alert-error {
+  padding: 8px;
+  background-color: red;
+  color: white;
+}
+</style>
 </head>
 
 <body>
+<!-- Modal for Login-->
+{% include 'loginModal.html' %}
+<!-- Modal for Registration-->
+{% include 'registrationModal.html' %}
 <div id="container">
   {% include 'header.html' with context %}
   <div class="content">
@@ -69,5 +80,6 @@
 {% include 'footer.html' %}
 </div>
 <!-- end .container -->
+{% include 'popupScript.js' %}
 </body>
 </html>

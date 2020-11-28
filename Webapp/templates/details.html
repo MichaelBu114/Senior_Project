@@ -1,18 +1,14 @@
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel='stylesheet' type="text/css" href='{{ url_for('static', filename = 'style.css')}}?version=1' />
+<link rel='stylesheet' type="text/css" href="{{ url_for('static', filename = 'style.css')}}?version=1" />
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Decide &amp; Dine</title>
     <style>
         .detail-header { color: #ffffff; font-size: medium; font-weight: bold; }
-        #rating { font-size: 0; }
-        #rating span { font-size: 30px; }
-        #rating span::before { content: "☆"; }
-        #rating span.active::before {content: "★";color:gold }
-        #rating span:hover { cursor: pointer; }
+        .comment-button { border: solid 1px #f67b5f; background-color: white; color:#f67b5f; font-weight: bold; margin:0 5px; padding: 10px; }
         .containerComments {
           border: 2px solid #ccc;
           background-color: #eee;
@@ -47,8 +43,22 @@
               display: block;
           }
     </style>
+
+<style>
+.alert-error {
+  padding: 8px;
+  background-color: red;
+  color: white;
+}
+</style>
 </head>
+
 <body>
+<!-- Modal for Login-->
+{% include 'loginModal.html' %}
+<!-- Modal for Registration-->
+{% include 'registrationModal.html' %}
+
 <!-- Modal for Comment-->
 {% include 'commentModal.html' with context %}
 {% if commentsList != 'empty' %}{% include 'viewCommentsModal.html' with context %}{%endif%}
@@ -59,13 +69,15 @@
         <div class="detail">
             <div class="floating-box" style="margin: 10px auto;min-height:auto;">
                 {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
-                {% if featured_image == '' %}
-                <img src="/static/images/noImgAvailable.png" alt="No Photo Available" height="250" align="right"/>
-                {% else %}
-                <img src="{{featured_image}}" alt="{{name}} Photo" height="250" align="right" />
-                {% endif %}
+                <div style="float:right">
+                    {% if featured_image == '' %}
+                    <img src="/static/images/noImgAvailable.png" alt="No Photo Available" style="height: 250px; width: auto\9; /* ie8 */" />
+                    {% else %}
+                    <img src="{{featured_image}}" alt="{{name}} Photo" style="height: 250px; width: auto\9; /* ie8 */" />
+                    {% endif %}
+                </div>
                 <h1>{{name}}</h1>
-                {% if establishment != '' %}<p><span class="detail-header">Establishment Type(s): </span>{{establishment}}<br/></p>{%endif%}
+                {% if establishment != '' %}<p><span class="detail-header">Establishment Type(s): </span>{{establishment}}<br/></p>{%else%}<p>&nbsp;</p>{%endif%}
                 <p><span class="detail-header">Address:&nbsp;</span>{{address}}<br/>
                     <span class="detail-header">Phone Number(s):&nbsp;</span>{{phone_numbers}}<br/>
                     <span class="detail-header">Hours:&nbsp;</span>{% if timings != '' %}{{timings}}{%else%}Not Available{%endif%}<br/>
@@ -77,8 +89,8 @@
                     {% if is_table_reservation_supported == 1 %}<span class="detail-header">Currently Booking Reservations: </span>{% if has_table_booking == 1 %}Yes{%else%}No{%endif%}<br/>{%endif%}
                 </p>
                 <hr/>
-                {% if commentsList != 'empty' %}<div style="float:right;"><button class="menubutton" style="border: solid 1px white;" onclick="document.getElementById('id04').style.display='block'">View {{ commentsList|length }} Member Comment{% if commentsList|length >1 %}s{%endif%}</button></div>{%endif%}
-                <div style="float:right;"><button class="menubutton" style="border: solid 1px white;" onclick="document.getElementById('id03').style.display='block'">Leave A Comment</button></div>
+                {% if 'username' in session %}{% if commentsList != 'empty' %}<div style="float:right;"><button class="comment-button" onclick="document.getElementById('id04').style.display='block'">View {{ commentsList|length }} Member Comment{% if commentsList|length >1 %}s{%endif%}</button></div>{%endif%}
+                <div style="float:right;"><button class="comment-button" onclick="document.getElementById('id03').style.display='block'">Leave A Comment</button></div>{%endif%}
                 <h2>Additional Information</h2>
                 <p>
                     <span class="detail-header">Cuisine Types:&nbsp;</span>{{cuisines}}<br/>
@@ -87,7 +99,7 @@
                     <span class="detail-header">Location:&nbsp;</span>{{city}} ({{locality_verbose}})<br/>
                     <br/>
                     <strong>(Click Map to get Directions)</strong><br/>
-                    <a href="https://www.google.com/maps/place/{{address.replace(' ', '+')}}/@{{latitude}},{{longitude}}" target="_blank"><img width="600" height="300" style="margin-bottom:-20px" src="https://maps.geoapify.com/v1/staticmap?style=klokantech-basic&width=600&height=300&center=lonlat:{{longitude}},{{latitude}}&zoom=15&marker=lonlat:{{longitude}},{{latitude}};type:material;color:red;icon:utensils;icontype:awesome&apiKey={{mapimageapikey}}" alt="MAP for {{name}}"></a><br/><br/>
+                    <a href="https://www.google.com/maps/place/{{address.replace(' ', '+')}}/@{{latitude}},{{longitude}}" target="_blank"><img width="600" height="300" src="https://maps.geoapify.com/v1/staticmap?style=klokantech-basic&width=600&height=300&center=lonlat:{{longitude}},{{latitude}}&zoom=15&marker=lonlat:{{longitude}},{{latitude}};type:material;color:red;icon:utensils;icontype:awesome&apiKey={{mapimageapikey}}" alt="MAP for {{name}}"></a><br/><br/>
                 </p>
             </div>
         </div>
@@ -98,14 +110,23 @@
 </div>
 <!-- end .container -->
   <script>
-      document.querySelector('#rating').addEventListener('click', function (e) {
-        let action = 'add';
-        for (const span of this.children) {
-            span.classList[action]('active');
-            if (span === e.target) action = 'remove';
-        }
-      });
-  </script>
+  $(document).ready(function(){
+    // Check Radio-box
+    $(".rating input:radio").attr("checked", false);
+
+    $('.rating input').click(function () {
+    $(".rating span").removeClass('checked');
+    $(this).parent().addClass('checked');
+    });
+
+    $('input:radio').change(
+    function(){
+    var userRating = this.value;
+    });
+    });
+</script>
+<!-- end .container -->
+{% include 'popupScript.js' %}
 </body>
 
 </html>

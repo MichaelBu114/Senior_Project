@@ -1,7 +1,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel='stylesheet' type="text/css" href='{{ url_for('static', filename = 'style.css')}}?version=1'>
+<link rel='stylesheet' type="text/css" href="{{ url_for('static', filename = 'style.css')}}?version=1">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -22,10 +22,10 @@ form {
 
 form input[type=text] {
     width: 250px;
-    height: 35px;
+    height: 25px;
     border: none;
     outline: none;
-    padding: 0px 0px 0px 15px;
+    padding: 0px 0px 0px 10px;
 }
 
 form button {
@@ -47,9 +47,9 @@ ol li {
     float:initial;
     background: #fff;
     width: 100%;
-    height: 35px;
+    height: 25px;
     border: none;
-    line-height: 35px;
+    line-height: 25px;
     cursor: pointer;
     position: relative;
     padding: 0 5px;
@@ -70,11 +70,11 @@ ol li span {
 
 ol li img {
     position: absolute;
-    top: 0;
+    top: 10px;
     right: 50px;
-    width: 50px;
-    height: 35px;
-    background: #28a745;
+    width: 35px;
+<!--    height: 35px;
+    background: #28a745;-->
 }
 
 </style>
@@ -139,7 +139,7 @@ ol li img {
                         <form>
                             <input type="text" name="addgoup" id="addgroup" required>
                             <button type="submit" class="btn-list">
-                                <img src="/static/images/plussign.png" width="30" height="25" alt="plussign"/>
+                                <img src="/static/images/plussign.png" valign="center" width="30" height="25" alt="plussign"/>
                             </button>
                         </form>
                         <div id="activegroups">

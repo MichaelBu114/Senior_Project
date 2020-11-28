@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=5'>
+<link rel = 'stylesheet' href = "{{ url_for('static', filename = 'style.css')}}?version=5">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
@@ -39,10 +39,10 @@
       </div>
       {% else %}
       <div id="how_works">
-        <p><a href="#"><img src="static/images/How it works.png" alt="How It Works" /></a></p>
+        <p><a href="{{url_for('howitworks')}}"><img src="static/images/How it works.png" alt="How It Works" /></a></p>
       </div>
       <div id="features">
-        <p><a href="#"><img src="static/images/features.png" alt="Features" /></a></p>
+        <p><img src="static/images/features.png" alt="Features" /></p>
       </div>
       <div id="get_started">
         <p><a href="{{url_for('survey')}}"><img src="static/images/get_started.png" alt="Get Started" /></a></p>

@@ -4,9 +4,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Decide &amp; Dine</title>
 <link rel = 'stylesheet' href = '{{ url_for('static', filename = 'style.css')}}?version=1' />
+<style>
+.alert-error {
+  padding: 8px;
+  background-color: red;
+  color: white;
+}
+</style>
 </head>
 
 <body>
+<!-- Modal for Login-->
+{% include 'loginModal.html' %}
+<!-- Modal for Registration-->
+{% include 'registrationModal.html' %}
 <div id="container">
   {% include 'header.html' with context %}
   <div class="content">
@@ -16,7 +27,7 @@
         <hr />
         <div>
           <label class="question"> 1. Update your default Zip Code: </label>
-          <input type="text" name = "zip" pattern="[0-9]{5}" title="Five digit zip code" value="{{userZipcode}}" />
+          <input type="text" name = "zip" pattern="[0-9]{5}" title="Five digit zip code" value="{{userZipcode}}" required />
         </div>
         <hr />
         <div>
@@ -429,5 +440,6 @@
 {% include 'footer.html' %}
 </div>
 <!-- end .container -->
+{% include 'popupScript.js' %}
 </body>
 </html>

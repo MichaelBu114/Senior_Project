@@ -1,21 +1,21 @@
 <div id="id01" class="modal">
-  <form class="modal-content animate" action="{{ url_for('login') }}" method="post">
+  <form id="loginFORM" class="modal-content animate" action="{{ url_for('login') }}" method="post">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
       <img src="/static/images/Logo.png" alt="Avatar" class="avatar">
     </div>
     <div class="container1">
       <label for="username"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="username" required>
+      <input type="text" placeholder="Enter Username" name="username" id="username" required>
 
       <label for="password"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="password" required>
+      <input type="password" placeholder="Enter Password" name="password" id="password" required>
       <label>
         <input type="checkbox" checked="checked" name="remember"> Remember me
       </label>
       <div class="error">{{ messsage }}</div>
       <button type="submit">Login</button>
-      <button onclick="document.getElementById('id02').style.display='block';document.getElementById('id01').style.display='none';">Not A Member? Register Here</button>
+      <button onclick="document.getElementById('id02').style.display='block';document.getElementById('id01').style.display='none';document.getElementById('loginFORM').reset();document.getElementById('registrationFORM').reset();document.getElementById('firstname').focus();">Not A Member? Register Here</button>
         {% for message in get_flashed_messages() %}
               <div class="alert-error">
                 Error: {{ message }}</div>
@@ -28,7 +28,7 @@
    </div>
 
     <div class="container1" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+      <button type="button" onclick="document.getElementById('id01').style.display='none';document.getElementById('loginFORM').reset();" class="cancelbtn">Cancel</button>
       <span class="psw">Forgot <a href="#" style="color:dodgerblue">password?</a></span>
     </div>
   </form>

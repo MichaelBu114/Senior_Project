@@ -1,33 +1,33 @@
 <div id="id02" class="modal">
-  <form class="modal-content animate" action="{{ url_for('registration') }}" method="post">
+  <form id="registrationFORM" class="modal-content animate" action="{{ url_for('registration') }}" method="post">
     <div class="container1">
       <h1 style="color:black;">Register</h1>
       <p style="color:black;">Please fill in this form to create an account.</p>
       <hr>
       <label for="fistname"><b>First Name</b></label>
-      <input type="text" placeholder="Enter First Name" name="firstname" required>
+      <input type="text" placeholder="Enter First Name" name="firstname" id="firstname" required>
 
       <label for="lastname"><b>Last Name</b></label>
-      <input type="text" placeholder="Enter Last Name" name="lastname" required>
+      <input type="text" placeholder="Enter Last Name" name="lastname" id="lastname" required>
 
       <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required>
+      <input type="text" placeholder="Enter Email" name="email" id="email" required>
 
       <label for="password"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
+      <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
 
       <label for="psw-repeat"><b>Repeat Password</b></label>
-      <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+      <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
 
       <label>
         <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
       </label>
 
-      <p style="color:black;">By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+      <p style="color:black;">By creating an account you agree to our <a href="{{ url_for('termspolicy') }}" style="color:dodgerblue">Terms & Privacy</a>.</p>
 
       <div class="clearfix">
         <button type="submit" >Register</button>
-        <button onclick="document.getElementById('id01').style.display='block';document.getElementById('id02').style.display='none';">Already Registered? Login Here</button>
+        <button onclick="document.getElementById('id01').style.display='block';document.getElementById('id02').style.display='none';document.getElementById('registrationFORM').reset();document.getElementById('loginFORM').reset();document.getElementById('username').focus();">Already Registered? Login Here</button>
         {% for message in get_flashed_messages() %}
               <div class="alert-error">
                 Error: {{ message }}</div>
@@ -37,7 +37,7 @@
                 <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
           {% endif %}
         {% endfor %}
-        <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
+        <button type="button" onclick="document.getElementById('id02').style.display='none';document.getElementById('registrationFORM').reset();" class="cancelbtn">Cancel</button>
       </div>
     </div>
   </form>

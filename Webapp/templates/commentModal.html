@@ -1,23 +1,83 @@
 <div id="id03" class="modal">
-  <form class="modal-content animate" action="{{ url_for('comment') }}" method="post">
+  <style>
+    .txt-center {
+      text-align: center;
+      position: relative;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .clear {
+      float: none;
+      clear: both;
+    }
+
+    .rating {
+      width: 130px;
+      unicode-bidi: bidi-override;
+      direction: rtl;
+      text-align: center;
+      position: relative;
+    }
+
+    .rating>label {
+      float: right;
+      display: inline;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      width: 1.1m;
+      cursor: pointer;
+      color: #000;
+      font-size: 30px
+    }
+
+    .rating>label:hover,
+    .rating>label:hover~label,
+    .rating>input.radio-btn:checked~label {
+      color: transparent;
+    }
+
+    .rating>label:hover:before,
+    .rating>label:hover~label:before,
+    .rating>input.radio-btn:checked~label:before,
+    .rating>input.radio-btn:checked~label:before {
+      content: "\2605";
+      position: absolute;
+      left: 0;
+      color: #FFD700;
+    }
+</style>
+
+  <form id="commentFORM" class="modal-content animate" action="{{ url_for('comment') }}" method="post">
     <div class="container1">
       <h1 style="color:black;">Leave a Comment</h1>
       <p style="color:black;">Please fill in this form to comment on this establishment.</p>
       <hr>
       <label for="rating"><b>Rating:</b></label>
-      <div id='rating' name="rating">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <div class="txt-center">
+          <div class="rating">
+            <input id="star5" name="star" type="radio" value="5" class="radio-btn hide" />
+            <label for="star5" >☆</label>
+            <input id="star4" name="star" type="radio" value="4" class="radio-btn hide" />
+            <label for="star4" >☆</label>
+            <input id="star3" name="star" type="radio" value="3" class="radio-btn hide" />
+            <label for="star3" >☆</label>
+            <input id="star2" name="star" type="radio" value="2" class="radio-btn hide" />
+            <label for="star2" >☆</label>
+            <input id="star1" name="star" type="radio" value="1" class="radio-btn hide" />
+            <label for="star1" >☆</label>
+            <div class="clear"></div>
+        </div>
+        </div>
       <input name="restaurantID" type="hidden" value="{{restaurantID}}">
       <input type="text" placeholder="Enter Your Comment Title" name="title" id="title" required>
       <textarea placeholder="Enter Your Comment" name="comment" id="comment" cols="100" rows="8" required></textarea>
       <div class="clearfix">
         <button type="submit" >Submit Comment</button>
-        <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Cancel</button>
+        <button type="button" onclick="document.getElementById('id03').style.display='none';document.getElementById('commentFORM').reset();" class="cancelbtn">Cancel</button>
       </div>
     </div>
   </form>
