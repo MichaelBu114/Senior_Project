@@ -18,6 +18,7 @@ li {
 
 form {
     margin-left: 20px;
+    font-size: 0;
 }
 
 form input[type=text] {
@@ -26,16 +27,20 @@ form input[type=text] {
     border: none;
     outline: none;
     padding: 0px 0px 0px 10px;
+    margin: 0px;
+    vertical-align: middle;
 }
 
 form button {
-    width: 50px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     border: none;
     padding: 0px;
     background: white;
     outline: none;
     cursor: pointer;
+    margin: 0px;
+    vertical-align: middle;
 }
 
  .tabcontent ol {
@@ -63,17 +68,16 @@ ol li span {
     position: absolute;
     top: 0;
     right: 0;
-    width: 50px;
+    width: 35px;
     text-align: center;
     background: #e00;
 }
 
 ol li img {
     position: absolute;
-    top: 10px;
-    right: 50px;
-    width: 35px;
-    height: 35px;
+    right: 35px;
+    width: 25px;
+    height: 25px;
     background: #28a745;
 }
 
@@ -133,7 +137,7 @@ ol li img {
                         <form>
                             <input type="text" name="addgoup" id="addgroup" required>
                             <button type="submit" class="btn-list">
-                                <img src="/static/images/plussign.png" valign="center" width="30" height="25" alt="plussign"/>
+                                <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
                             </button>
                         </form>
                         <div id="activegroups">
