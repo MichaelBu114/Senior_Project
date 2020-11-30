@@ -47,6 +47,16 @@ END ;;
 DELIMITER ;
 
 
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `getPendingFriends`(IN userid int(11))
+BEGIN
+	SELECT u.firstname, u.lastname, u.email
+    FROM Friends f JOIN User u ON u.user_id=f.Fk_friend
+    WHERE f.Fk_friend = userid AND f.status = 0;
+END ;;
+DELIMITER ;
+
+
 
 --
 -- Example from https://www.codedodle.com/2014/12/social-network-friends-database.html
