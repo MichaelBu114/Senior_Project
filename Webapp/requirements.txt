@@ -6,3 +6,4 @@ mysql-client
 cryptography
 requests
 mysql-connector-python
+Flask-Mail

@@ -73,8 +73,8 @@ ol li img {
     top: 10px;
     right: 50px;
     width: 35px;
-<!--    height: 35px;
-    background: #28a745;-->
+    height: 35px;
+    background: #28a745;
 }
 
 </style>
@@ -98,24 +98,18 @@ ol li img {
                     <div id="Friends" class="tabcontent">
                         <h1>Friends</h1>
                         <ul id='FriendList'>
-                            <li class='friend selected'>
-                                <img style="max-height:110px; margin: 5px 10px; position: inherit;" src='{{source}}' />
-                                <div class='name'>
-                                    Andres Perez
+                        {% for i in data %}
+                            <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
+                                <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
+                                <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                    <p style="color: Gray;font-size:12px;">
+                                        {{i[0]}} <br />
+                                        {{i[1]}} <br />
+                                        {{i[2]}} <br />
+                                    </p>
                                 </div>
-                            </li>
-                            <li class='friend'>
-                                <img style="max-height:110px; margin: 5px 10px; position: inherit;" src='https://i.imgur.com/0I4lkh9.jpg' />
-                                <div class='name'>
-                                    Leah Slaten
-                                </div>
-                            </li>
-                            <li class='friend'>
-                                <img style="max-height:110px; margin: 5px 10px; position: inherit;" src='https://i.imgur.com/s2WCwH2.jpg' />
-                                <div class='name'>
-                                    Mario Martinez
-                                </div>
-                            </li>
+                            </div>
+                        {% endfor %}
                         </ul>
                     </div>
                     
@@ -131,7 +125,7 @@ ol li img {
                                 <i class="fas fa-envelope"></i>
                             </label>
                             <input type="friends" name="friends" placeholder="Search by Email" id="friends" required>
-                            <input type="submit" value="Submit" style="margin:5px 0">
+                            <input type="submit" name ="findFriend" value="Submit" style="margin:5px 0">
                         </form>
                     </div>
                     <div id="GroupPage" class="tabcontent">

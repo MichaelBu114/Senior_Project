@@ -4,6 +4,7 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flaskext.mysql import MySQL
 from flask.helpers import flash
+from flask_mail import Mail, Message
 from config import *
 import zomato_api
 
@@ -17,6 +18,14 @@ app.config['MYSQL_DATABASE_DB'] = MYSQL_DATABASE
 app.config['MYSQL_DATABASE_PORT'] = MYSQL_PORT
 mysql.init_app(app)
 
+
+app.config['MAIL_SERVER'] = MAIL_SERVER
+app.config['MAIL_PORT'] = MAIL_PORT
+app.config['MAIL_USERNAME'] = MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
+app.config['MAIL_USE_TLS'] = MAIL_USE_TLS
+app.config['MAIL_USE_SSL'] = MAIL_USE_SSL
+mail = Mail(app)
 
 @app.route('/')
 def home():
@@ -98,6 +107,7 @@ def registration():
                 session['email'] = email
                 session['password'] = password
                 session['id'] = sesId[0]
+                regestrationMessage(email)
                 con.close()
                 return render_template('preferences.html', username=session['username'])
         else:
@@ -392,29 +402,25 @@ def connect():
     msg = ''
     sesId = session['id']
     if request.method == 'POST':
-        if 'Friends' in request.form:
-            friendList = getFriends(sesId)
-            return render_template('AddFriends.html', username=session['username'], friends=friendList)
-        elif 'FindFriends' in request.form:
-            if 'friend' in request.form:
-                friend = request.form['friend']
-                con = MySQL.connect()
-                cur = con.cursor()
-                name = cur.execute('Call GetName(%s)', (friend))
-                name = cur.fetchone()
-                if name[0] == '':
-                    msg = ('No Results Found for ' + '"' + friend + '"')
-                    return render_template('AddFriends.html', username=session['username'], msg=msg)
-                else:
-                    friendId = cur.execute('Call GetUserId(%s, %s)', (name[0], friend))
-                    friendId = cur.fetchone()
-                    addFriend(friendId[0], sesId)
-                    con.close
-                    msg = ('Friend request sent')
-                    return render_template('AddFriends.html', username=session['username'], msg=msg)
+        if request.form['findFriend'] == 'Submit' and 'friends' in request.form:
+            friend = request.form['friends']
+            con = mysql.connect()
+            cur = con.cursor()
+            name = cur.execute('Call GetName(%s)', (friend))
+            name = cur.fetchone()
+            if name[0] == '':
+                msg = ('No Results Found for ' + '"' + friend + '"')
+                return render_template('AddFriends.html', username=session['username'], msg=msg)
+            else:
+                friendId = cur.execute('Call GetUserId(%s, %s)', (name[0], friend))
+                friendId = cur.fetchone()
+                addFriend(friendId[0], sesId)
+                con.close
+                msg = ('Friend request sent')
+                return render_template('AddFriends.html', username=session['username'], msg=msg)
     else:
         friendList = getFriends(sesId)
-        return render_template('AddFriends.html', username=session['username'], friends=friendList)
+        return render_template('AddFriends.html', username=session['username'], data=friendList)
 
 
 # Need to determine if group calls go here or inside request.method.
@@ -424,7 +430,7 @@ def addFriend(friendId, userId):
     cur = con.cursor()
     status = 0
     if (status != 1 and friendId != userId):
-        cur.execute('CALL addFriend(%d,%d,%d)', (friendId, userId, status))
+        cur.execute('CALL addFriend(%s,%s,%s)', (friendId, userId, status))
         con.commit()
     con.close()
 
@@ -443,7 +449,7 @@ def deleteFriend(friends_id, Fk_user, status):
     con = mysql.connect()
     cur = con.cursor()
     if (status == 1 and friends_id != Fk_user):
-        cur.execute('CALL deleteFriend(%d, %d)', (friends_id, Fk_user))
+        cur.execute('CALL deleteFriend(%s, %s)', (friends_id, Fk_user))
         con.commit()
     con.close()
 
@@ -451,10 +457,14 @@ def deleteFriend(friends_id, Fk_user, status):
 def updateFriend(friends_id, Fk_user, status):
     con = mysql.connect()
     cur = con.cursor()
-    cur.execute('CALL updateFriend(%d, %d, %d)', (friends_id, Fk_user, status))
+    cur.execute('CALL updateFriend(%s, %s, %s)', (friends_id, Fk_user, status))
     con.commit()
     con.close()
 
+def regestrationMessage(email):
+    msg = Message('Confirm Email', sender = MAIL_USERNAME, recipients =[email])
+    msg.body = "Testing to see if email was sent"
+    mail.send(msg)
 
 if __name__ == '__main__':
     app.run(debug=True)
