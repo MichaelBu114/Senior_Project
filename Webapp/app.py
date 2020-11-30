@@ -11,20 +11,8 @@ import zomato_api
 app = Flask(__name__)
 mysql = MySQL()
 app.secret_key = secrets.token_urlsafe(16)
-app.config['MYSQL_DATABASE_HOST'] = MYSQL_HOST
-app.config['MYSQL_DATABASE_USER'] = MYSQL_USERNAME
-app.config['MYSQL_DATABASE_PASSWORD'] = MYSQL_PASSWORD
-app.config['MYSQL_DATABASE_DB'] = MYSQL_DATABASE
-app.config['MYSQL_DATABASE_PORT'] = MYSQL_PORT
+app.config.from_pyfile('config.py')
 mysql.init_app(app)
-
-
-app.config['MAIL_SERVER'] = MAIL_SERVER
-app.config['MAIL_PORT'] = MAIL_PORT
-app.config['MAIL_USERNAME'] = MAIL_USERNAME
-app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
-app.config['MAIL_USE_TLS'] = MAIL_USE_TLS
-app.config['MAIL_USE_SSL'] = MAIL_USE_SSL
 mail = Mail(app)
 
 @app.route('/')
