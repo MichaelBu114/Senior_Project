@@ -95,27 +95,53 @@ ol li img {
                         <li><button name = "Groups" value ="groups" class="tablinks" style="background-color: white; color: black" onclick="openFriends(event, 'GroupPage')">Groups Page</button></li>
                     </ul>
                     
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <ul class=flashes>
+                            {% for message in messages %}
+                            <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    {% endwith %}
+                    
                     <div id="Friends" class="tabcontent">
                         <h1>Friends</h1>
                         <ul id='FriendList'>
                         {% for i in data %}
-                            <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
-                                <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
-                                    <p style="color: Gray;font-size:12px;">
-                                        {{i[0]}} <br />
-                                        {{i[1]}} <br />
-                                        {{i[2]}} <br />
-                                    </p>
+                            {% if i[3] == 1 %}
+                                <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
+                                    <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
+                                    <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                        <p style="color: Gray;font-size:12px;">
+                                            {{i[0]}} <br />
+                                            {{i[1]}} <br />
+                                            {{i[2]}} <br />
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endfor %}
                         </ul>
                     </div>
                     
                     <div id="Pending" class="tabcontent">
                         <h1>Pending Friend Requests</h1>
-                        <p>List will show here.</p>
+                        {% for i in data %}
+                            {% if i[3] == 0 %}
+                                <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
+                                    <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
+                                    <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                        <p style="color: Gray;font-size:12px;">
+                                            {{i[0]}} <br />
+                                            {{i[1]}} <br />
+                                            {{i[2]}} <br />
+                                        </p>
+                                    </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
                     </div>
                     
                     <div id="FindFriends" class="tabcontent">

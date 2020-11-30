@@ -396,19 +396,18 @@ def connect():
             cur = con.cursor()
             name = cur.execute('Call GetName(%s)', (friend))
             name = cur.fetchone()
-            if name[0] == '':
+            if name == None:
                 msg = ('No Results Found for ' + '"' + friend + '"')
-                return render_template('AddFriends.html', username=session['username'], msg=msg)
+                flash(msg)
             else:
                 friendId = cur.execute('Call GetUserId(%s, %s)', (name[0], friend))
                 friendId = cur.fetchone()
                 addFriend(friendId[0], sesId)
                 con.close
                 msg = ('Friend request sent')
-                return render_template('AddFriends.html', username=session['username'], msg=msg)
-    else:
-        friendList = getFriends(sesId)
-        return render_template('AddFriends.html', username=session['username'], data=friendList)
+                flash(msg)
+    friendList = getFriends(sesId)
+    return render_template('AddFriends.html', username=session['username'], data=friendList)
 
 
 # Need to determine if group calls go here or inside request.method.
@@ -418,7 +417,7 @@ def addFriend(friendId, userId):
     cur = con.cursor()
     status = 0
     if (status != 1 and friendId != userId):
-        cur.execute('CALL addFriend(%s,%s,%s)', (friendId, userId, status))
+        cur.execute('CALL addFriend(%s,%s,%s)', (userId, friendId,status))
         con.commit()
     con.close()
 
