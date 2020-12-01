@@ -16,12 +16,12 @@ li {
   float: left;
 }
 
-form {
+.groupform {
     margin-left: 20px;
     font-size: 0;
 }
 
-form input[type=text] {
+.groupform input[type=text] {
     width: 250px;
     height: 25px;
     border: none;
@@ -31,7 +31,7 @@ form input[type=text] {
     vertical-align: middle;
 }
 
-form button {
+.btn-list {
     width: 25px;
     height: 25px;
     border: none;
@@ -85,6 +85,8 @@ ol li img {
 </head>
 
 <body>
+<!-- Modal for editGroup-->
+{% include 'editGroupModal.html' %}
 
     <div id="container">
   {% include 'header.html' with context %}
@@ -160,7 +162,7 @@ ol li img {
                     </div>
                     <div id="GroupPage" class="tabcontent">
                         <h1>Groups Page</h1>
-                        <form>
+                        <form class="groupform">
                             <input type="text" name="addgoup" id="addgroup" required>
                             <button type="submit" class="btn-list">
                                 <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
@@ -195,6 +197,7 @@ ol li img {
                //create edit image
                const myEdit = document.createElement('img');
                myEdit.src="/static/images/editlogo.png";
+               myEdit.onclick = ()=>{ document.getElementById('id05').style.display='block'};
                myLi.appendChild(myEdit);
                //create span
                const mySpan = document.createElement('span');
