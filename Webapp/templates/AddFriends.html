@@ -114,61 +114,49 @@ ol li img {
                     <div id="Friends" class="tabcontent">
                         <h1>Friends</h1>
                         <ul id='FriendList'>
-                        {% for i in data %}
-                            {% if i[3] == 1 %}
+                            <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                    <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
-                                    <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
-                                        <p style="color: Gray;font-size:12px;">
-                                            {{i[0]}} <br />
-                                            {{i[1]}} <br />
-                                            {{i[2]}} <br />
-                                        </p>
+                                    <div id="friends-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                        {% for i in data %}
+                                            <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}</p>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                            {% endif %}
-                        {% endfor %}
+                            </li>
                         </ul>
                     </div>
-                    
+
                     <div id="Pending" class="tabcontent">
                         <h1>Pending Friend Requests</h1>
-                        <ul id="PendingList">
-                        <li>
-                        {% for i in data %}
-                            {% if i[3] == 0 %}
+                        <ul id='PendingList'>
+                            <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                    <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
-                                        <p style="color: Gray;font-size:12px;">
-                                            {{i[0]}} <br />
-                                            {{i[1]}} <br />
-                                            {{i[2]}} <br />
-                                        </p>
+                                    <div id="pending-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                        {% for i in pending %}
+                                            <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Requested: {{i[4]}})</p>
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                        </li>
-                        <li>
-                        {% for i in pending %}
+                            </li>
+                        </ul>
+                        <h1>Declined Friend Requests</h1>
+                        <ul id='DeclinedList'>
+                            <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                    <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
-                                        <p style="color: Gray;font-size:12px;">
-                                            {{i[0]}} <br />
-                                            {{i[1]}} <br />
-                                            {{i[2]}} <br />
-                                        </p>
+                                    <div id="declined-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                        {% for i in declined %}
+                                            <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Declined: {{i[4]}})</p>
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                        </li>
+                            </li>
                         </ul>
                     </div>
-                    
+
                     <div id="FindFriends" class="tabcontent">
                         <h1>Friend Search</h1>
-                        <form action="{{ url_for('connect') }}" method="post" style="text-align: center" autocomplete="off">
-                            <label for="Friends" style="text-align: center;">
+                        <form action="{{ url_for('connect') }}" method="post" style="text-align: left;padding-left:20px" autocomplete="off">
+                            <label for="Friends" style="text-align: left;">
                                 <i class="fas fa-envelope"></i>
                             </label>
                             <input type="friends" name="friends" placeholder="Search by Email" id="friends" required>

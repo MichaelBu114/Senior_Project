@@ -388,6 +388,9 @@ def termspolicy():
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():
     msg = ''
+    confirmed = []
+    pending = []
+    declined = []
     sesId = session['id']
     if request.method == 'POST':
         if request.form['findFriend'] == 'Submit' and 'friends' in request.form:
@@ -406,9 +409,15 @@ def connect():
                 con.close
                 msg = ('Friend request sent')
                 flash(msg)
-    friendList = getFriends(sesId)
-    pendingList = getPendiing(sesId)
-    return render_template('AddFriends.html', username=session['username'], data=friendList, pending=pendingList)
+    friendsList = getFriends(sesId)
+    for friend in friendsList:
+        if friend[3] == 0:
+            pending.append(friend)
+        elif friend[3] == 1:
+            confirmed.append(friend)
+        else:
+            declined.append(friend)
+    return render_template('AddFriends.html', username=session['username'], data=confirmed, pending=pending, declined=declined)
 
 
 # Need to determine if group calls go here or inside request.method.
@@ -449,19 +458,12 @@ def updateFriend(friends_id, Fk_user, status):
     con.commit()
     con.close()
 
-def getPendiing(user_id):
-    con = mysql.connect()
-    cur = con.cursor()
-    pendingList = cur.execute('CALL getPendingFriends(%s)', (user_id))
-    pendingList = cur.fetchall()
-    con.commit()
-    con.close()
-    return pendingList
 
 def regestrationMessage(email):
     msg = Message('Confirm Email', sender = MAIL_USERNAME, recipients =[email])
     msg.body = "Testing to see if email was sent"
     mail.send(msg)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
