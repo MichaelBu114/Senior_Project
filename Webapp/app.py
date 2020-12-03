@@ -402,6 +402,9 @@ def connect():
             if name == None:
                 msg = ('No Results Found for ' + '"' + friend + '"')
                 flash(msg)
+            elif friend == session['email']:
+                msg = ('Invalid')
+                flash(msg)
             else:
                 friendId = cur.execute('Call GetUserId(%s, %s)', (name[0], friend))
                 friendId = cur.fetchone()
@@ -450,13 +453,14 @@ def deleteFriend(friends_id, Fk_user, status):
         con.commit()
     con.close()
 
-
-def updateFriend(friends_id, Fk_user, status):
+@app.route('/update/<int:friends_id>/<int:Fk_user>/<int:status>', methods = ['GET','POST'])
+def updateFriend(friends_id,Fk_user,status):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL updateFriend(%s, %s, %s)', (friends_id, Fk_user, status))
     con.commit()
     con.close()
+    return redirect(url_for('connect'))
 
 
 def regestrationMessage(email):

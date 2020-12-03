@@ -110,7 +110,7 @@ ol li img {
                         </ul>
                         {% endif %}
                     {% endwith %}
-                    
+                    <form action="{{ url_for('connect') }}" method="post" style="text-align: left;padding-left:20px" autocomplete="off">
                     <div id="Friends" class="tabcontent">
                         <h1>Friends</h1>
                         <ul id='FriendList'>
@@ -134,8 +134,11 @@ ol li img {
                                     <div id="pending-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
                                         {% for i in pending %}
                                             <p style="color: Gray;font-size:12px;font-weight:bold;">
-                                                {{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Requested: {{i[4]}})
-                                                {% if i[5] == session['id'] %}<a href="#" class="menubutton">Accept</a> <a href="#" class="menubutton">Decline</a>{%endif%}
+                                                    {{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Requested: {{i[4]}})
+                                                    {% if i[5] == session['id'] %}
+                                                    <a href = "{{url_for('updateFriend',friends_id=i[5],Fk_user=i[6],status=1)}}" class="menubutton">Accept</a> 
+                                                    <a href= "{{url_for('updateFriend',friends_id=i[5],Fk_user=i[6],status=2)}}" class="menubutton">Decline</a>
+                                                    {%endif%}
                                             </p>
                                         {% endfor %}
                                     </div>
@@ -158,17 +161,14 @@ ol li img {
 
                     <div id="FindFriends" class="tabcontent">
                         <h1>Friend Search</h1>
-                        <form action="{{ url_for('connect') }}" method="post" style="text-align: left;padding-left:20px" autocomplete="off">
                             <label for="Friends" style="text-align: left;">
                                 <i class="fas fa-envelope"></i>
                             </label>
                             <input type="friends" name="friends" placeholder="Search by Email" id="friends" required>
                             <input type="submit" name ="findFriend" value="Submit" style="margin:5px 0">
-                        </form>
                     </div>
                     <div id="GroupPage" class="tabcontent">
                         <h1>Groups Page</h1>
-                        <form class="groupform">
                             <input type="text" name="addgoup" id="addgroup" required>
                             <button type="submit" class="btn-list">
                                 <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
