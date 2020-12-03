@@ -407,7 +407,8 @@ def connect():
                 msg = ('Friend request sent')
                 flash(msg)
     friendList = getFriends(sesId)
-    return render_template('AddFriends.html', username=session['username'], data=friendList)
+    pendingList = getPendiing(sesId)
+    return render_template('AddFriends.html', username=session['username'], data=friendList, pending=pendingList)
 
 
 # Need to determine if group calls go here or inside request.method.
@@ -447,6 +448,15 @@ def updateFriend(friends_id, Fk_user, status):
     cur.execute('CALL updateFriend(%s, %s, %s)', (friends_id, Fk_user, status))
     con.commit()
     con.close()
+
+def getPendiing(user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    pendingList = cur.execute('CALL getPendingFriends(%s)', (user_id))
+    pendingList = cur.fetchall()
+    con.commit()
+    con.close()
+    return pendingList
 
 def regestrationMessage(email):
     msg = Message('Confirm Email', sender = MAIL_USERNAME, recipients =[email])
