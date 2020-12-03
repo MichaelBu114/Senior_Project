@@ -151,7 +151,7 @@ CREATE TABLE `Friends` (
 
 LOCK TABLES `Friends` WRITE;
 /*!40000 ALTER TABLE `Friends` DISABLE KEYS */;
-INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,0,'2020-11-21 20:17:33'),(5,2,3,1,'2020-11-21 20:17:33'),(6,2,20,2,'2020-12-03 19:18:10'),(7,2,19,0,'2020-12-03 18:46:11');
+INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,0,'2020-11-21 20:17:33'),(5,2,3,1,'2020-11-21 20:17:33'),(6,2,20,0,'2020-12-03 20:01:31'),(7,2,19,0,'2020-12-03 18:46:11');
 /*!40000 ALTER TABLE `Friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -714,9 +714,10 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN userid int(11))
 BEGIN
-	SELECT u.firstname, u.lastname, u.email, f.status, DATE_FORMAT(f.date_updated,'%Y-%m-%d - %h:%i:%s %p')
+	SELECT u.firstname, u.lastname, u.email, f.status, DATE_FORMAT(f.date_updated,'%Y-%m-%d - %h:%i:%s %p'), f.Fk_friend
     FROM Friends f JOIN User u ON u.user_id=f.Fk_friend
-    WHERE f.Fk_user = userid;
+    WHERE f.Fk_user = userid OR f.Fk_friend = userid
+    ORDER BY f.date_updated DESC;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1087,4 +1088,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-03 14:19:01
+-- Dump completed on 2020-12-03 15:11:13
