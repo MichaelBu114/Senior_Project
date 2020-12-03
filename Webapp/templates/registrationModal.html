@@ -31,10 +31,14 @@
         {% for message in get_flashed_messages() %}
               <div class="alert-error">
                 Error: {{ message }}</div>
-          {% if 'Invalid' not in message %}
+          {% if 'Login' in message %}
+                <div class="alert-error">Error: {{ message }}</div>
+                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
+          {% elif 'Register' in message %}
+                <div class="alert-error">Error: {{ message }}</div>
                 <script type = "text/javascript">document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';</script>
           {% else %}
-                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
+                <script type = "text/javascript">document.getElementById('id02').style.display='none'; document.getElementById('id01').style.display='none';</script>
           {% endif %}
         {% endfor %}
         <button type="button" onclick="document.getElementById('id02').style.display='none';document.getElementById('registrationFORM').reset();" class="cancelbtn">Cancel</button>

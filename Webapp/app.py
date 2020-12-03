@@ -45,7 +45,7 @@ def login():
             con.close()
             return redirect(url_for('home'))
         else:
-            msg = "Invalid username/password, try again."
+            msg = "Login: Invalid username/password, try again."
             flash(msg)
             con.close()
     return redirect(url_for('home'))
@@ -76,9 +76,9 @@ def registration():
             login = cur.callproc('GetUsername', [email])
             login = cur.fetchone()
             if login:
-                flash('Account already exists!')
+                flash('Register: Account already exists!')
             elif hashed != hRepeat:
-                flash('Password dont match')
+                flash('Register: Passwords do not match')
             else:
                 sqlstat = "INSERT INTO Login (username,password,date_changed) VALUES (%s,%s,curdate())"
                 sqlstat2 = "call addUser(%s,%s,%s,LAST_INSERT_ID())"

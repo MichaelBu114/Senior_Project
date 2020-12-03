@@ -13,16 +13,18 @@
       <label>
         <input type="checkbox" checked="checked" name="remember"> Remember me
       </label>
-      <div class="error">{{ messsage }}</div>
+      <div class="error">{{ message }}</div>
       <button type="submit">Login</button>
       <button onclick="document.getElementById('id02').style.display='block';document.getElementById('id01').style.display='none';document.getElementById('loginFORM').reset();document.getElementById('registrationFORM').reset();document.getElementById('firstname').focus();">Not A Member? Register Here</button>
         {% for message in get_flashed_messages() %}
               <div class="alert-error">
                 Error: {{ message }}</div>
-          {% if 'match' not in message %}
+          {% if 'Register' in message %}
+                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
+          {% elif 'Login' in message %}
                 <script type = "text/javascript">document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';</script>
           {% else %}
-                <script type = "text/javascript">document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';</script>
+                <script type = "text/javascript">document.getElementById('id02').style.display='none'; document.getElementById('id01').style.display='none';</script>
           {% endif %}
         {% endfor %}
    </div>
