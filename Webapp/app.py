@@ -13,7 +13,7 @@ app.secret_key = secrets.token_urlsafe(16)
 app.config.from_pyfile('config.py')
 mysql.init_app(app)
 mail = Mail(app)
-
+result = None
 @app.route('/')
 def home():
     if 'username' in session:
@@ -56,6 +56,7 @@ def logout():
     session.pop('email', None)
     session.pop('id', None)
     session.pop('password', None)
+    results = {}
     return redirect(url_for('home'))
 
 
@@ -100,9 +101,18 @@ def registration():
             flash('Please fill out the form!')
     return redirect(url_for('home'))
 
+@app.route('/search_results/<int:pageNum>/<int:Next>/<int:prev>')
+def search_results(pageNum,Next,prev):
+    if 'username' in session:
+        sesid = session['id']
+    else:
+        sesid = 0
+    data = result.get(sesid)
+    return render_template('search.html',username = session['username'],data = data, pageNum= pageNum, next=Next,prev=prev)
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
+    global result
     msg = ""
     data = []
     pageNum = 0
@@ -129,11 +139,12 @@ def search():
                 data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
+            result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
-                                   userRating=UserRating, userRange=UserRange,pageNum = pageNum)
+                                   userRating=UserRating, userRange=UserRange,pageNum = pageNum, next = 11, prev=0)
     else:
-        return render_template('search.html', msg=msg, data=data, username=uname,pageNum = pageNum)
+        return render_template('search.html', msg=msg, data=data, username=uname,pageNum = pageNum, next = 0, prev= 0)
 
 
 @app.route('/details/', methods=['GET', 'POST'])
@@ -150,7 +161,6 @@ def details():
     commentsList = cur.fetchall()
     if not commentsList:
         commentsList = 'empty'
-
     if resp["status"] != 'OK':
         msg += resp["status"]
     if 'username' in session:
