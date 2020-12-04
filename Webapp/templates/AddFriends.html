@@ -110,7 +110,6 @@ ol li img {
                         </ul>
                         {% endif %}
                     {% endwith %}
-                    <form action="{{ url_for('connect') }}" method="post" style="text-align: left;padding-left:20px" autocomplete="off">
                     <div id="Friends" class="tabcontent">
                         <h1>Friends</h1>
                         <ul id='FriendList'>
@@ -161,14 +160,17 @@ ol li img {
 
                     <div id="FindFriends" class="tabcontent">
                         <h1>Friend Search</h1>
+                        <form action="{{ url_for('connect') }}" method="post" style="text-align: left;padding-left:20px" autocomplete="off">
                             <label for="Friends" style="text-align: left;">
                                 <i class="fas fa-envelope"></i>
                             </label>
                             <input type="friends" name="friends" placeholder="Search by Email" id="friends" required>
                             <input type="submit" name ="findFriend" value="Submit" style="margin:5px 0">
+                        </form>
                     </div>
                     <div id="GroupPage" class="tabcontent">
                         <h1>Groups Page</h1>
+                        <form class="groupform">
                             <input type="text" name="addgoup" id="addgroup" required>
                             <button type="submit" class="btn-list">
                                 <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
