@@ -5,7 +5,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 from flask_mail import Mail, Message
-from config import *
 import zomato_api
 
 app = Flask(__name__)
@@ -62,7 +61,6 @@ def logout():
 
 @app.route('/registration/', methods=['GET', 'POST'])
 def registration():
-    msg = ''
     if request.method == 'POST':
         if 'psw' in request.form and 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form and 'psw-repeat' in request.form:
             password = request.form['psw']
@@ -107,6 +105,7 @@ def registration():
 def search():
     msg = ""
     data = []
+    pageNum = 0
     if 'username' in session:
         sesId = session['id']
         uname = session['username']
@@ -114,6 +113,7 @@ def search():
         sesId = 0
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
+            pageNum = 1
             UserZipCode = request.form['zip']
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
@@ -131,9 +131,9 @@ def search():
                              resp[i]["rating_icon"]])
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
-                                   userRating=UserRating, userRange=UserRange)
+                                   userRating=UserRating, userRange=UserRange,pageNum = pageNum)
     else:
-        return render_template('search.html', msg=msg, data=data, username=uname)
+        return render_template('search.html', msg=msg, data=data, username=uname,pageNum = pageNum)
 
 
 @app.route('/details/', methods=['GET', 'POST'])
@@ -176,8 +176,6 @@ def details():
 
 @app.route('/comment/', methods=['GET', 'POST'])
 def comment():
-    msg = ""
-    data = []
     if request.method == 'POST' and 'username' in session:
         print('Posted:')
         rating = request.form['star']
@@ -242,7 +240,7 @@ def survey():
                 return render_template('search.html', msg=msg, data=data, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2])
+                                       userRating=newPref[2],pageNum = 1)
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -272,7 +270,7 @@ def survey():
                                  resp[i]["rating_icon"]])
                 return render_template('search.html', msg=msg, data=data, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating)
+                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1)
         return render_template('preferences.html', msg=msg)
 
 
@@ -464,7 +462,7 @@ def updateFriend(friends_id,Fk_user,status):
 
 
 def regestrationMessage(email):
-    msg = Message('Confirm Email', sender = MAIL_USERNAME, recipients =[email])
+    msg = Message('Confirm Email', sender = mail.MAIL_USERNAME, recipients =[email])
     msg.body = "Testing to see if email was sent"
     mail.send(msg)
 

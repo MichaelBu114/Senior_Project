@@ -53,9 +53,18 @@
 
             {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
             <input type="submit" value="Submit" style="margin:5px 0;">
+            {% if pageNum == 0 %}{%endif%}
+            {% if pageNum == 1 %}
+              <a href = '#' clase='next'>&raquo; Next</a>{%endif%}
+            {% if pageNum == 5%}
+              <a href = '#' clase='previous'>&laquo; Previous</a>{%endif%}
+            {% if pageNum !=5 and pageNum !=1 and pageNum !=0 %}
+              <a href = '#' clase='previous'>&laquo; Previous</a>
+              <a href = '#' clase='next'>&raquo; Next</a>
+              {%endif%}
             <p>&nbsp;</p>
                 <ul>
-                {% for i in data %}
+                {% for i in data[(pageNum-1):((pageNum*10)+1)] %}
                     <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
                         <div id="rest-thumb-img" style="max-height:110px; margin: 5px 10px; float: right;"><img src="{{ i[6] }}" height="100"></div>
                         <div id="rest-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">

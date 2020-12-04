@@ -1,19 +1,10 @@
 import sys
 import requests
-import mysql.connector
+import mysql.connector as mysql
 import random
-
-from config import *
-
+from config import ZOMATO_API_KEY,GOOGLE_MAPS_API_KEY
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
-
-config = {
-    'user': MYSQL_USERNAME,
-    'password' : MYSQL_PASSWORD,
-    'host': MYSQL_HOST,
-    'database': MYSQL_DATABASE,
-    'auth_plugin': 'mysql_native_password'}
 
 
 FORCE_ERROR = False
@@ -50,19 +41,15 @@ def mysql_database_call(function, user_id):
     categories = None
     connection = None
     result = ""
-    if DEBUG:
-        print("Executing %s ..." % function)
-    try:
-        connection = mysql.connector.connect(**config)
-        cursor = connection.cursor()
-        categories = cursor.callproc(function, args = [user_id])
-        for r in cursor.stored_results():
-            for i in list(r.fetchall()):
-                result += str(i[0]) + ","
-        connection.close()
-        assert FORCE_ERROR == False
-    except:
-        return -1
+    print("Executing %s ..." % function)
+    connection = mysql.connect(user='root',password ='snowflake6365stark',host='mysql-development',database='dp_sp',port=3306,auth_plugin='mysql_native_password')
+    cursor = connection.cursor()
+    categories = cursor.callproc(function, args = [user_id])
+    for r in cursor.stored_results():
+        for i in list(r.fetchall()):
+            result += str(i[0]) + ","
+    connection.close()
+    assert FORCE_ERROR == False
     return result[:-1]
 
 def restaurant_details(res_id):

@@ -1,7 +1,6 @@
 Flask
 uWSGI
 flask-mysql
-mysql-connector
 mysql-client
 cryptography
 requests
