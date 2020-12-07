@@ -1,15 +1,14 @@
 import hashlib
 import re
-import secrets
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flaskext.mysql import MySQL
 from flask.helpers import flash
 from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 import zomato_api
 
 app = Flask(__name__)
 mysql = MySQL()
-app.secret_key = secrets.token_urlsafe(16)
 app.config.from_pyfile('config.py')
 mysql.init_app(app)
 mail = Mail(app)
@@ -52,11 +51,12 @@ def login():
 
 @app.route('/logout/')
 def logout():
+    global result
     session.pop('username', None)
     session.pop('email', None)
     session.pop('id', None)
     session.pop('password', None)
-    results = {}
+    result = {}
     return redirect(url_for('home'))
 
 
@@ -79,12 +79,9 @@ def registration():
             elif hashed != hRepeat:
                 flash('Register: Passwords do not match')
             else:
-                sqlstat = "INSERT INTO Login (username,password,date_changed) VALUES (%s,%s,curdate())"
-                sqlstat2 = "call addUser(%s,%s,%s,LAST_INSERT_ID())"
-                args2 = (firstname, lastname, email)
-                args = (email, hashed)
+                sqlstat = "Call newUser(%s,%s,%s,%s)"
+                args = (hashed,firstname, lastname, email)
                 cur.execute(sqlstat, args)
-                cur.execute(sqlstat2, args2)
                 con.commit()
                 name = cur.execute('Call GetName(%s)', (email))
                 name = cur.fetchone()
@@ -94,7 +91,9 @@ def registration():
                 session['email'] = email
                 session['password'] = password
                 session['id'] = sesId[0]
-                regestrationMessage(email)
+                token = generate_confirmation_token(email)
+                confirm_url = url_for('confirm_email', token=token, _external=True)
+                regestrationMessage(email, confirm_url)
                 con.close()
                 return render_template('preferences.html', username=session['username'])
         else:
@@ -250,7 +249,7 @@ def survey():
                 return render_template('search.html', msg=msg, data=data, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2],pageNum = 1)
+                                       userRating=newPref[2],pageNum = 1,next=0,prev=0)
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -280,7 +279,7 @@ def survey():
                                  resp[i]["rating_icon"]])
                 return render_template('search.html', msg=msg, data=data, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1)
+                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1,next =0,prev=0)
         return render_template('preferences.html', msg=msg)
 
 
@@ -471,11 +470,42 @@ def updateFriend(friends_id,Fk_user,status):
     return redirect(url_for('connect'))
 
 
-def regestrationMessage(email):
-    msg = Message('Confirm Email', sender = mail.MAIL_USERNAME, recipients =[email])
-    msg.body = "Testing to see if email was sent"
+def regestrationMessage(email, url):
+    msg = Message('Confirmation Email', sender = mail.MAIL_USERNAME, recipients =[email])
+    msg.body = "Please confirm your email " + url
     mail.send(msg)
 
+def generate_confirmation_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
 
+def confirm_token(token,expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token,salt=app.config['SECURITY_PASSWORD_SALT'] ,max_age=expiration)
+    except:
+        return False
+    return email
+
+def confirm_email(token):
+    con = mysql.connect()
+    cur = con.cursor()
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.')
+        cur.execute("CALL updateUserActivity", (2,session['id']))
+        con.commit()
+    active = cur.execute("CALL getActivity(%s)", (email))
+    active = cur.fetchall()
+    if active[0] == 1:
+        flash('Account is already confirmed.')
+    else:
+        cur.execute("CALL updateUserActivity", (1,session['id']))
+        cur.commit()
+        con.close()
+        flash('Your email is confirmed, thank you')
+    return redirect(url_for('home'))
+    
 if __name__ == '__main__':
     app.run(debug=True)
