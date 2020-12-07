@@ -12,7 +12,7 @@ mysql = MySQL()
 app.config.from_pyfile('config.py')
 mysql.init_app(app)
 mail = Mail(app)
-result = None
+result = {}
 @app.route('/')
 def home():
     if 'username' in session:
@@ -103,11 +103,12 @@ def registration():
 @app.route('/search_results/<int:pageNum>/<int:Next>/<int:prev>')
 def search_results(pageNum,Next,prev):
     if 'username' in session:
-        sesid = session['id']
+        data = result.get(session['id'])
+        return render_template('search.html',username = session['username'],data = data, pageNum= pageNum, next=Next,prev=prev)
     else:
-        sesid = 0
-    data = result.get(sesid)
-    return render_template('search.html',username = session['username'],data = data, pageNum= pageNum, next=Next,prev=prev)
+        data = result.get(0)
+        return render_template('search.html',data = data, pageNum= pageNum, next=Next,prev=prev)
+   
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
@@ -120,6 +121,7 @@ def search():
         uname = session['username']
     else:
         sesId = 0
+        uname = ''
     if request.method == 'POST':
         if 'zip' in request.form and 'radius' in request.form:
             pageNum = 1
@@ -127,10 +129,6 @@ def search():
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
             UserRange = int(request.form['cost'])
-            # if 'username' in session:
-            #     sesId = session['id']
-            # else:
-            #     sesId = 0
             resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
             if resp["status"] != 'OK':
                 msg += resp["status"]
@@ -141,7 +139,7 @@ def search():
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
-                                   userRating=UserRating, userRange=UserRange,pageNum = pageNum, next = 11, prev=0)
+                                   userRating=UserRating, userRange=UserRange,pageNum = pageNum, next = 10, prev=0)
     else:
         return render_template('search.html', msg=msg, data=data, username=uname,pageNum = pageNum, next = 0, prev= 0)
 
@@ -205,6 +203,7 @@ def comment():
 
 @app.route('/survey/', methods=['GET', 'POST'])
 def survey():
+    global result
     msg = ""
     data = []
     if 'username' in session:
@@ -246,10 +245,11 @@ def survey():
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
+                result = {sesId:data}
                 return render_template('search.html', msg=msg, data=data, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2],pageNum = 1,next=11,prev=0)
+                                       userRating=newPref[2],pageNum = 1,next=10,prev=0)
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -277,9 +277,10 @@ def survey():
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
+                result = {0:data}
                 return render_template('search.html', msg=msg, data=data, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1,next =11,prev=0)
+                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1,next =10,prev=0)
         return render_template('preferences.html', msg=msg)
 
 

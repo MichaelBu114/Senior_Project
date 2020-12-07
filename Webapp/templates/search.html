@@ -55,14 +55,14 @@
             <input type="submit" value="Submit" style="margin:5px 0;">
             {% if pageNum == 0 %}{%endif%}
             {% if pageNum == 1 %}
-              <a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=next-1)}}" clase='menubutton'>Next &raquo;</a>
+              <a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=prev+10)}}" clase='menubutton'>Next &raquo;</a>
               {%endif%}
             {% if pageNum == 10%}
-              <a href = "{{url_for('search_results',pageNum=pageNum-1,Next=prev+1,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a>{%endif%}
-            {% if pageNum !=10 and pageNum !=1 and pageNum !=0 %}
-              <a href = "{{url_for('search_results',pageNum=pageNum-1,Next=prev+1,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a>
-              <a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=next-1)}}" clase='menubutton'>Next &raquo;</a>
-            {%endif%}
+              <a href = "{{url_for('search_results',pageNum=pageNum-1,Next=next-10,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a>{%endif%}
+            {% if pageNum > 1 and pageNum < 10 %}
+              <a href = "{{url_for('search_results',pageNum=pageNum-1,Next=next-10,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a>
+              <a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=prev+10)}}" clase='menubutton'>Next &raquo;</a>
+              {%endif%}
             <p>&nbsp;</p>
                 <ul>
                 {% for i in data[prev:next] %}
