@@ -249,7 +249,7 @@ def survey():
                 return render_template('search.html', msg=msg, data=data, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2],pageNum = 1,next=0,prev=0)
+                                       userRating=newPref[2],pageNum = 1,next=11,prev=0)
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -279,7 +279,7 @@ def survey():
                                  resp[i]["rating_icon"]])
                 return render_template('search.html', msg=msg, data=data, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1,next =0,prev=0)
+                                       userZipcode=UserZipCode, userRating=UserRating,pageNum = 1,next =11,prev=0)
         return render_template('preferences.html', msg=msg)
 
 
