@@ -81,6 +81,21 @@ ol li img {
     background: #28a745;
 }
 
+#GroupPage h3 {
+    margin-left: 5px;
+}
+
+.column {
+    float: left;
+    width: 50%;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 </style>
 </head>
 
@@ -170,15 +185,23 @@ ol li img {
                     </div>
                     <div id="GroupPage" class="tabcontent">
                         <h1>Groups Page</h1>
-                        <form class="groupform">
-                            <input type="text" name="addgoup" id="addgroup" required>
-                            <button type="submit" class="btn-list">
-                                <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
-                            </button>
-                        </form>
-                        <div id="activegroups">
-                            <ol>
-                            </ol>
+                        <div class="row">
+                            <div class="column">
+                                <h3>Create Group</h3>
+                                <form class="groupform">
+                                    <input type="text" name="addgoup" placeholder="Group name" id="addgroup" required>
+                                    <button type="submit" class="btn-list">
+                                        <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="column">
+                                <div id="activegroups">
+                                    <h3>Active Groups</h3>
+                                    <ol>
+                                    </ol>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

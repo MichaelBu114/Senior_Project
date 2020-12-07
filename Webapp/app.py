@@ -391,6 +391,17 @@ def howitworks():
 def termspolicy():
     return render_template('termspolicy.html')
 
+@app.route('/facebooklink/', methods=['GET', 'POST'])
+def facebooklink():
+    return render_template('facebooklink.html')
+
+@app.route('/instagramlink/', methods=['GET', 'POST'])
+def instagramlink():
+    return render_template('instagramlink.html')
+
+@app.route('/twitterlink/', methods=['GET', 'POST'])
+def twitterlink():
+    return render_template('twitterlink.html')
 
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():
