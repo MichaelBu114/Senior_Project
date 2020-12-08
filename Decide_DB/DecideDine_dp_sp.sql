@@ -61,7 +61,7 @@ CREATE TABLE `Comments` (
   UNIQUE KEY `Comments_comment_id_uindex` (`comment_id`),
   KEY `User_Comments_FK_idx` (`FK_user`),
   CONSTRAINT `User_Comments_FK` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `Comments` (
 
 LOCK TABLES `Comments` WRITE;
 /*!40000 ALTER TABLE `Comments` DISABLE KEYS */;
-INSERT INTO `Comments` VALUES (2,20,18269843,'Test Comment','testing',3,'2020-11-21 20:17:33'),(3,20,18269843,'Test Comment','test again',3,'2020-11-24 02:40:23'),(4,20,18482422,'Test Comment','Testing',3,'2020-11-24 02:42:59'),(5,20,18482422,'Test Comment','rreessderft',3,'2020-11-24 02:44:53'),(6,20,18795165,'Test Comment','Rem iste in deserunt aut qui sunt. Doloribus quam molestias qui praesentium ab sint. Ipsum magni voluptas voluptas nostrum. Eligendi quia consequatur nam officia sint error.\r\n\r\nSed voluptatem ut cumque qui eaque. Voluptatum error in velit voluptatum similique corporis repellat possimus. Error corporis eos facilis fuga nemo autem ut. Blanditiis et necessitatibus et et ullam reprehenderit.\r\n\r\nError aut iusto magni. Est quo sequi eos numquam enim blanditiis. Necessitatibus rerum est illum. Inventore voluptatem eos laboriosam.\r\n\r\nVoluptatem dicta tempora consectetur non et repudiandae. Reprehenderit tenetur incidunt quae est. Illo aut dolorem eaque laudantium ut suscipit veritatis temporibus. Sit quas et non quisquam maxime non ipsa ducimus. Facere exercitationem qui commodi.\r\n\r\nPraesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',3,'2020-11-24 16:51:09'),(7,20,17097707,'Testing KFC Comment','Rem iste in deserunt aut qui sunt. Doloribus quam molestias qui praesentium ab sint. Ipsum magni voluptas voluptas nostrum. Eligendi quia consequatur nam officia sint error.\r\n\r\nSed voluptatem ut cumque qui eaque. Voluptatum error in velit voluptatum similique corporis repellat possimus. Error corporis eos facilis fuga nemo autem ut. Blanditiis et necessitatibus et et ullam reprehenderit.',3,'2020-11-24 18:26:35'),(8,20,18269843,'Testing Sam Comment','Praesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',4,'2020-11-27 20:33:09'),(9,20,18269843,'Bad bad bad','This restaurant is dirty',1,'2020-11-27 20:33:48'),(10,20,18269843,'Testing KFC Comment','Voluptatem dicta tempora consectetur non et repudiandae. Reprehenderit tenetur incidunt quae est. Illo aut dolorem eaque laudantium ut suscipit veritatis temporibus. Sit quas et non quisquam maxime non ipsa ducimus. Facere exercitationem qui commodi.\r\n\r\nPraesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',4,'2020-11-28 15:18:35'),(11,20,17822682,'Bad bad bad','57f03fd431a1',4,'2020-12-03 17:22:49');
+INSERT INTO `Comments` VALUES (2,20,18269843,'Test Comment','testing',3,'2020-11-21 20:17:33'),(3,20,18269843,'Test Comment','test again',3,'2020-11-24 02:40:23'),(4,20,18482422,'Test Comment','Testing',3,'2020-11-24 02:42:59'),(5,20,18482422,'Test Comment','rreessderft',3,'2020-11-24 02:44:53'),(6,20,18795165,'Test Comment','Rem iste in deserunt aut qui sunt. Doloribus quam molestias qui praesentium ab sint. Ipsum magni voluptas voluptas nostrum. Eligendi quia consequatur nam officia sint error.\r\n\r\nSed voluptatem ut cumque qui eaque. Voluptatum error in velit voluptatum similique corporis repellat possimus. Error corporis eos facilis fuga nemo autem ut. Blanditiis et necessitatibus et et ullam reprehenderit.\r\n\r\nError aut iusto magni. Est quo sequi eos numquam enim blanditiis. Necessitatibus rerum est illum. Inventore voluptatem eos laboriosam.\r\n\r\nVoluptatem dicta tempora consectetur non et repudiandae. Reprehenderit tenetur incidunt quae est. Illo aut dolorem eaque laudantium ut suscipit veritatis temporibus. Sit quas et non quisquam maxime non ipsa ducimus. Facere exercitationem qui commodi.\r\n\r\nPraesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',3,'2020-11-24 16:51:09'),(7,20,17097707,'Testing KFC Comment','Rem iste in deserunt aut qui sunt. Doloribus quam molestias qui praesentium ab sint. Ipsum magni voluptas voluptas nostrum. Eligendi quia consequatur nam officia sint error.\r\n\r\nSed voluptatem ut cumque qui eaque. Voluptatum error in velit voluptatum similique corporis repellat possimus. Error corporis eos facilis fuga nemo autem ut. Blanditiis et necessitatibus et et ullam reprehenderit.',3,'2020-11-24 18:26:35'),(8,20,18269843,'Testing Sam Comment','Praesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',4,'2020-11-27 20:33:09'),(9,20,18269843,'Bad bad bad','This restaurant is dirty',1,'2020-11-27 20:33:48'),(10,20,18269843,'Testing KFC Comment','Voluptatem dicta tempora consectetur non et repudiandae. Reprehenderit tenetur incidunt quae est. Illo aut dolorem eaque laudantium ut suscipit veritatis temporibus. Sit quas et non quisquam maxime non ipsa ducimus. Facere exercitationem qui commodi.\r\n\r\nPraesentium deserunt ratione id aut possimus. Non expedita magni atque ducimus qui. Incidunt repellat reiciendis ut cum aut rem voluptate a. Ullam temporibus in earum soluta voluptatem.',4,'2020-11-28 15:18:35'),(11,20,17822682,'Bad bad bad','57f03fd431a1',4,'2020-12-03 17:22:49'),(12,20,17822682,'ffff','fffff',4,'2020-12-04 18:14:59'),(13,20,17098631,'Test','Fusce nec auctor orci. Nullam dignissim varius tincidunt. Sed convallis imperdiet commodo. Nam consectetur ligula orci, et aliquam eros imperdiet pharetra. Nullam in dictum libero, nec porttitor velit. Proin malesuada tempus mi sed consectetur. Quisque urna justo, posuere ut libero et, dignissim finibus urna. Nam sed mollis risus. Nullam egestas et erat in condimentum. Phasellus id efficitur est. Quisque pulvinar diam ex, a vehicula neque interdum vitae. Nam quam lacus, porta id auctor ut, condimentum eu augue. Aenean fringilla mi ante, in scelerisque tortor varius sit amet.',0,'2020-12-05 18:21:17');
 /*!40000 ALTER TABLE `Comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -151,7 +151,7 @@ CREATE TABLE `Friends` (
 
 LOCK TABLES `Friends` WRITE;
 /*!40000 ALTER TABLE `Friends` DISABLE KEYS */;
-INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,0,'2020-11-21 20:17:33'),(5,2,3,1,'2020-11-21 20:17:33'),(6,2,20,0,'2020-12-03 20:01:31'),(7,2,19,0,'2020-12-03 18:46:11');
+INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,0,'2020-11-21 20:17:33'),(5,2,3,1,'2020-11-21 20:17:33'),(6,2,20,1,'2020-12-04 18:07:29'),(7,2,19,0,'2020-12-03 18:46:11');
 /*!40000 ALTER TABLE `Friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,7 +242,7 @@ CREATE TABLE `User` (
   `lastname` varchar(90) NOT NULL,
   `firstname` varchar(90) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `activity` tinyint(1) NOT NULL,
+  `activity` tinyint(1) NOT NULL DEFAULT '0',
   `default_zip` varchar(5) DEFAULT NULL,
   `distance` int(11) DEFAULT NULL,
   `price_range` int(11) DEFAULT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,'08226',24140,2,3,NULL,'2020-11-21 20:17:33',7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,'2020-11-21 20:17:33',8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,'2020-11-21 20:17:33',9,NULL,NULL,NULL),(16,'Lunsk','Josh','lunskj9@students.rowan.edu',1,'48185',16093,3,3,NULL,'2020-11-21 20:17:33',11,NULL,NULL,NULL),(17,'Pansera','John','panseraj3@students.rowan.edu',1,'37013',32186,1,4,NULL,'2020-11-21 20:17:33',12,NULL,NULL,NULL),(18,'Ewer','Christian','ewerch47@students.rowan.edu ',1,'33445',8046,2,2,NULL,'2020-11-21 20:17:33',13,NULL,NULL,NULL),(19,'Burke','Michael','burkem35@students.rowan.edu',1,'18901',8046,3,4,NULL,'2020-11-21 20:17:33',14,NULL,NULL,NULL),(20,'Pinizzotto','Sam','pinizz68@students.rowan.edu',1,'34221',16093,4,3,NULL,'2020-11-27 20:19:41',15,NULL,NULL,NULL),(21,'Sickler','Chris','sicklerc4@students.rowan.edu',1,'91387',16093,1,4,NULL,'2020-11-21 20:17:33',16,NULL,NULL,NULL),(22,'D\'Ascenzo','Stephen','dascenzos9@students.rowan.edu',1,'55068',32186,2,3,NULL,'2020-11-21 20:17:33',17,NULL,NULL,NULL);
+INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,'08226',24140,2,3,NULL,'2020-11-21 20:17:33',7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,'2020-11-21 20:17:33',8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,'2020-11-21 20:17:33',9,NULL,NULL,NULL),(16,'Lunsk','Josh','lunskj9@students.rowan.edu',1,'48185',16093,3,3,NULL,'2020-11-21 20:17:33',11,NULL,NULL,NULL),(17,'Pansera','John','panseraj3@students.rowan.edu',1,'37013',32186,1,4,NULL,'2020-11-21 20:17:33',12,NULL,NULL,NULL),(18,'Ewer','Christian','ewerch47@students.rowan.edu ',1,'33445',8046,2,2,NULL,'2020-11-21 20:17:33',13,NULL,NULL,NULL),(19,'Burke','Michael','burkem35@students.rowan.edu',1,'18901',8046,3,4,NULL,'2020-11-21 20:17:33',14,NULL,NULL,NULL),(20,'Pinizzotto','Sam','pinizz68@students.rowan.edu',1,'34221',16093,4,3,NULL,'2020-12-05 19:04:29',15,NULL,NULL,NULL),(21,'Sickler','Chris','sicklerc4@students.rowan.edu',1,'91387',16093,1,4,NULL,'2020-11-21 20:17:33',16,NULL,NULL,NULL),(22,'D\'Ascenzo','Stephen','dascenzos9@students.rowan.edu',1,'55068',32186,2,3,NULL,'2020-11-21 20:17:33',17,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -286,7 +286,7 @@ CREATE TABLE `User_Categories` (
   KEY `FK_categoriesuser_idx` (`FK_categories`),
   CONSTRAINT `User_Categories_Categories_categories_id_fk` FOREIGN KEY (`FK_categories`) REFERENCES `Categories` (`id`),
   CONSTRAINT `User_Categories_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +295,7 @@ CREATE TABLE `User_Categories` (
 
 LOCK TABLES `User_Categories` WRITE;
 /*!40000 ALTER TABLE `User_Categories` DISABLE KEYS */;
-INSERT INTO `User_Categories` VALUES (1,2,2),(2,2,7),(3,2,9),(4,3,1),(5,3,3),(6,3,4),(7,3,8),(8,3,11),(9,3,13),(10,3,14),(11,20,1);
+INSERT INTO `User_Categories` VALUES (1,2,2),(2,2,7),(3,2,9),(4,3,1),(5,3,3),(6,3,4),(7,3,8),(8,3,11),(9,3,13),(10,3,14),(13,20,2);
 /*!40000 ALTER TABLE `User_Categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -315,7 +315,7 @@ CREATE TABLE `User_Cuisine` (
   KEY `FK_cuisine_idx` (`FK_cuisine`),
   CONSTRAINT `User_Cuisine_Cuisine_cuisine_id_fk` FOREIGN KEY (`FK_cuisine`) REFERENCES `Cuisine` (`cuisine_id`),
   CONSTRAINT `User_Cuisine_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -324,7 +324,7 @@ CREATE TABLE `User_Cuisine` (
 
 LOCK TABLES `User_Cuisine` WRITE;
 /*!40000 ALTER TABLE `User_Cuisine` DISABLE KEYS */;
-INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82),(25,2,73),(28,20,82);
+INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82),(25,2,73),(29,20,182),(30,20,1);
 /*!40000 ALTER TABLE `User_Cuisine` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -714,7 +714,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `getFriends`(IN userid int(11))
 BEGIN
-	SELECT u.firstname, u.lastname, u.email, f.status, DATE_FORMAT(f.date_updated,'%Y-%m-%d - %h:%i:%s %p'), f.Fk_friend
+	SELECT u.firstname, u.lastname, u.email, f.status, DATE_FORMAT(f.date_updated,'%Y-%m-%d - %h:%i:%s %p'), f.Fk_friend, f.Fk_user
     FROM Friends f JOIN User u ON u.user_id=f.Fk_friend
     WHERE f.Fk_user = userid OR f.Fk_friend = userid
     ORDER BY f.date_updated DESC;
@@ -1057,6 +1057,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `updateUserActivity` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`%` PROCEDURE `updateUserActivity`(IN userActivity tinyint(1), IN uid int(11))
+BEGIN
+	UPDATE `dp_sp`.`User` u
+    SET `activity` = userActivity
+    WHERE u.user_id = uid ;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `updateZipcode` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1088,4 +1109,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-03 15:11:13
+-- Dump completed on 2020-12-07 20:27:38
