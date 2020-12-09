@@ -1,10 +1,12 @@
+<!-- Modal for SideBar Nav  -->
+{% include 'sidebarMenu.html' with context %}
   <div class="header">
-    <div id="nav_link"><a href="#"><img src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></a></div>
+    <div id="nav_link"><img onclick="openNav()" src="/static/images/nav_lines.png" width="42" height="28" alt="navmenu_lines" /></div>
     <div id="header_logo"><a href="{{url_for('home')}}"><img src="/static/images/header_logo.png" alt="Decide &amp; Dine Logo" height="30" /></a></div>
     {% if 'username' in session %}
     <div id="logout_link"><img src="/static/images/icon_useraccount.png" alt="profile-icon" style="margin-right:10px" valign="top"><a href="{{url_for('profile')}}"><strong>{{username}}</strong></a></div>
     {% else %}
-    <div id="login_link"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block';document.getElementById('password').value = '';document.getElementById('username').focus();" /></div>
+    <div id="login_link"><img src="/static/images/login_hdr.png" alt="Login" height="20" style="padding: 5px 20px 5px 5px" onclick="document.getElementById('id01').style.display='block';document.getElementById('password').value = '';document.getElementById('username').focus();closeNav()" /></div>
     {% endif %}
   </div>
   <!-- end .header -->

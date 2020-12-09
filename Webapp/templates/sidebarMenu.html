@@ -1,0 +1,19 @@
+<div id="mySidebar" class="sidebar">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    {% if 'username' in session %}
+        <a href="#">Quick Decide</a>
+        <a href="#">Favorites</a>
+        <a href="{{url_for('connect')}}">Connect</a>
+        <a href="{{url_for('search')}}">Search</a>
+        <a href="{{url_for('profile')}}">Profile</a>
+        <a href="{{url_for('logout')}}">Sign Out</a>
+        <a href="#">Help/FAQ</a>
+    {% else %}
+        <a href="{{url_for('survey')}}">Search</a>
+        <a href="{{url_for('howitworks')}}">About/FAQ</a>
+        <a href="#" onclick="document.getElementById('id02').style.display='block';document.getElementById('firstname').focus();closeNav();">Sign-Up</a>
+        <a href="#" onclick="document.getElementById('id01').style.display='block';document.getElementById('password').value = '';document.getElementById('username').focus();closeNav();">Sign-In</a>
+        <a href="#">Contact Us</a>
+    {% endif %}
+</div>
+<div id="main">
