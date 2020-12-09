@@ -53,17 +53,49 @@
 
             {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
             <input type="submit" value="Submit" style="margin:5px 0;">
-            {% if pageNum == 0 %}{%endif%}
-            {% if pageNum == 1 %}
-              <a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=prev+10)}}" clase='menubutton'>Next &raquo;</a>
-              {%endif%}
-            {% if pageNum == 10%}
-              <a href = "{{url_for('search_results',pageNum=pageNum-1,Next=next-10,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a>{%endif%}
-            {% if pageNum > 1 and pageNum < 10 %}
-              <a href = "{{url_for('search_results',pageNum=pageNum-1,Next=next-10,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a>
-              <a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=prev+10)}}" clase='menubutton'>Next &raquo;</a>
-              {%endif%}
             <p>&nbsp;</p>
+            <table border="0" style="max-width:50%; min-width:755px;">
+                <tr>
+                    <td width="4%">&nbsp;</td>
+                    <td colspan="4" width="96%"><hr/></td>
+                </tr>
+                <tr>
+                    {% if pageNum > 1 and pageNum < 11 %}
+                        <td width="4%">&nbsp;</td>
+                        <td align="left" width="32%" style="margin-right:20px;"><a href="{{url_for('search_results',pageNum=pageNum-1,Next=next-10,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a></td>
+                    {% else %}
+                        <td width="45">&nbsp;</td>
+                        <td align="left" width="32%" style="margin-right:20px;"></td>
+                    {% endif %}
+                    {% if pageNum == 0 %}
+                        <td align="center" width="32%" style="margin-right:20px;color:white;"></td>
+                    {% else %}
+                        <td align="center" width="32%" style="margin-right:20px;color:white;font-weight:bold;">Page: {{pageNum}}</td>
+                    {% endif %}
+                    {% if pageNum > 0 and pageNum < 10 %}
+                        <td align="right" width="32%" style="margin-left:20px;"><a href="{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=prev+10)}}" clase='menubutton'>Next &raquo;</a></td>
+                    {% else %}
+                        <td align="right" width="32%" style="margin-left:20px;"></td>
+                    {% endif %}
+                </tr>
+            </table>
+<!--            <table border="1" style="padding-left: 45px; max-width:50%; min-width:745px;">
+                <tr>
+                    {% if pageNum == 0 %}
+                        <td align="left"></td>
+                        <td align="right"></td>
+                    {% elif pageNum == 1 %}
+                        <td align="left"></td>
+                        <td align="right"><a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=next-1)}}" clase='menubutton'>Next &raquo;</a></td>
+                    {% elif pageNum > 1 and pageNum < 10 %}
+                        <td align="left"><a href = "{{url_for('search_results',pageNum=pageNum-1,Next=prev+1,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a></td>
+                        <td align="right"><a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=next-1)}}" clase='menubutton'>Next &raquo;</a></td>
+                    {% elif pageNum == 10%}
+                        <td align="left"><a href = "{{url_for('search_results',pageNum=pageNum-1,Next=prev+1,prev=prev-10)}}" clase='menubutton'>&laquo; Previous</a></td>
+                        <td align="right"></td>
+                    {%endif%}
+                </tr>
+            </table>-->
                 <ul>
                 {% for i in data[prev:next] %}
                     <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
