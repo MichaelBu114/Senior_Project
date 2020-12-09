@@ -404,6 +404,10 @@ def instagramlink():
 def twitterlink():
     return render_template('twitterlink.html')
 
+@app.route('/contactus/', methods=['GET', 'POST'])
+def contactus():
+    return render_template('contactus.html')
+
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():
     msg = ''
