@@ -6,6 +6,7 @@ from flask.helpers import flash
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 import zomato_api
+from config import MAIL_USERNAME
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -133,7 +134,8 @@ def search():
             if resp["status"] != 'OK':
                 msg += resp["status"]
             for i in range(int(resp["count"])):
-                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                if resp[i]["aggreagate_rating"] <= UserRating:
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
             result = {sesId:data}
@@ -487,7 +489,7 @@ def updateFriend(friends_id,Fk_user,status):
 
 
 def regestrationMessage(email, url):
-    msg = Message('Confirmation Email', sender = mail.MAIL_USERNAME, recipients =[email])
+    msg = Message('Confirmation Email', sender = MAIL_USERNAME, recipients =[email])
     msg.body = "Please confirm your email " + url
     mail.send(msg)
 
@@ -503,6 +505,7 @@ def confirm_token(token,expiration=3600):
         return False
     return email
 
+@app.route('/connect/<token>')
 def confirm_email(token):
     con = mysql.connect()
     cur = con.cursor()
@@ -510,15 +513,13 @@ def confirm_email(token):
         email = confirm_token(token)
     except:
         flash('The confirmation link is invalid or has expired.')
-        cur.execute("CALL updateUserActivity", (2,session['id']))
-        con.commit()
     active = cur.execute("CALL getActivity(%s)", (email))
     active = cur.fetchall()
     if active[0] == 1:
         flash('Account is already confirmed.')
     else:
-        cur.execute("CALL updateUserActivity", (1,session['id']))
-        cur.commit()
+        cur.execute("CALL updateUserActivity(%s,%s)", (1,session['id']))
+        con.commit()
         con.close()
         flash('Your email is confirmed, thank you')
     return redirect(url_for('home'))
