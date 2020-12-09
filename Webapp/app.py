@@ -129,12 +129,12 @@ def search():
             UserZipCode = request.form['zip']
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
-            UserRange = int(request.form['cost'])
+            UserRange = getRange(int(request.form['cost']))
             resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
             if resp["status"] != 'OK':
                 msg += resp["status"]
             for i in range(int(resp["count"])):
-                if resp[i]["aggreagate_rating"] <= UserRating:
+                if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
@@ -145,7 +145,18 @@ def search():
     else:
         return render_template('search.html', msg=msg, data=data, username=uname, pageNum=pageNum, next=0, prev=0)
 
-
+def getRange(range):
+    if range == 1:
+        pair = [0.0,10.0]
+    elif range == 2:
+        pair = [10.1,17.0]
+    elif range == 3:
+        pair = [17.1,24.0]
+    elif range == 4:
+        pair = [24.1,31.0]
+    else:
+        pair = [31.1,100]
+    return pair
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
@@ -224,8 +235,8 @@ def survey():
             if 'zip' in request.form and 'radius' in request.form:
                 UserZipCode = request.form['zip']
                 UserDistance = request.form['radius']
-                UserRating = request.form['rating']
-                UserRange = request.form['cost']
+                UserRating = int(request.form['rating'])
+                UserRange = getRange(int(request.form['cost']))
                 estab = request.form.getlist('EstCheckboxGroup')
                 estab = [int(i) for i in estab]
                 estab.sort()
@@ -244,7 +255,8 @@ def survey():
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, 0, 0, 0)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
+                        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
                 result = {sesId:data}
@@ -263,7 +275,7 @@ def survey():
                 UserZipCode = request.form['zip']
                 UserDistance = int(request.form['radius'])
                 UserRating = int(request.form['rating'])
-                UserRange = int(request.form['cost'])
+                UserRange = getRange(int(request.form['cost']))
                 estab = request.form.getlist('EstCheckboxGroup')
                 estab = [int(i) for i in estab]
                 estab.sort()
@@ -276,7 +288,8 @@ def survey():
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, cat, cus, estab)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
+                        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
                 result = {0:data}
@@ -291,16 +304,14 @@ def profile():
     msg = ''
     if request.method == 'POST':
         if request.form['button'] == 'Save Changes':
-            #if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form and 'pwd' in request.form and 'pwd-rpt' in request.form:
-            if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form:
+            if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form and 'pwd' in request.form and 'pwd-rpt' in request.form:
                 if request.form['email'] != '' or request.form['firstname'] != '' or request.form['lastname'] != '':
                     con = mysql.connect()
                     cur = con.cursor()
                     hashed = ''
                     rptHashed = ''
-                    #hashed = hashlib.sha256(session['pwd'].encode('utf-8')).hexdigest()
-                    #rptHashed = hashlib.sha256(session['pwd-rpt'].encode('utf-8')).hexdigest()
-
+                    hashed = hashlib.sha256(session['pwd'].encode('utf-8')).hexdigest()
+                    rptHashed = hashlib.sha256(session['pwd-rpt'].encode('utf-8')).hexdigest()
                     if hashed != rptHashed:
                         msg = 'Password do not match'
                     else:
@@ -319,18 +330,17 @@ def profile():
                         session['username'] = (fname + " " + lname)
                         con.close()
                         return render_template('profile.html', username=session['username'], msg=msg,
-                                               password=hashed, email=email, firstname=fname, lastname=lname)
+                                               email=email, firstname=fname, lastname=lname)
                 else:
                     msg = 'You must fill in at least one entry to Save your Changes.'
                     return render_template('profile.html', username=session['username'],
-                           msg=msg, password=session['password'], email=session['email'],
-                           firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
+                           msg=msg,email=session['email'],firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
         elif request.form['button'] == 'Logout':
             return redirect(url_for('logout'))
         elif request.form['button'] == 'Modify Preferences':
             return redirect(url_for('survey'))
     return render_template('profile.html', username=session['username'],
-                           msg=msg, password=session['password'], email=session['email'],
+                           msg=msg, email=session['email'],
                            firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
 
 

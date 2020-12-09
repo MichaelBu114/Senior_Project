@@ -116,6 +116,7 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
         response_json[id]["menu_url"] = i["restaurant"]["menu_url"]
         response_json[id]["cuisine"] = i["restaurant"]["cuisines"]
         response_json[id]["aggregate_rating"] = i["restaurant"]["user_rating"]["aggregate_rating"]
+        response_json[id]["average_cost_for_two"] = i["restaurant"]["average_cost_for_two"]
         response_json[id]["featured_image"] = i["restaurant"]["featured_image"]
         response_json[id]["rating_icon"] = str(round(float(i["restaurant"]["user_rating"]["aggregate_rating"])))
         id += 1
