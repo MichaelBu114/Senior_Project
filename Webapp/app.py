@@ -457,8 +457,8 @@ def connect():
             declined.append(friend)
     return render_template('AddFriends.html', username=session['username'], data=confirmed, pending=pending, declined=declined)
 
+    #SicklerFlask.txt file here?
 
-# Need to determine if group calls go here or inside request.method.
 
 def addFriend(friendId, userId):
     con = mysql.connect()

@@ -1,0 +1,17 @@
+//I think this should go around line 448 in app.py inside of the connect app.route
+
+    #Add group to db for user
+    #if user presses <button name=createGroup>
+        #PROCEDURE `addGroup`(IN groupname varchar(90), IN userID int(11))
+        #groupname would be stored in <input name="addgroup">
+        #user should be set to group owner
+
+    #display friends in edit modal
+    #if request.form['editGroup'] == 'Submit' and 'friends' in request.form:
+        #for friend in friendsList:
+            #if friend[3] == 1:   #check friend is confirmed and not already in group
+                #somehow add each friend to the <ul id="outsideGroup"> on the editGroupModal
+                #I have to put a button on each element in this <ul> that will call 'addToGroup' Procedure if user presses it
+            #if friend is in group
+                #display in <ul id="currentGroup">
+                #Should put a button on each element in this <ul> that will call 'deleteFromGroup' Procedure if user presses it
