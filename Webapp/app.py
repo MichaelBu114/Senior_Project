@@ -227,6 +227,7 @@ def survey():
         pref = cur.fetchone()
         cur.execute('Call getUserEstablishments(%s)', (sesId))
         estList = [val for sublist in cur.fetchall() for val in sublist]
+        print (estList)
         cur.execute('Call getUserCuisines(%s)', (sesId))
         cuisineList = [val for sublist in cur.fetchall() for val in sublist]
         cur.execute('Call getUserCategories(%s)', (sesId))
@@ -236,7 +237,7 @@ def survey():
                 UserZipCode = request.form['zip']
                 UserDistance = request.form['radius']
                 UserRating = int(request.form['rating'])
-                UserRange = getRange(int(request.form['cost']))
+                UserRange = int(request.form['cost'])
                 estab = request.form.getlist('EstCheckboxGroup')
                 estab = [int(i) for i in estab]
                 estab.sort()
@@ -246,16 +247,15 @@ def survey():
                 cat = request.form.getlist('CatCheckboxGroup')
                 cat = [int(i) for i in cat]
                 cat.sort()
-                newPref = updateUserPref(pref, sesId, UserZipCode, int(UserDistance), int(UserRating), int(UserRange))
-                updateUserList(estList, estab, sesId, 'Call addUserEstablishment(%s,%s)',
-                               'CALL deleteUserEstablishment(%s,%s)')
+                newPref = updateUserPref(pref, sesId, UserZipCode, int(UserDistance), UserRating, UserRange)
+                rangePair = getRange(UserRange)
+                updateUserList(estList, estab, sesId, 'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
                 updateUserList(cuisineList, cus, sesId, 'Call addUserCuisine(%s,%s)', 'Call deleteUserCuisine (%s,%s)')
-                updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)',
-                               'Call deleteUserCategories(%s,%s)')
+                updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, 0, 0, 0)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
+                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
                         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
@@ -275,7 +275,8 @@ def survey():
                 UserZipCode = request.form['zip']
                 UserDistance = int(request.form['radius'])
                 UserRating = int(request.form['rating'])
-                UserRange = getRange(int(request.form['cost']))
+                UserRange = int(request.form['cost'])
+                rangePair = getRange(UserRange)
                 estab = request.form.getlist('EstCheckboxGroup')
                 estab = [int(i) for i in estab]
                 estab.sort()
@@ -288,7 +289,7 @@ def survey():
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, cat, cus, estab)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
+                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >=rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
                         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
@@ -361,13 +362,13 @@ def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
     else:
         newDis = pref[1]
     if UserRate != pref[3]:
-        cur.execute('CALL updateRange(%s,%s)', (UserRate, uId))
+        cur.execute('CALL updateRating(%s,%s)', (UserRate, uId))
         con.commit()
         newRate = UserRate
     else:
         newRate = pref[3]
     if UserRange != pref[2]:
-        cur.execute('CALL updateRating(%s,%s)', (UserRange, uId))
+        cur.execute('CALL updateRange(%s,%s)', (UserRange, uId))
         con.commit()
         newRange = UserRange
     else:
@@ -380,7 +381,7 @@ def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
 def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
     con = mysql.connect()
     cur = con.cursor()
-    if userList != userCheckBox:
+    if userList != userCheckBox and len(userList) !=0:
         for i in userList:
             if i in userCheckBox:
                 userCheckBox.remove(i)
@@ -388,17 +389,16 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
                 args = (uId, i)
                 cur.execute(deleteFunction, args)
             con.commit()
-        if userCheckBox:
-            for i in userCheckBox:
-                args = (uId, i)
-                cur.execute(addFunction, args)
+    if userCheckBox:
+        for i in userCheckBox:
+            args = (uId, i)
+            cur.execute(addFunction, args)
             con.commit()
     con.close()
 
 @app.route('/howitworks/', methods=['GET', 'POST'])
 def howitworks():
     return render_template('howitworks.html')
-
 
 @app.route('/termspolicy/', methods=['GET', 'POST'])
 def termspolicy():
@@ -459,7 +459,6 @@ def connect():
 
     #SicklerFlask.txt file here?
 
-
 def addFriend(friendId, userId):
     con = mysql.connect()
     cur = con.cursor()
@@ -469,7 +468,6 @@ def addFriend(friendId, userId):
         con.commit()
     con.close()
 
-
 def getFriends(Fk_user):
     con = mysql.connect()
     cur = con.cursor()
@@ -478,7 +476,6 @@ def getFriends(Fk_user):
     con.commit()
     con.close()
     return friendsList
-
 
 def deleteFriend(friends_id, Fk_user, status):
     con = mysql.connect()
@@ -496,7 +493,6 @@ def updateFriend(friends_id,Fk_user,status):
     con.commit()
     con.close()
     return redirect(url_for('connect'))
-
 
 def regestrationMessage(email, url):
     msg = Message('Confirmation Email', sender = MAIL_USERNAME, recipients =[email])

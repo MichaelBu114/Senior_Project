@@ -188,7 +188,7 @@ ol li img {
                         <div class="row">
                             <div class="column">
                                 <h3>Create Group</h3>
-                                <form class="groupform">
+                                <form action = "{{url_for('groups')}}" method = "post" class="groupform">
                                     <input type="text" name="addgoup" placeholder="Group name" id="addgroup" required>
                                     <button type="submit" name="createGroup" class="btn-list">
                                         <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
