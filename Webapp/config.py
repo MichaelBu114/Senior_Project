@@ -1,6 +1,6 @@
 import secrets
 # MYSQL Configuration
-MYSQL_DATABASE_USERNAME = 'root'
+MYSQL_DATABASE_USER = 'root'
 MYSQL_DATABASE_PASSWORD = 'snowflake6365stark'
 MYSQL_DATABASE_DB = 'dp_sp'
 MYSQL_DATABASE_HOST = 'mysql-development'

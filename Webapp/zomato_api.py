@@ -2,7 +2,7 @@ import sys
 import requests
 import mysql.connector as mysql
 import random
-from config import ZOMATO_API_KEY,GOOGLE_MAPS_API_KEY
+from config import *
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
@@ -42,7 +42,7 @@ def mysql_database_call(function, user_id):
     connection = None
     result = ""
     print("Executing %s ..." % function)
-    connection = mysql.connect(user='root',password ='snowflake6365stark',host='mysql-development',database='dp_sp',port=3306,auth_plugin='mysql_native_password')
+    connection = mysql.connect(user=MYSQL_DATABASE_USER,password =MYSQL_DATABASE_PASSWORD,host=MYSQL_DATABASE_HOST,database=MYSQL_DATABASE_DB,port=MYSQL_DATABASE_PORT,auth_plugin=MYSQL_AUTH_PLUGIN)
     cursor = connection.cursor()
     categories = cursor.callproc(function, args = [user_id])
     for r in cursor.stored_results():
