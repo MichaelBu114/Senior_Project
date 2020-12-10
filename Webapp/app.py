@@ -305,14 +305,12 @@ def profile():
     msg = ''
     if request.method == 'POST':
         if request.form['button'] == 'Save Changes':
-            if 'email' in request.form and 'firstname' in request.form and 'lastname' in request.form and 'pwd' in request.form and 'pwd-rpt' in request.form:
+            if 'email' in request.form or 'firstname' in request.form or 'lastname' in request.form:
                 if request.form['email'] != '' or request.form['firstname'] != '' or request.form['lastname'] != '':
                     con = mysql.connect()
                     cur = con.cursor()
-                    hashed = ''
-                    rptHashed = ''
-                    hashed = hashlib.sha256(session['pwd'].encode('utf-8')).hexdigest()
-                    rptHashed = hashlib.sha256(session['pwd-rpt'].encode('utf-8')).hexdigest()
+                    hashed = hashlib.sha256(request.form['pwd'].encode('utf-8')).hexdigest()
+                    rptHashed = hashlib.sha256(request.form['pwd-rpt'].encode('utf-8')).hexdigest()
                     if hashed != rptHashed:
                         msg = 'Password do not match'
                     else:
