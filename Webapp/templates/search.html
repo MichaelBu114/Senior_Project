@@ -51,6 +51,10 @@
                   </select>
             </div><br />
 
+            {% if data %}
+            <a href="/details/?res_id={{ random }}">Pick a Restaurant</a>
+            {% endif %}
+
             {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
             <input type="submit" value="Submit" style="margin:5px 0;">
             <p>&nbsp;</p>
