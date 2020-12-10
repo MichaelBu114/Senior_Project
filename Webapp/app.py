@@ -138,7 +138,7 @@ def search():
                 if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                             resp[i]["rating_icon"]]
+                             resp[i]["rating_icon"]])
             random = resp['random']['id']
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
