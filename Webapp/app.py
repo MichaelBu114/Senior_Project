@@ -143,7 +143,12 @@ def search():
                                    userZipcode=UserZipCode, userDistance=UserDistance,
                                    userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0)
     else:
-        return render_template('search.html', msg=msg, data=data, username=uname, pageNum=pageNum, next=0, prev=0)
+        if result.get(sesId) == None:
+            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0)
+        elif result.get(sesId):
+            return render_template('search.html', msg=msg, data = result.get(sesId), username=uname, pageNum=1, next=10, prev=0)
+        else:
+            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0)
 
 def getRange(range):
     if range == 1:
@@ -157,6 +162,7 @@ def getRange(range):
     else:
         pair = [31.1,100]
     return pair
+    
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
@@ -260,10 +266,10 @@ def survey():
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
                 result = {sesId:data}
-                return render_template('search.html', msg=msg, data=data, username=session['username'],
+                return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2], pageNum=1, next=10, prev=0)
+                                       userRating=newPref[2], pageNum=1, next=10, prev=0))
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -294,9 +300,9 @@ def survey():
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
                 result = {0:data}
-                return render_template('search.html', msg=msg, data=data, userRange=UserRange,
+                return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0)
+                                       userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0))
         return render_template('preferences.html', msg=msg)
 
 
