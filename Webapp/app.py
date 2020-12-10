@@ -170,6 +170,8 @@ def quick_search():
         
         zip = pref[0]
         dist = round(pref[1] / 1609)
+        UserRating = pref[2]
+        UserRange = getRange(pref[3])
         
         resp = zomato_api.search(zip, dist, "real_distance", sesId, 0, 0, 0)
         
@@ -177,14 +179,14 @@ def quick_search():
             msg += resp["status"]
         
         for i in range(int(resp["count"])):
+            if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
                 data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
         random = resp['random']['id']
         result = {sesId:data}
         
-        return render_template('search.html', msg=msg, data=data, username=uname,
-                                   userZipcode=zip, userDistance=dist, pageNum=1, next=10, prev=0, random=random)
+        return render_template('search.html', msg=msg, data=data, username=uname, userZipcode=zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=random)
 
 def getRange(range):
     if range == 1:
