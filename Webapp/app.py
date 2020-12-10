@@ -152,6 +152,40 @@ def search():
         else:
             return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0)
 
+@app.route('/quicksearch/', methods=['GET'])
+def quick_search():
+    global result
+    msg = ""
+    data = []
+    
+    if 'username' in session:
+        sesId = session['id']
+        uname = session['username']
+        
+        con = mysql.connect()
+        cur = con.cursor()
+        sesId = session['id']
+        pref = cur.execute('CALL getPreferences(%s)', (sesId))
+        pref = cur.fetchone()
+        
+        zip = pref[0]
+        dist = round(pref[1] / 1609)
+        
+        resp = zomato_api.search(zip, dist, "real_distance", sesId, 0, 0, 0)
+        
+        if resp["status"] != 'OK':
+            msg += resp["status"]
+        
+        for i in range(int(resp["count"])):
+                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                         resp[i]["rating_icon"]])
+        random = resp['random']['id']
+        result = {sesId:data}
+        
+        return render_template('search.html', msg=msg, data=data, username=uname,
+                                   userZipcode=zip, userDistance=dist, pageNum=1, next=10, prev=0, random=random)
+
 def getRange(range):
     if range == 1:
         pair = [0.0,10.0]
