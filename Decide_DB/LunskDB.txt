@@ -57,27 +57,12 @@ END ;;
 DELIMITER ;
 
 
+# Groups Procedures
 
---
--- Example from https://www.codedodle.com/2014/12/social-network-friends-database.html
---
-INSERT INTO 'friends' ('friends_id', 'Fk_user', 'status') 
-	VALUES (1, 2, 0)
-	
 
-UPDATE 'friends' SET 'status' = 1
-	WHERE 'Fk_user' = 1 AND 'friends_id' = 2
-	
-  
-SELECT * FROM 'friends'
-	WHERE 'Fk_user' = 1 AND 'friends_id' = 2 
-	AND 'status' = 1
-	
-	
-SELECT * FROM 'friends'
-	WHERE ('Fk_user' = 1 OR 'friends_id' = 1)
-	AND 'status' = 1
-	
-SELECT * FROM 'friends'
-	WHERE ('Fk_user' = 1 OR 'friends_id' = 1)
-	AND 'status' = 0
+CREATE DEFINER=`root`@`%` PROCEDURE `getGroup`(IN groupName varchars(90))
+BEGIN 
+	SELECT group_name
+	FROM Groups
+	WHERE group_name = groupname; 
+END ;;
