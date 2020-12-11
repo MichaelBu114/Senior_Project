@@ -130,8 +130,9 @@ def search():
             UserZipCode = request.form['zip']
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
-            UserRange = getRange(int(request.form['cost']))
-            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, UserRange)
+            UserRange = int(request.form['cost'])
+            rangePair = getRange(UserRange)
+            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair)
             
             if resp["status"] != 'OK':
                 msg += resp["status"]
