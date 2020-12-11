@@ -204,7 +204,7 @@ def quickSearch():
 @app.route('/reroll/', methods =['GET','POST'])
 def reroll():
     data = result.get(session['id'])
-    i = random.randint(0,len(data))
+    i = random.randint(0,(len(data)-1))
     randId = data[i][1]
     return redirect(url_for('details',res_id = randId,qd=1))
 
@@ -356,8 +356,7 @@ def survey():
                                        userRating=newPref[3], pageNum=1, next=10, prev=0,random =session['random']))
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
-                                   userRange=pref[2],
-                                   userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[3],
+                                   userRange=pref[2], userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[3],
                                    estList=estList, cuisineList=cuisineList, categoryList=categoryList)
     else:
         if request.method == 'POST':
@@ -407,8 +406,12 @@ def profile():
                 if request.form['email'] != '' or request.form['firstname'] != '' or request.form['lastname'] != '':
                     con = mysql.connect()
                     cur = con.cursor()
-                    hashed = hashlib.sha256(request.form['pwd'].encode('utf-8')).hexdigest()
-                    rptHashed = hashlib.sha256(request.form['pwd-rpt'].encode('utf-8')).hexdigest()
+                    if request.form['pwd'] != '' and request.form['pwd-rpt'] != '':
+                        hashed = hashlib.sha256(request.form['pwd'].encode('utf-8')).hexdigest()
+                        rptHashed = hashlib.sha256(request.form['pwd-rpt'].encode('utf-8')).hexdigest()
+                    else:
+                        hashed = hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
+                        rptHashed = hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
                     if hashed != rptHashed:
                         msg = 'Password do not match'
                     else:
