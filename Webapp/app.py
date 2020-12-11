@@ -131,14 +131,15 @@ def search():
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
             UserRange = getRange(int(request.form['cost']))
-            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
+            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, UserRange)
+            
             if resp["status"] != 'OK':
                 msg += resp["status"]
+            
             for i in range(int(resp["count"])):
-                if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
-                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                             resp[i]["rating_icon"]])
+                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                         resp[i]["rating_icon"]])
             random = resp['random']['id']
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
@@ -173,16 +174,15 @@ def quick_search():
         UserRating = pref[2]
         UserRange = getRange(pref[3])
         
-        resp = zomato_api.search(zip, dist, "real_distance", sesId, 0, 0, 0)
+        resp = zomato_api.search(zip, dist, "real_distance", sesId, UserRating, UserRange, 0, 0, 0)
         
         if resp["status"] != 'OK':
             msg += resp["status"]
         
         for i in range(int(resp["count"])):
-            if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
-                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                         resp[i]["rating_icon"]])
+            data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                     resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                     resp[i]["rating_icon"]])
         random = resp['random']['id']
         result = {sesId:data}
         
@@ -296,13 +296,12 @@ def survey():
                 updateUserList(estList, estab, sesId, 'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
                 updateUserList(cuisineList, cus, sesId, 'Call addUserCuisine(%s,%s)', 'Call deleteUserCuisine (%s,%s)')
                 updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
-                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, 0, 0, 0)
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, UserRange, 0, 0, 0)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
-                        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                                 resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                                 resp[i]["rating_icon"]])
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                             resp[i]["rating_icon"]])
                 result = {sesId:data}
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[3],
@@ -330,13 +329,12 @@ def survey():
                 cat = request.form.getlist('CatCheckboxGroup')
                 cat = [int(i) for i in cat]
                 cat.sort()
-                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, cat, cus, estab)
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, UserRange, cat, cus, estab)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
-                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >=rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
-                        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                                 resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                                 resp[i]["rating_icon"]])
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                             resp[i]["rating_icon"]])
                 result = {0:data}
                 return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),

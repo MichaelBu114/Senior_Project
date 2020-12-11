@@ -91,7 +91,7 @@ def restaurant_details(res_id):
     
     return response_json
 
-def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start=0):
+def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange, start=0):
     url = ZOMATO_BASE_URL+"/search?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
     print ("Calling " + url)
     response = s.get(url, headers=header)
@@ -103,27 +103,29 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
     
     # Parse
     for i in response["restaurants"]:
-        response_json[id] = {} 
-        response_json[id]["id"] = i["restaurant"]["id"]
-        response_json[id]["coordinates"] = {}
-        response_json[id]["name"] = i["restaurant"]["name"]
-        response_json[id]["url"] = i["restaurant"]["url"]
-        response_json[id]["phone_number"] = i["restaurant"]["phone_numbers"]
-        response_json[id]["address"] = i["restaurant"]["location"]["address"]
-        response_json[id]["coordinates"]["lat"] = i["restaurant"]["location"]["latitude"]
-        response_json[id]["coordinates"]["lng"] = i["restaurant"]["location"]["longitude"]
-        response_json[id]["currency"] = i["restaurant"]["currency"]
-        response_json[id]["menu_url"] = i["restaurant"]["menu_url"]
-        response_json[id]["cuisine"] = i["restaurant"]["cuisines"]
-        response_json[id]["aggregate_rating"] = i["restaurant"]["user_rating"]["aggregate_rating"]
-        response_json[id]["average_cost_for_two"] = i["restaurant"]["average_cost_for_two"]
-        response_json[id]["featured_image"] = i["restaurant"]["featured_image"]
-        response_json[id]["rating_icon"] = str(round(float(i["restaurant"]["user_rating"]["aggregate_rating"])))
-        id += 1
+        if float(i["restaurant"]["user_rating"]["aggregate_rating"]) <= float(userRating) and float(i["restaurant"]["average_cost_for_two"]/2) >= userRange[0] and float(i["restaurant"]["average_cost_for_two"]/2) <= userRange[1]:
+            response_json[id] = {}
+            response_json[id]["id"] = i["restaurant"]["id"]
+            response_json[id]["coordinates"] = {}
+            response_json[id]["name"] = i["restaurant"]["name"]
+            response_json[id]["url"] = i["restaurant"]["url"]
+            response_json[id]["phone_number"] = i["restaurant"]["phone_numbers"]
+            response_json[id]["address"] = i["restaurant"]["location"]["address"]
+            response_json[id]["coordinates"]["lat"] = i["restaurant"]["location"]["latitude"]
+            response_json[id]["coordinates"]["lng"] = i["restaurant"]["location"]["longitude"]
+            response_json[id]["currency"] = i["restaurant"]["currency"]
+            response_json[id]["menu_url"] = i["restaurant"]["menu_url"]
+            response_json[id]["cuisine"] = i["restaurant"]["cuisines"]
+            response_json[id]["aggregate_rating"] = i["restaurant"]["user_rating"]["aggregate_rating"]
+            response_json[id]["average_cost_for_two"] = i["restaurant"]["average_cost_for_two"]
+            response_json[id]["featured_image"] = i["restaurant"]["featured_image"]
+            response_json[id]["rating_icon"] = str(round(float(i["restaurant"]["user_rating"]["aggregate_rating"])))
+            id += 1
 
+    response_json['count'] = id
     return len(response["restaurants"])
     
-def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEst = None, start = 20):
+def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None, userCus = None, userEst = None, start = 20):
     global response_json
     
     response_json = {'status' : 'OK', 'count' : 0}
@@ -149,12 +151,10 @@ def search(zip, radius, sorting, user_id, userCat = None, userCus = None, userEs
     lon = maps_response["results"][0]["geometry"]["location"]["lng"]
     meters = int(radius) * 1609
 
-    items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines)
-    response_json['count'] += items
+    items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange)
     
     while items == 20 and start < 100:
-        items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, start)
-        response_json['count'] += items
+        items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange, start)
         start += 20
     
     if response_json['count'] > 0: # Get random restaurant if there are results
