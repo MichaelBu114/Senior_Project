@@ -545,6 +545,43 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
+def addGroup(groupname, user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL addGroup(%s, %s)', (groupname, user_id))
+    con.commit()
+    con.close()
+
+def addToGroup(group_id, user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL addToGroup(%s, %s)', (group_id, user_id)) 
+    con.commit()
+    con.close()
+
+def getGroup(group_name):
+    con = mysql.connect()
+    cur = con.cursor()
+    groupsList = cur.execute('CALL getGroups(%s)', (group_name))
+    groupsList = cur.fetchall()
+    con.commit()
+    con.close()
+    return groupsList
+
+def deleteFromGroup(group_id, user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL deleteFromGroup(%s, %s)', (group_id, user_id))
+    con.commit()
+    con.close()
+
+def deleteUserGroup(user_id, fk_group):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL deleteUserGroup(%s, %s)', (user_id, fk_group))
+    con.commit()
+    con.close()
+
 def regestrationMessage(email, url):
     msg = Message('Confirmation Email', sender = MAIL_USERNAME, recipients =[email])
     msg.body = "Please confirm your email " + url
