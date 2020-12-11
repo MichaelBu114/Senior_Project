@@ -489,29 +489,41 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
             con.commit()
     con.close()
 
+
 @app.route('/howitworks/', methods=['GET', 'POST'])
 def howitworks():
     return render_template('howitworks.html')
+
 
 @app.route('/termspolicy/', methods=['GET', 'POST'])
 def termspolicy():
     return render_template('termspolicy.html')
 
+
 @app.route('/facebooklink/', methods=['GET', 'POST'])
 def facebooklink():
     return render_template('facebooklink.html')
+
 
 @app.route('/instagramlink/', methods=['GET', 'POST'])
 def instagramlink():
     return render_template('instagramlink.html')
 
+
 @app.route('/twitterlink/', methods=['GET', 'POST'])
 def twitterlink():
     return render_template('twitterlink.html')
 
+
 @app.route('/contactus/', methods=['GET', 'POST'])
 def contactus():
     return render_template('contactus.html')
+
+
+@app.route('/favorites/', methods=['GET', 'POST'])
+def favorites():
+    return render_template('favorites.html')
+
 
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<link rel = 'stylesheet' href = "{{ url_for('static', filename = 'style.css')}}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Decide &amp; Dine</title>
+</head>
+
+<body>
+<div id="container">
+  {% include 'header.html' with context %}
+  <div class="content">
+    <p>&nbsp;</p>
+        <div class="detail">
+            <div class="floating-box" style="margin: 10px auto;min-height:auto;">
+              <h1>Favorites</h1>
+
+            </div>
+        </div>
+  </div>
+  <!-- end .content -->
+{% include 'footer.html' %}
+</div>
+<!-- end .container -->
+</body>
+</html>
