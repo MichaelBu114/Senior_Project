@@ -101,14 +101,14 @@ def registration():
             flash('Please fill out the form!')
     return redirect(url_for('home'))
 
-@app.route('/search_results/<int:pageNum>/<int:Next>/<int:prev>')
-def search_results(pageNum,Next,prev):
+@app.route('/search_results/<int:pageNum>/<int:Next>/<int:prev>/<int:rand>')
+def search_results(pageNum,Next,prev,rand):
     if 'username' in session:
         data = result.get(session['id'])
-        return render_template('search.html', username=session['username'], data=data, pageNum=pageNum, next=Next, prev=prev)
+        return render_template('search.html', username=session['username'], data=data, pageNum=pageNum, next=Next, prev=prev,random=rand)
     else:
         data = result.get(0)
-        return render_template('search.html', data=data, pageNum=pageNum, next=Next, prev=prev)
+        return render_template('search.html', data=data, pageNum=pageNum, next=Next, prev=prev,random=rand)
    
 
 @app.route('/search/', methods=['GET', 'POST'])
@@ -149,48 +149,46 @@ def search():
                                    userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=random)
     else:
         if result.get(sesId) == None:
-            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0)
+            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random = request.args.get('random'))
         elif result.get(sesId):
-            return render_template('search.html', msg=msg, data = result.get(sesId), username=uname, pageNum=1, next=10, prev=0)
+            return render_template('search.html', msg=msg, data = result.get(sesId), username=uname, pageNum=1, next=10, prev=0, random = request.args.get('random'))
         else:
-            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0)
+            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random=0)
 
-@app.route('/quicksearch/', methods=['GET'])
+@app.route('/quicksearch/', methods=['GET','POST'])
 def quick_search():
     global result
     msg = ""
     data = []
     
-    if 'username' in session:
-        sesId = session['id']
-        uname = session['username']
+    sesId = session['id']
+    uname = session['username']
+    
+    con = mysql.connect()
+    cur = con.cursor()
+    pref = cur.execute('CALL getPreferences(%s)', (sesId))
+    pref = cur.fetchone()
         
-        con = mysql.connect()
-        cur = con.cursor()
-        sesId = session['id']
-        pref = cur.execute('CALL getPreferences(%s)', (sesId))
-        pref = cur.fetchone()
+    defult_zip = pref[0]
+    dist = round(pref[1] / 1609)
+    UserRating = pref[2]
+    UserRange = int(request.form['cost'])
+    rangePair = getRange(UserRange)
         
-        zip = pref[0]
-        dist = round(pref[1] / 1609)
-        UserRating = pref[2]
-        UserRange = int(request.form['cost'])
-        rangePair = getRange(UserRange)
+    resp = zomato_api.search(defult_zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
         
-        resp = zomato_api.search(zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
+    if resp["status"] != 'OK':
+        msg += resp["status"]
         
-        if resp["status"] != 'OK':
-            msg += resp["status"]
-        
-        for i in range(int(resp["count"])):
-            data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+    for i in range(int(resp["count"])):
+        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                      resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                      resp[i]["rating_icon"]])
-        data.sort(reverse = True,key = lambda x: float(x[4]))
-        random = resp['random']['id']
-        result = {sesId:data}
+    data.sort(reverse = True,key = lambda x: float(x[4]))
+    random = resp['random']['id']
+    result = {sesId:data}
         
-        return render_template('search.html', msg=msg, data=data, username=uname, userZipcode=zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=random)
+    return redirect(url_for('search.html', msg=msg,username=uname, userZipcode=defult_zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=random))
 
 def getRange(range):
     if range == 1:
@@ -204,7 +202,7 @@ def getRange(range):
     else:
         pair = [31.1,100]
     return pair
-    
+
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
@@ -292,7 +290,6 @@ def survey():
         pref = cur.fetchone()
         cur.execute('Call getUserEstablishments(%s)', (sesId))
         estList = [val for sublist in cur.fetchall() for val in sublist]
-        print (estList)
         cur.execute('Call getUserCuisines(%s)', (sesId))
         cuisineList = [val for sublist in cur.fetchall() for val in sublist]
         cur.execute('Call getUserCategories(%s)', (sesId))
@@ -327,11 +324,12 @@ def survey():
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
+                random = resp['random']['id']
                 result = {sesId:data}
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2], pageNum=1, next=10, prev=0))
+                                       userRating=newPref[2], pageNum=1, next=10, prev=0,random =random))
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -365,9 +363,10 @@ def survey():
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
                 result = {0:data}
+                random = resp['random']['id']
                 return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0))
+                                       userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=random))
         return render_template('preferences.html', msg=msg)
 
 
