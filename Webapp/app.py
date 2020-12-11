@@ -142,16 +142,16 @@ def search():
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
             data.sort(reverse = True,key = lambda x: float(x[4]))
-            random = resp['random']['id']
+            session['random'] = resp['random']['id']
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
-                                   userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=random)
+                                   userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=session['random'])
     else:
         if result.get(sesId) == None:
-            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random = request.args.get('random'))
+            return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random =0)
         elif result.get(sesId):
-            return render_template('search.html', msg=msg, data = result.get(sesId), username=uname, pageNum=1, next=10, prev=0, random = request.args.get('random'))
+            return render_template('search.html', msg=msg, data = result.get(sesId), username=uname, pageNum=1, next=10, prev=0, random = session['random'])
         else:
             return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random=0)
 
@@ -185,10 +185,10 @@ def quick_search():
                      resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                      resp[i]["rating_icon"]])
     data.sort(reverse = True,key = lambda x: float(x[4]))
-    random = resp['random']['id']
+    session['random']= resp['random']['id']
     result = {sesId:data}
         
-    return redirect(url_for('search.html', msg=msg,username=uname, userZipcode=defult_zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=random))
+    return redirect(url_for('search.html', msg=msg,username=uname, userZipcode=defult_zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=session['random']))
 
 def getRange(range):
     if range == 1:
@@ -324,12 +324,12 @@ def survey():
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
-                random = resp['random']['id']
+                session['random'] = resp['random']['id']
                 result = {sesId:data}
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[3],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2], pageNum=1, next=10, prev=0,random =random))
+                                       userRating=newPref[2], pageNum=1, next=10, prev=0,random =session['random']))
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
                                    userRange=pref[3],
@@ -363,10 +363,10 @@ def survey():
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
                 result = {0:data}
-                random = resp['random']['id']
+                session['random'] = resp['random']['id']
                 return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
-                                       userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=random))
+                                       userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=session['random']))
         return render_template('preferences.html', msg=msg)
 
 
