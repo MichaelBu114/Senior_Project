@@ -601,10 +601,10 @@ def addToGroup(group_id, user_id):
     con.commit()
     con.close()
 
-def getGroup(group_name):
+def getGroups(user_id):
     con = mysql.connect()
     cur = con.cursor()
-    groupsList = cur.execute('CALL getGroups(%s)', (group_name))
+    groupsList = cur.execute('CALL getGroups(%s)', (user_id))
     groupsList = cur.fetchall()
     con.commit()
     con.close()
