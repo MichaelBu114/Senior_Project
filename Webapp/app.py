@@ -141,7 +141,6 @@ def search():
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
             random = resp['random']['id']
-            data.sort(reverse = True,key = lambda x: float(x[4]))
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
@@ -186,7 +185,6 @@ def quick_search():
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
         random = resp['random']['id']
-        sorted(data,key = itemgetter(4))
         result = {sesId:data}
         
         return render_template('search.html', msg=msg, data=data, username=uname, userZipcode=zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=random)
@@ -306,7 +304,6 @@ def survey():
                         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
-                data.sort(reverse = True,key = lambda x: float(x[4]))
                 result = {sesId:data}
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[3],
@@ -341,7 +338,6 @@ def survey():
                         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                                  resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                                  resp[i]["rating_icon"]])
-                data.sort(reverse = True,key = lambda x: float(x[4]))
                 result = {0:data}
                 return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
