@@ -173,9 +173,10 @@ def quick_search():
         zip = pref[0]
         dist = round(pref[1] / 1609)
         UserRating = pref[2]
-        UserRange = getRange(pref[3])
+        UserRange = int(request.form['cost'])
+        rangePair = getRange(UserRange)
         
-        resp = zomato_api.search(zip, dist, "real_distance", sesId, UserRating, UserRange, 0, 0, 0)
+        resp = zomato_api.search(zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
         
         if resp["status"] != 'OK':
             msg += resp["status"]
@@ -297,7 +298,7 @@ def survey():
                 updateUserList(estList, estab, sesId, 'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
                 updateUserList(cuisineList, cus, sesId, 'Call addUserCuisine(%s,%s)', 'Call deleteUserCuisine (%s,%s)')
                 updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
-                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, UserRange, 0, 0, 0)
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -330,7 +331,7 @@ def survey():
                 cat = request.form.getlist('CatCheckboxGroup')
                 cat = [int(i) for i in cat]
                 cat.sort()
-                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, UserRange, cat, cus, estab)
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, rangePair, cat, cus, estab)
                 msg += str(resp["status"])
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
