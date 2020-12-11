@@ -2,7 +2,7 @@
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     {% if 'username' in session %}
         <a href="#">Quick Decide</a>
-        <a href="#">Favorites</a>
+        <a href="{{url_for('favorites')}}">Favorites</a>
         <a href="{{url_for('connect')}}">Connect</a>
         <a href="{{url_for('search')}}">Search</a>
         <a href="{{url_for('survey')}}">Preferences</a>

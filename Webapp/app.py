@@ -522,7 +522,7 @@ def contactus():
 
 @app.route('/favorites/', methods=['GET', 'POST'])
 def favorites():
-    return render_template('favorites.html')
+    return render_template('favorites.html', username=session['username'])
 
 
 @app.route('/connect/', methods=['GET', 'POST'])
