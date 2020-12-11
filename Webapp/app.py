@@ -204,8 +204,9 @@ def quickSearch():
 @app.route('/reroll/', methods =['GET','POST'])
 def reroll():
     data = result.get(session['id'])
-    randId = data[random.randint(0,len(data))]
-    return redirect(url_for('details',randId[1]))
+    i = random.randint(0,len(data))
+    randId = data[i][1]
+    return redirect(url_for('details',res_id = randId,qd=1))
 
 
 def getRange(range):
@@ -226,6 +227,7 @@ def details():
     msg = ""
     history = 0
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
+    qd=request.args.get('qd')
     if 'rest_id' in session:
         if request.args.get('res_id') != session['rest_id']:
             session['rest_id'] = request.args.get('res_id')
@@ -271,7 +273,7 @@ def details():
                            is_delivering_now=resp["is_delivering_now"],
                            is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
-                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history,qd=request.args.get('qd'))
+                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history,qd=qd)
 
 
 @app.route('/comment/', methods=['GET', 'POST'])
