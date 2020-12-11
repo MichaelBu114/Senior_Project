@@ -226,6 +226,7 @@ def getRange(range):
 def details():
     msg = ""
     history = 0
+    favorite = 0
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
     qd=request.args.get('qd')
     if 'rest_id' in session:
@@ -249,14 +250,13 @@ def details():
     cur = con.cursor()
     commentsList = cur.callproc('getComments', [res_id])
     commentsList = cur.fetchall()
-    favorite = cur.callproc('getRestFavorite', (session['id'], [res_id]))
-    favorite = cur.fetchone()
     if not commentsList:
         commentsList = 'empty'
     if resp["status"] != 'OK':
         msg += resp["status"]
     if 'username' in session:
         username = session['username']
+        favorite = cur.execute('CALL getRestFavorite(%s,%s)', (session['id'], [res_id]))
     else:
         username = ''
 
