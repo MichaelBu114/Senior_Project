@@ -5,6 +5,7 @@ from flaskext.mysql import MySQL
 from flask.helpers import flash
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+import random
 import zomato_api
 from config import MAIL_USERNAME
 
@@ -118,6 +119,7 @@ def search():
     data = []
     pageNum = 0
     random = None
+    qd = 0
     if 'username' in session:
         sesId = session['id']
         uname = session['username']
@@ -142,11 +144,15 @@ def search():
                          resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                          resp[i]["rating_icon"]])
             data.sort(reverse = True,key = lambda x: float(x[4]))
-            session['random'] = resp['random']['id']
+            if len(data) == 0:
+                session['random'] = 0
+                msg = ("No results found")
+            else:
+                session['random'] = resp['random']['id']
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
-                                   userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=session['random'])
+                                   userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=session['random'],qd=qd)
     else:
         if result.get(sesId) == None:
             return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random =0)
@@ -155,12 +161,13 @@ def search():
         else:
             return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random=0)
 
-@app.route('/quicksearch/', methods=['GET','POST'])
-def quick_search():
+@app.route('/quicksearch/', methods=['GET', 'POST'])
+def quickSearch():
     global result
     msg = ""
     data = []
-    
+    qd = 1
+
     sesId = session['id']
     uname = session['username']
     
@@ -171,8 +178,8 @@ def quick_search():
         
     defult_zip = pref[0]
     dist = round(pref[1] / 1609)
-    UserRating = pref[2]
-    UserRange = int(request.form['cost'])
+    UserRating = pref[3]
+    UserRange = pref[2]
     rangePair = getRange(UserRange)
         
     resp = zomato_api.search(defult_zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
@@ -184,23 +191,34 @@ def quick_search():
         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                      resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                      resp[i]["rating_icon"]])
+                     
     data.sort(reverse = True,key = lambda x: float(x[4]))
-    session['random']= resp['random']['id']
+    if len(data) == 0:
+        session['random'] = 0
+    else:
+        session['random']= resp['random']['id']
     result = {sesId:data}
-        
-    return redirect(url_for('search.html', msg=msg,username=uname, userZipcode=defult_zip, userDistance=dist, userRating=UserRating, userRange=UserRange, pageNum=1, next=10, prev=0, random=session['random']))
+    con.close()  
+    return redirect(url_for('details',res_id = session['random'], qd = qd))
+
+@app.route('/reroll/', methods =['GET','POST'])
+def reroll():
+    data = result.get(session['id'])
+    randId = data[random.randint(0,len(data))]
+    return redirect(url_for('details',randId[1]))
+
 
 def getRange(range):
     if range == 1:
         pair = [0.0,10.0]
     elif range == 2:
-        pair = [10.1,17.0]
+        pair = [10.01,17.0]
     elif range == 3:
-        pair = [17.1,24.0]
+        pair = [17.01,24.0]
     elif range == 4:
-        pair = [24.1,31.0]
+        pair = [24.01,31.0]
     else:
-        pair = [31.1,100]
+        pair = [31.01,1000]
     return pair
 
 @app.route('/details/', methods=['GET', 'POST'])
@@ -253,7 +271,7 @@ def details():
                            is_delivering_now=resp["is_delivering_now"],
                            is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
-                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history)
+                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history,qd=request.args.get('qd'))
 
 
 @app.route('/comment/', methods=['GET', 'POST'])
@@ -324,16 +342,20 @@ def survey():
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
-                session['random'] = resp['random']['id']
+                if len(data) == 0:
+                    session['random'] = 0
+                    msg = ("No results found")
+                else:
+                    session['random'] = resp['random']['id']
                 result = {sesId:data}
                 return redirect(url_for('search', msg=msg, username=session['username'],
-                                       userRange=newPref[3],
+                                       userRange=newPref[2],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
-                                       userRating=newPref[2], pageNum=1, next=10, prev=0,random =session['random']))
+                                       userRating=newPref[3], pageNum=1, next=10, prev=0,random =session['random']))
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
-                                   userRange=pref[3],
-                                   userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[2],
+                                   userRange=pref[2],
+                                   userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[3],
                                    estList=estList, cuisineList=cuisineList, categoryList=categoryList)
     else:
         if request.method == 'POST':
@@ -363,7 +385,11 @@ def survey():
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
                 result = {0:data}
-                session['random'] = resp['random']['id']
+                if len(data) == 0:
+                    session['random'] = 0
+                    msg = ("No results found")
+                else:
+                    session['random'] = resp['random']['id']
                 return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
                                        userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=session['random']))
@@ -619,11 +645,17 @@ def addToGroup(group_id, user_id):
 def getGroups(user_id):
     con = mysql.connect()
     cur = con.cursor()
+    groupMembers = []
     groupsList = cur.execute('CALL getGroups(%s)', (user_id))
-    groupsList = cur.fetchall()
+    groupsList =  cur.fetchall()
+    for i in groupsList:
+        membersList = cur.excute('CALL getGroupMembers(%s)',(i[1]))
+        membersList = [val for sublist in cur.fetchall() for val in sublist]
+        groupMembers.append([[i[0],membersList]])
+        print(groupMembers)
     con.commit()
     con.close()
-    return groupsList
+    return groupMembers
 
 def deleteFromGroup(group_id, user_id):
     con = mysql.connect()
