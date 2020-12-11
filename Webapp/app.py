@@ -206,8 +206,22 @@ def getRange(range):
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
+    history = 0
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
-    res_id = request.args.get('res_id')
+    if 'rest_id' in session:
+        if request.args.get('res_id') != session['rest_id']:
+            session['rest_id'] = request.args.get('res_id')
+            session['history'] = -1
+    else:
+        session['rest_id'] = request.args.get('res_id')
+    res_id = session['rest_id']
+
+    if 'history' in session:
+        history = session['history']
+    else:
+        session['history'] = -1
+        history = session['history']
+
     resp = zomato_api.restaurant_details(res_id)
     estList = str(resp["establishment"]).lstrip("[").rstrip("]").replace("'", "")
     highlightsList = str(resp["highlights"]).lstrip("[").rstrip("]").replace("'", "")
@@ -215,13 +229,12 @@ def details():
     cur = con.cursor()
     commentsList = cur.callproc('getComments', [res_id])
     commentsList = cur.fetchall()
-    
+    favorite = cur.callproc('getRestFavorite', (session['id'], [res_id]))
+    favorite = cur.fetchone()
     if not commentsList:
         commentsList = 'empty'
-    
     if resp["status"] != 'OK':
         msg += resp["status"]
-    
     if 'username' in session:
         username = session['username']
     else:
@@ -240,7 +253,7 @@ def details():
                            is_delivering_now=resp["is_delivering_now"],
                            is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
-                           mapimageapikey=mapapikey, commentsList=commentsList)
+                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history)
 
 
 @app.route('/comment/', methods=['GET', 'POST'])
@@ -259,6 +272,7 @@ def comment():
         con.commit()
         flash(restID)
         con.close()
+        session['history'] -= 1
 
     return redirect(url_for('details', res_id=restID))
 
@@ -394,6 +408,34 @@ def profile():
     return render_template('profile.html', username=session['username'],
                            msg=msg, email=session['email'],
                            firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
+
+
+# background process happening without any refreshing
+@app.route('/addFavorite/', methods=['POST'])
+def addFavorite():
+    restID = request.form["restaurantID"]
+    print("The session is: " + str(session["id"]) + " - " + str(restID))
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL addFavorite(%s,%s)', (session["id"], restID))
+    con.commit()
+    con.close()
+    session['history'] -= 1
+    return redirect(url_for('details', res_id=restID))
+
+
+# background process happening without any refreshing
+@app.route('/deleteFavorite/', methods=['POST'])
+def deleteFavorite():
+    restID = request.form["restaurantID"]
+    print("The session is: " + str(session["id"]) + " - " + str(restID))
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL deleteFavorite(%s,%s)', (session["id"], restID))
+    con.commit()
+    con.close()
+    session['history'] -= 1
+    return redirect(url_for('details', res_id=restID))
 
 
 # Updates the user preference if it was changeded on the survey page
