@@ -553,6 +553,9 @@ def contactus():
 def favorites():
     return render_template('favorites.html', username=session['username'])
 
+@app.route('/help/', methods=['GET', 'POST'])
+def help():
+    return render_template('help.html', username=session['username'])
 
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():

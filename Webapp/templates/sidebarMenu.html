@@ -8,7 +8,7 @@
         <a href="{{url_for('survey')}}">Preferences</a>
         <a href="{{url_for('profile')}}">Profile</a>
         <a href="{{url_for('logout')}}">Sign Out</a>
-        <a href="#">Help/FAQ</a>
+        <a href="{{url_for('help')}}">Help/FAQ</a>
     {% else %}
         <a href="{{url_for('survey')}}">Search</a>
         <a href="{{url_for('howitworks')}}">About/FAQ</a>
