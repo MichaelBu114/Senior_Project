@@ -131,15 +131,16 @@ def search():
             UserDistance = request.form['radius']
             UserRating = int(request.form['rating'])
             UserRange = int(request.form['cost'])
-            rangePair =getRange(UserRange)
-            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId)
+            rangePair = getRange(UserRange)
+            resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair)
+            
             if resp["status"] != 'OK':
                 msg += resp["status"]
+            
             for i in range(int(resp["count"])):
-                if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
-                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                             resp[i]["rating_icon"]])
+                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                         resp[i]["rating_icon"]])
             random = resp['random']['id']
             result = {sesId:data}
             return render_template('search.html', msg=msg, data=data, username=uname,
@@ -172,18 +173,18 @@ def quick_search():
         zip = pref[0]
         dist = round(pref[1] / 1609)
         UserRating = pref[2]
-        UserRange = getRange(pref[3])
+        UserRange = int(request.form['cost'])
+        rangePair = getRange(UserRange)
         
-        resp = zomato_api.search(zip, dist, "real_distance", sesId, 0, 0, 0)
+        resp = zomato_api.search(zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
         
         if resp["status"] != 'OK':
             msg += resp["status"]
         
         for i in range(int(resp["count"])):
-            if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= UserRange[0] and float(resp[i]["average_cost_for_two"]/2) <= UserRange[1]:
-                data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                         resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                         resp[i]["rating_icon"]])
+            data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                     resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                     resp[i]["rating_icon"]])
         random = resp['random']['id']
         result = {sesId:data}
         
@@ -205,8 +206,22 @@ def getRange(range):
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
+    history = 0
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
-    res_id = request.args.get('res_id')
+    if 'rest_id' in session:
+        if request.args.get('res_id') != session['rest_id']:
+            session['rest_id'] = request.args.get('res_id')
+            session['history'] = -1
+    else:
+        session['rest_id'] = request.args.get('res_id')
+    res_id = session['rest_id']
+
+    if 'history' in session:
+        history = session['history']
+    else:
+        session['history'] = -1
+        history = session['history']
+
     resp = zomato_api.restaurant_details(res_id)
     estList = str(resp["establishment"]).lstrip("[").rstrip("]").replace("'", "")
     highlightsList = str(resp["highlights"]).lstrip("[").rstrip("]").replace("'", "")
@@ -214,6 +229,8 @@ def details():
     cur = con.cursor()
     commentsList = cur.callproc('getComments', [res_id])
     commentsList = cur.fetchall()
+    favorite = cur.callproc('getRestFavorite', (session['id'], [res_id]))
+    favorite = cur.fetchone()
     if not commentsList:
         commentsList = 'empty'
     if resp["status"] != 'OK':
@@ -236,7 +253,7 @@ def details():
                            is_delivering_now=resp["is_delivering_now"],
                            is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
-                           mapimageapikey=mapapikey, commentsList=commentsList)
+                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history)
 
 
 @app.route('/comment/', methods=['GET', 'POST'])
@@ -255,6 +272,7 @@ def comment():
         con.commit()
         flash(restID)
         con.close()
+        session['history'] -= 1
 
     return redirect(url_for('details', res_id=restID))
 
@@ -297,13 +315,15 @@ def survey():
                 updateUserList(estList, estab, sesId, 'Call addUserEstablishment(%s,%s)','CALL deleteUserEstablishment(%s,%s)')
                 updateUserList(cuisineList, cus, sesId, 'Call addUserCuisine(%s,%s)', 'Call deleteUserCuisine (%s,%s)')
                 updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
-                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, 0, 0, 0)
-                msg += str(resp["status"])
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
+                
+                if resp["status"] != 'OK':
+                    msg += str(resp["status"])
+                
                 for i in range(int(resp["count"])):
-                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >= rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
-                        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                                 resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                                 resp[i]["rating_icon"]])
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                             resp[i]["rating_icon"]])
                 result = {sesId:data}
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[3],
@@ -331,13 +351,15 @@ def survey():
                 cat = request.form.getlist('CatCheckboxGroup')
                 cat = [int(i) for i in cat]
                 cat.sort()
-                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, cat, cus, estab)
-                msg += str(resp["status"])
+                resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, rangePair, cat, cus, estab)
+                
+                if resp["status"] != 'OK':
+                    msg += str(resp["status"])
+                
                 for i in range(int(resp["count"])):
-                    if float(resp[i]["aggregate_rating"]) <= float(UserRating) and float(resp[i]["average_cost_for_two"]/2) >=rangePair[0] and float(resp[i]["average_cost_for_two"]/2) <= rangePair[1]:
-                        data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
-                                 resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
-                                 resp[i]["rating_icon"]])
+                    data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
+                             resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
+                             resp[i]["rating_icon"]])
                 result = {0:data}
                 return redirect(url_for('search', msg=msg,userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
@@ -386,6 +408,34 @@ def profile():
     return render_template('profile.html', username=session['username'],
                            msg=msg, email=session['email'],
                            firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
+
+
+# background process happening without any refreshing
+@app.route('/addFavorite/', methods=['POST'])
+def addFavorite():
+    restID = request.form["restaurantID"]
+    print("The session is: " + str(session["id"]) + " - " + str(restID))
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL addFavorite(%s,%s)', (session["id"], restID))
+    con.commit()
+    con.close()
+    session['history'] -= 1
+    return redirect(url_for('details', res_id=restID))
+
+
+# background process happening without any refreshing
+@app.route('/deleteFavorite/', methods=['POST'])
+def deleteFavorite():
+    restID = request.form["restaurantID"]
+    print("The session is: " + str(session["id"]) + " - " + str(restID))
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL deleteFavorite(%s,%s)', (session["id"], restID))
+    con.commit()
+    con.close()
+    session['history'] -= 1
+    return redirect(url_for('details', res_id=restID))
 
 
 # Updates the user preference if it was changeded on the survey page
@@ -439,29 +489,41 @@ def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
             con.commit()
     con.close()
 
+
 @app.route('/howitworks/', methods=['GET', 'POST'])
 def howitworks():
     return render_template('howitworks.html')
+
 
 @app.route('/termspolicy/', methods=['GET', 'POST'])
 def termspolicy():
     return render_template('termspolicy.html')
 
+
 @app.route('/facebooklink/', methods=['GET', 'POST'])
 def facebooklink():
     return render_template('facebooklink.html')
+
 
 @app.route('/instagramlink/', methods=['GET', 'POST'])
 def instagramlink():
     return render_template('instagramlink.html')
 
+
 @app.route('/twitterlink/', methods=['GET', 'POST'])
 def twitterlink():
     return render_template('twitterlink.html')
 
+
 @app.route('/contactus/', methods=['GET', 'POST'])
 def contactus():
     return render_template('contactus.html')
+
+
+@app.route('/favorites/', methods=['GET', 'POST'])
+def favorites():
+    return render_template('favorites.html', username=session['username'])
+
 
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():
@@ -536,6 +598,43 @@ def updateFriend(friends_id,Fk_user,status):
     con.commit()
     con.close()
     return redirect(url_for('connect'))
+
+def addGroup(groupname, user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL addGroup(%s, %s)', (groupname, user_id))
+    con.commit()
+    con.close()
+
+def addToGroup(group_id, user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL addToGroup(%s, %s)', (group_id, user_id)) 
+    con.commit()
+    con.close()
+
+def getGroups(user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    groupsList = cur.execute('CALL getGroups(%s)', (user_id))
+    groupsList = cur.fetchall()
+    con.commit()
+    con.close()
+    return groupsList
+
+def deleteFromGroup(group_id, user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL deleteFromGroup(%s, %s)', (group_id, user_id))
+    con.commit()
+    con.close()
+
+def deleteUserGroup(user_id, fk_group):
+    con = mysql.connect()
+    cur = con.cursor()
+    cur.execute('CALL deleteUserGroup(%s, %s)', (user_id, fk_group))
+    con.commit()
+    con.close()
 
 def regestrationMessage(email, url):
     msg = Message('Confirmation Email', sender = MAIL_USERNAME, recipients =[email])
