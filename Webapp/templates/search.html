@@ -76,7 +76,7 @@
                     {% else %}
                         <td align="center" width="32%" style="margin-right:20px;color:white;font-weight:bold;">Page: {{pageNum}}</td>
                     {% endif %}
-                    {% if pageNum > 0 and pageNum < 10 and data[prev:next] | length == 10%}
+                    {% if pageNum > 0 and pageNum < 10 and data[prev:next] | length == 10 and data[prev+10:next+10] | length != 0%}
                         <td align="right" width="32%" style="margin-left:20px;"><a href="{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=prev+10)}}" clase='menubutton'>Next &raquo;</a></td>
                     {% else %}
                         <td align="right" width="32%" style="margin-left:20px;"></td>
