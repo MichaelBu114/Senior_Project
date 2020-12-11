@@ -34,7 +34,7 @@ def format(list):
 def check_response(response):
     if response.status_code != 200 or FORCE_ERROR:
         # Response error
-        response_json['status'] = "ERROR1"
+        response_json['status'] = "API HTTP Response Error %s" % response.status_code
         return -1
 
 def mysql_database_call(function, user_id):
@@ -141,8 +141,8 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
         establishments = format(userEst)
     
     for i in [categories, cuisines, establishments]:
-        if i == -1: # API Error
-            response_json['status'] = "ERROR2"
+        if i == -1:
+            response_json['status'] = "MySQL Database Error"
             return response_json
     
     # Convert zip code into coordinates

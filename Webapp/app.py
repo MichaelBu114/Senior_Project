@@ -215,10 +215,13 @@ def details():
     cur = con.cursor()
     commentsList = cur.callproc('getComments', [res_id])
     commentsList = cur.fetchall()
+    
     if not commentsList:
         commentsList = 'empty'
+    
     if resp["status"] != 'OK':
         msg += resp["status"]
+    
     if 'username' in session:
         username = session['username']
     else:
@@ -299,7 +302,10 @@ def survey():
                 updateUserList(cuisineList, cus, sesId, 'Call addUserCuisine(%s,%s)', 'Call deleteUserCuisine (%s,%s)')
                 updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
-                msg += str(resp["status"])
+                
+                if resp["status"] != 'OK':
+                    msg += str(resp["status"])
+                
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
@@ -332,7 +338,10 @@ def survey():
                 cat = [int(i) for i in cat]
                 cat.sort()
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, rangePair, cat, cus, estab)
-                msg += str(resp["status"])
+                
+                if resp["status"] != 'OK':
+                    msg += str(resp["status"])
+                
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
