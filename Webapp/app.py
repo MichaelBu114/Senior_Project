@@ -58,7 +58,7 @@ def logout():
     session.pop('email', None)
     session.pop('id', None)
     session.pop('password', None)
-    result = {}
+    result.popitem()
     return redirect(url_for('home'))
 
 
@@ -105,7 +105,8 @@ def registration():
 @app.route('/search_results/<int:pageNum>/<int:Next>/<int:prev>/<int:rand>')
 def search_results(pageNum,Next,prev,rand):
     if 'username' in session:
-        data = result.get(session['id'])
+        sesId = session['id']
+        data = result.get(sesId)
         return render_template('search.html', username=session['username'], data=data, pageNum=pageNum, next=Next, prev=prev,random=rand)
     else:
         data = result.get(0)
@@ -149,7 +150,12 @@ def search():
                 msg = ("No results found")
             else:
                 session['random'] = resp['random']['id']
-            result = {sesId:data}
+                
+            if result == {}:
+                result = {sesId:data}
+            else:
+                result.popitem()
+                result[sesId] = data
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
                                    userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=session['random'],qd=qd)
@@ -197,7 +203,11 @@ def quickSearch():
         session['random'] = 0
     else:
         session['random']= resp['random']['id']
-    result = {sesId:data}
+    if result == {}:
+        result = {sesId:data}
+    else:
+        result.popitem()
+        result[sesId] = data
     con.close()  
     return redirect(url_for('details',res_id = session['random'], qd = qd))
 
@@ -211,7 +221,7 @@ def reroll():
 
 def getRange(range):
     if range == 1:
-        pair = [0.0,10.0]
+        pair = [0.01,10.0]
     elif range == 2:
         pair = [10.01,17.0]
     elif range == 3:
@@ -219,7 +229,7 @@ def getRange(range):
     elif range == 4:
         pair = [24.01,31.0]
     else:
-        pair = [31.01,1000]
+        pair = [31.01,1000.0]
     return pair
 
 @app.route('/details/', methods=['GET', 'POST'])
@@ -349,7 +359,11 @@ def survey():
                     msg = ("No results found")
                 else:
                     session['random'] = resp['random']['id']
-                result = {sesId:data}
+                if result == {}:
+                    result = {sesId:data}
+                else:
+                    result.popitem()
+                    result[sesId] = data
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[2],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
@@ -385,13 +399,17 @@ def survey():
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
-                result = {0:data}
                 if len(data) == 0:
                     session['random'] = 0
                     msg = ("No results found")
                 else:
                     session['random'] = resp['random']['id']
-                return redirect(url_for('search', msg=msg,userRange=UserRange,
+                if result == {}:
+                    result = {sesId:data}
+                else:
+                    result.popitem()
+                    result[sesId] = data
+                return redirect(url_for('search', msg=msg, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
                                        userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=session['random']))
         return render_template('preferences.html', msg=msg)
