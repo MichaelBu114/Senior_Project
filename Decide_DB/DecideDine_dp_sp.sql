@@ -135,9 +135,10 @@ CREATE TABLE `Favorites` (
   `favorites_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `res_id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`favorites_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,7 +147,7 @@ CREATE TABLE `Favorites` (
 
 LOCK TABLES `Favorites` WRITE;
 /*!40000 ALTER TABLE `Favorites` DISABLE KEYS */;
-INSERT INTO `Favorites` VALUES (17,1,17628923,'2020-12-10 18:48:42'),(19,1,17626627,'2020-12-10 18:53:28'),(21,1,17627340,'2020-12-10 18:58:02'),(23,1,17628458,'2020-12-10 19:05:52'),(24,1,17626686,'2020-12-10 19:09:36'),(25,1,17628964,'2020-12-11 06:25:48'),(27,1,17629145,'2020-12-11 06:56:42'),(31,1,17800995,'2020-12-11 07:29:24'),(33,1,17801039,'2020-12-11 18:52:59'),(36,1,17023183,'2020-12-11 20:09:31'),(37,20,17014516,'2020-12-11 21:21:21');
+INSERT INTO `Favorites` VALUES (40,20,17010673,'Cosimos Pizza Cafe','2020-12-11 23:43:03'),(41,20,17015086,'Pina\'s Pizza','2020-12-12 00:01:08'),(44,20,17015660,'Riverside Pizza','2020-12-12 00:26:03'),(45,20,17012294,'Holiday Express Pizza','2020-12-12 00:26:11'),(46,20,17017230,'Wadsworth Pizzeria','2020-12-12 00:26:17'),(47,20,17012511,'Italiano\'s Pizza','2020-12-12 00:26:30'),(48,20,17021667,'Pizza Hut','2020-12-12 00:29:11'),(49,20,17015324,'Prince Pizza II','2020-12-12 00:29:35'),(50,20,17011460,'Fiesta Pizza','2020-12-12 01:02:29');
 /*!40000 ALTER TABLE `Favorites` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +293,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,'08226',56327,5,5,NULL,'2020-11-21 20:17:33',7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,'2020-11-21 20:17:33',8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,'2020-11-21 20:17:33',9,NULL,NULL,NULL),(16,'Lunsk','Josh','lunskj9@students.rowan.edu',1,'48185',16093,3,3,NULL,'2020-11-21 20:17:33',11,NULL,NULL,NULL),(17,'Pansera','John','panseraj3@students.rowan.edu',1,'37013',32186,1,4,NULL,'2020-11-21 20:17:33',12,NULL,NULL,NULL),(18,'Ewer','Christian','ewerch47@students.rowan.edu ',1,'33445',8046,2,2,NULL,'2020-11-21 20:17:33',13,NULL,NULL,NULL),(19,'Burke','Michael','burkem35@students.rowan.edu',1,'18901',8046,3,4,NULL,'2020-11-21 20:17:33',14,NULL,NULL,NULL),(20,'Pinizzotto','Sam','pinizz68@students.rowan.edu',1,'8021',56327,3,3,NULL,'2020-12-08 23:54:50',15,NULL,NULL,NULL),(21,'Sickler','Chris','sicklerc4@students.rowan.edu',1,'91387',16093,1,4,NULL,'2020-11-21 20:17:33',16,NULL,NULL,NULL),(22,'D\'Ascenzo','Stephen','dascenzos9@students.rowan.edu',1,'55068',32186,2,3,NULL,'2020-11-21 20:17:33',17,NULL,NULL,NULL);
+INSERT INTO `User` VALUES (1,'Smith','John','jsmith@gmail.com',1,'08226',56327,5,5,NULL,'2020-11-21 20:17:33',7,NULL,NULL,NULL),(2,'Test1','Test1','test1@gmail.com',1,'19128',24140,3,3,NULL,'2020-11-21 20:17:33',8,NULL,NULL,NULL),(3,'Test2','Test2','test2@gmail.com',1,'10109',24140,2,2,NULL,'2020-11-21 20:17:33',9,NULL,NULL,NULL),(16,'Lunsk','Josh','lunskj9@students.rowan.edu',1,'48185',16093,3,3,NULL,'2020-11-21 20:17:33',11,NULL,NULL,NULL),(17,'Pansera','John','panseraj3@students.rowan.edu',1,'37013',32186,1,4,NULL,'2020-11-21 20:17:33',12,NULL,NULL,NULL),(18,'Ewer','Christian','ewerch47@students.rowan.edu ',1,'33445',8046,2,2,NULL,'2020-11-21 20:17:33',13,NULL,NULL,NULL),(19,'Burke','Michael','burkem35@students.rowan.edu',1,'18901',8046,3,4,NULL,'2020-11-21 20:17:33',14,NULL,NULL,NULL),(20,'Pinizzotto','Sam','pinizz68@students.rowan.edu',1,'19128',56327,2,3,NULL,'2020-12-08 23:54:50',15,NULL,NULL,NULL),(21,'Sickler','Chris','sicklerc4@students.rowan.edu',1,'91387',16093,1,4,NULL,'2020-11-21 20:17:33',16,NULL,NULL,NULL),(22,'D\'Ascenzo','Stephen','dascenzos9@students.rowan.edu',1,'55068',32186,2,3,NULL,'2020-11-21 20:17:33',17,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,7 +313,7 @@ CREATE TABLE `User_Categories` (
   KEY `FK_categoriesuser_idx` (`FK_categories`),
   CONSTRAINT `User_Categories_Categories_categories_id_fk` FOREIGN KEY (`FK_categories`) REFERENCES `Categories` (`id`),
   CONSTRAINT `User_Categories_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -321,7 +322,7 @@ CREATE TABLE `User_Categories` (
 
 LOCK TABLES `User_Categories` WRITE;
 /*!40000 ALTER TABLE `User_Categories` DISABLE KEYS */;
-INSERT INTO `User_Categories` VALUES (1,2,2),(2,2,7),(3,2,9),(4,3,1),(5,3,3),(6,3,4),(7,3,8),(8,3,11),(9,3,13),(10,3,14),(16,1,9),(17,1,2);
+INSERT INTO `User_Categories` VALUES (1,2,2),(2,2,7),(3,2,9),(4,3,1),(5,3,3),(6,3,4),(7,3,8),(8,3,11),(9,3,13),(10,3,14),(16,1,9),(17,1,2),(23,20,10);
 /*!40000 ALTER TABLE `User_Categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,7 +342,7 @@ CREATE TABLE `User_Cuisine` (
   KEY `FK_cuisine_idx` (`FK_cuisine`),
   CONSTRAINT `User_Cuisine_Cuisine_cuisine_id_fk` FOREIGN KEY (`FK_cuisine`) REFERENCES `Cuisine` (`cuisine_id`),
   CONSTRAINT `User_Cuisine_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=191 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -350,7 +351,7 @@ CREATE TABLE `User_Cuisine` (
 
 LOCK TABLES `User_Cuisine` WRITE;
 /*!40000 ALTER TABLE `User_Cuisine` DISABLE KEYS */;
-INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82),(25,2,73),(142,1,1),(143,1,40),(144,1,73),(145,1,82),(146,1,1),(147,1,40),(148,1,73),(149,1,82),(166,20,82);
+INSERT INTO `User_Cuisine` VALUES (1,2,1),(2,2,25),(3,2,55),(5,2,83),(6,2,193),(7,3,3),(8,3,38),(9,3,45),(10,3,67),(11,3,70),(12,3,95),(13,3,121),(14,3,135),(15,3,143),(16,3,150),(17,3,461),(18,3,966),(24,2,82),(25,2,73),(142,1,1),(143,1,40),(144,1,73),(145,1,82),(146,1,1),(147,1,40),(148,1,73),(149,1,82),(189,20,40),(190,20,82);
 /*!40000 ALTER TABLE `User_Cuisine` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -370,7 +371,7 @@ CREATE TABLE `User_Establishment` (
   KEY `FK_establishmentuser_idx` (`FK_establishment`),
   CONSTRAINT `User_Establishment_Establishment_establishment_id_fk` FOREIGN KEY (`FK_establishment`) REFERENCES `Establishment` (`id`),
   CONSTRAINT `User_Establishment_User_user_id_fk` FOREIGN KEY (`FK_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -379,7 +380,7 @@ CREATE TABLE `User_Establishment` (
 
 LOCK TABLES `User_Establishment` WRITE;
 /*!40000 ALTER TABLE `User_Establishment` DISABLE KEYS */;
-INSERT INTO `User_Establishment` VALUES (18,2,1),(19,2,16),(21,2,285),(22,3,5),(23,3,6),(24,3,18),(25,3,20),(26,3,23),(27,3,24),(28,3,91),(29,3,161),(30,3,281),(31,3,284),(32,3,292),(33,3,295),(34,3,309),(42,2,41),(84,1,275),(85,1,275),(91,20,275);
+INSERT INTO `User_Establishment` VALUES (18,2,1),(19,2,16),(21,2,285),(22,3,5),(23,3,6),(24,3,18),(25,3,20),(26,3,23),(27,3,24),(28,3,91),(29,3,161),(30,3,281),(31,3,284),(32,3,292),(33,3,295),(34,3,309),(42,2,41),(84,1,275),(85,1,275),(105,20,275);
 /*!40000 ALTER TABLE `User_Establishment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -453,9 +454,9 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `addFavorite`(IN uid INT(11), IN resid INT(11))
+CREATE DEFINER=`root`@`%` PROCEDURE `addFavorite`(IN uid INT(11), IN resid INT(11), IN resName varchar(150))
 BEGIN
-	INSERT INTO Favorites (user_id, res_id) VALUES (uid, resid);
+	INSERT INTO Favorites (user_id, res_id, name) VALUES (uid, resid, resName);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -799,7 +800,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `getFavorites`(IN uid INT(11))
 BEGIN
-	SELECT f.res_id 
+	SELECT f.res_id, f.name
     FROM Favorites f
     WHERE user_id = uid;
 END ;;
@@ -1296,4 +1297,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-11 16:57:58
+-- Dump completed on 2020-12-11 22:08:17
