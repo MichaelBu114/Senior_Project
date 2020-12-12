@@ -150,9 +150,9 @@ def search():
                 msg = ("No results found")
             else:
                 session['random'] = resp['random']['id']
-                
+
             if result == {}:
-                result = {sesId:data}
+                result = {sesId: data}
             else:
                 result.popitem()
                 result[sesId] = data
@@ -204,19 +204,19 @@ def quickSearch():
     else:
         session['random']= resp['random']['id']
     if result == {}:
-        result = {sesId:data}
+        result = {sesId: data}
     else:
         result.popitem()
         result[sesId] = data
     con.close()  
-    return redirect(url_for('details',res_id = session['random'], qd = qd))
+    return redirect(url_for('details', res_id=session['random'], qd=qd))
 
 @app.route('/reroll/', methods =['GET','POST'])
 def reroll():
     data = result.get(session['id'])
     i = random.randint(0,(len(data)-1))
     randId = data[i][1]
-    return redirect(url_for('details',res_id = randId,qd=1))
+    return redirect(url_for('details', res_id=randId, qd=1))
 
 
 def getRange(range):
@@ -232,13 +232,17 @@ def getRange(range):
         pair = [31.01,1000.0]
     return pair
 
+
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
     history = 0
     favorite = 0
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
-    qd=request.args.get('qd')
+    if request.args.get('qd'):
+        qd = request.args.get('qd')
+    else:
+        qd = 0
     if 'rest_id' in session:
         if request.args.get('res_id') != session['rest_id']:
             session['rest_id'] = request.args.get('res_id')
@@ -260,6 +264,8 @@ def details():
     cur = con.cursor()
     commentsList = cur.callproc('getComments', [res_id])
     commentsList = cur.fetchall()
+    print("Quick Decide: " + str(qd))
+
     if not commentsList:
         commentsList = 'empty'
     if resp["status"] != 'OK':
@@ -360,7 +366,7 @@ def survey():
                 else:
                     session['random'] = resp['random']['id']
                 if result == {}:
-                    result = {sesId:data}
+                    result = {sesId: data}
                 else:
                     result.popitem()
                     result[sesId] = data
@@ -462,21 +468,20 @@ def profile():
                            firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
 
 
-# background process happening without any refreshing
 @app.route('/addFavorite/', methods=['POST'])
 def addFavorite():
     restID = request.form["restaurantID"]
+    resName = request.form["restaurantName"]
     print("The session is: " + str(session["id"]) + " - " + str(restID))
     con = mysql.connect()
     cur = con.cursor()
-    cur.execute('CALL addFavorite(%s,%s)', (session["id"], restID))
+    cur.execute('CALL addFavorite(%s,%s,%s)', (session["id"], restID, resName))
     con.commit()
     con.close()
     session['history'] -= 1
     return redirect(url_for('details', res_id=restID))
 
 
-# background process happening without any refreshing
 @app.route('/deleteFavorite/', methods=['POST'])
 def deleteFavorite():
     restID = request.form["restaurantID"]
@@ -490,7 +495,24 @@ def deleteFavorite():
     return redirect(url_for('details', res_id=restID))
 
 
-# Updates the user preference if it was changeded on the survey page
+@app.route('/favorites/', methods=['GET', 'POST'])
+def favorites():
+    sesId = session['id']
+    favoritesList = getFavorites(sesId)
+    return render_template('favorites.html', username=session['username'], favoritesList=favoritesList)
+
+
+def getFavorites(user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    favoritesList = cur.execute('CALL getFavorites(%s)', user_id)
+    favoritesList = cur.fetchall()
+    con.commit()
+    con.close()
+    return favoritesList
+
+
+# Updates the user preference if it was changed on the survey page
 def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
     con = mysql.connect()
     cur = con.cursor()
@@ -571,10 +593,6 @@ def twitterlink():
 def contactus():
     return render_template('contactus.html')
 
-
-@app.route('/favorites/', methods=['GET', 'POST'])
-def favorites():
-    return render_template('favorites.html', username=session['username'])
 
 @app.route('/help/', methods=['GET', 'POST'])
 def help():

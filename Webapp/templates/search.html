@@ -83,23 +83,6 @@
                     {% endif %}
                 </tr>
             </table>
-<!--            <table border="1" style="padding-left: 45px; max-width:50%; min-width:745px;">
-                <tr>
-                    {% if pageNum == 0 %}
-                        <td align="left"></td>
-                        <td align="right"></td>
-                    {% elif pageNum == 1 %}
-                        <td align="left"></td>
-                        <td align="right"><a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=next-1,rand=random)}}" clase='menubutton'>Next &raquo;</a></td>
-                    {% elif pageNum > 1 and pageNum < 10 %}
-                        <td align="left"><a href = "{{url_for('search_results',pageNum=pageNum-1,Next=prev+1,prev=prev-10,rand=random)}}" clase='menubutton'>&laquo; Previous</a></td>
-                        <td align="right"><a href = "{{url_for('search_results',pageNum=pageNum+1,Next=next+10,prev=next-1,rand=random)}}" clase='menubutton'>Next &raquo;</a></td>
-                    {% elif pageNum == 10%}
-                        <td align="left"><a href = "{{url_for('search_results',pageNum=pageNum-1,Next=prev+1,prev=prev-10,rand=random)}}" clase='menubutton'>&laquo; Previous</a></td>
-                        <td align="right"></td>
-                    {%endif%}
-                </tr>
-            </table>-->
                 <ul>
                 {% for i in data[prev:next] %}
                     <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:700px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
@@ -110,7 +93,7 @@
                                 <img src="/static/images/{{ i[7] }}star.png" height="13">
                                 &nbsp; {{ i[4] }} Rating<br />
                                 {{ i[2] }}<br />
-                                Call: {{ i[3] }}&nbsp;&nbsp;&nbsp;<a href="{{ i[5] }}" class="menubutton">View Menu</a>
+                                Call: {{ i[3] }}&nbsp;&nbsp;&nbsp;<a href="{{ i[5] }}" class="menubutton" target="_blank">View Menu</a>
                             </p>
                         </div>
                     </div>
