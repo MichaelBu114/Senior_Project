@@ -635,14 +635,12 @@ def connect():
             declined.append(friend)
     return render_template('AddFriends.html', username=session['username'], data=confirmed, pending=pending, declined=declined)
 
-    #SicklerFlask.txt file here?
-
 def addFriend(friendId, userId):
     con = mysql.connect()
     cur = con.cursor()
     status = 0
     if (status != 1 and friendId != userId):
-        cur.execute('CALL addFriend(%s,%s,%s)', (userId, friendId,status))
+        cur.execute('CALL addFriend(%s,%s,%s)', (userId, friendId, status))
         con.commit()
     con.close()
 
