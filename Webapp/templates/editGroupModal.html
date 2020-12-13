@@ -37,6 +37,9 @@
             vertical-align: middle;
           }
           .add-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
             width: 25px;
             height: 20px;
             border: none;
@@ -95,31 +98,54 @@
             const addFButton = document.querySelector('.add-btn');
 
             function addFriendToGroup(friendID) {
-                //create list element
                 const curList = document.createElement('li');
+                var curID = "";
+                if(friendID.endsWith("outer")){
+                    curID = friendID.slice(0, -5).concat("current");
+                }
+                else{
+                    curID = friendID.concat("current");
+                }
+
+                //create list element
                 curList.innerHTML = document.getElementById(friendID).innerText.slice(0, -4);
+                curList.setAttribute("id", curID);
                 currentGroup.appendChild(curList);
+
                 //create span
                 const mySpan = document.createElement('span');
                 mySpan.innerHTML = 'x';
+                mySpan.addEventListener('click', ()=>{
+                    removeFriendFromGroup(curID);
+                });
                 curList.appendChild(mySpan);
-
-                const oldCopy = document.getElementById(friendID);
-                const oldID = friendID;
-
-                const removeSpan = document.querySelectorAll('span');
-                for(let i = 0; i < removeSpan.length; i++){
-                    removeSpan[i].addEventListener("click", ()=>{
-                        const outList = document.createElement('li');
-                        outList.setAttribute("id", oldID);
-                        outList.setAttribute("style", "color: Gray;font-size:12px;font-weight:bold;");
-                        outList.innerHTML = oldCopy.innerHTML;
-                        outerGroup.appendChild(outList);
-                        removeSpan[i].parentElement.remove();
-                    });
-                }
-
+                //delete old entry
                 outerGroup.removeChild(document.getElementById(friendID));
             }
+            function removeFriendFromGroup(groupFriendID) {
+                //create list element
+                var outID = groupFriendID.slice(0, -7);
+                outID = outID.concat("outer");
+                const outList = document.createElement('li');
+                outList.innerHTML = document.getElementById(groupFriendID).innerText.slice(0, -1);
+                outList.setAttribute("style", "color: Gray;font-size:12px;font-weight:bold;");
+                outList.setAttribute("id", outID);
+
+                //create button
+                const myBtn = document.createElement('button');
+                myBtn.innerHTML = "ADD";
+                myBtn.addEventListener('click', ()=>{
+                    addFriendToGroup(outID);
+                });
+                myBtn.setAttribute("class", "add-btn");
+                myBtn.setAttribute("type", "button");
+                myBtn.setAttribute("style", "color: Black;font-size:12px;");
+                outList.appendChild(myBtn);
+                outerGroup.appendChild(outList);
+
+                //delete old list element
+                currentGroup.removeChild(document.getElementById(groupFriendID));
+            }
+
       </script>
    </body>
