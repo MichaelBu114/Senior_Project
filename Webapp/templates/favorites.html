@@ -14,7 +14,15 @@
         <div class="detail">
             <div class="floating-box" style="margin: 10px auto;min-height:auto;">
               <h1>Favorites</h1>
-
+                <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:710px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
+                    <div style="margin: 5px 10px; position: inherit;">
+                        <p>
+                            {% for i in favoritesList %}
+                                <a href="/details/?res_id={{ i[0] }}" style="font-weight: bold; color: #f67b5f;">{{ i[1] }}</a><br />
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
   </div>

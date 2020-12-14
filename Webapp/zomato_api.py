@@ -106,7 +106,7 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
     
     # Parse response into dictionary
     for i in response["restaurants"]:
-        if float(i["restaurant"]["user_rating"]["aggregate_rating"]) <= float(userRating) and float(i["restaurant"]["average_cost_for_two"]/2) >= userRange[0] and float(i["restaurant"]["average_cost_for_two"]/2) <= userRange[1]:
+        if float(i["restaurant"]["user_rating"]["aggregate_rating"]) <= float(userRating) and float(i["restaurant"]["average_cost_for_two"]/2) >= userRange[0] and float(i["restaurant"]["average_cost_for_two"]/2) <= userRange[1] or float(i["restaurant"]["average_cost_for_two"]/2) == 0:
             response_json[id] = {}
             response_json[id]["id"] = i["restaurant"]["id"]
             response_json[id]["coordinates"] = {}

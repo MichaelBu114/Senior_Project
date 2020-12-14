@@ -188,16 +188,19 @@ ol li img {
                         <div class="row">
                             <div class="column">
                                 <h3>Create Group</h3>
-                                <form method = "post" class="groupform">
-                                    <input type="text" name="addgoup" placeholder="Group name" id="addgroup" required>
-                                    <button type="submit" name="createGroup" class="btn-list">
-                                        <img src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
+                                <form action = "{{url_for('addGroup')}}" method = "post" class="groupform" onsubmit="">
+                                    <input type="text" name="addgroup" placeholder="Group name" id="addgroup" required>
+                                    <button type = "submit" name= "New_Group" class="btn-list">
+                                        <img  src="/static/images/plussign.png" valign="center" width="25" height="25" alt="plussign"/>
                                     </button>
                                 </form>
                             </div>
                             <div class="column">
                                 <div id="activegroups">
                                     <h3>Active Groups</h3>
+                                        {% for i in groups %}
+                                            <p style="color: Gray;font-size:12px;font-weight:bold;">{{i}}</p>
+                                        {% endfor %}
                                     <ol>
                                     </ol>
                                 </div>
@@ -214,40 +217,6 @@ ol li img {
     </div>
     <!-- end .container -->
     <script>
-        const inputText = document.querySelector('#addgroup');
-        const addButton = document.querySelector('.btn-list');
-        const groupList = document.querySelector('#activegroups ol');
-
-        addButton.addEventListener('click', (e)=>{
-           if(inputText.value != ""){
-               e.preventDefault();
-               //create list element
-               const myLi = document.createElement('li');
-               myLi.innerHTML = inputText.value;
-               groupList.appendChild(myLi);
-               //create edit image
-               const myEdit = document.createElement('img');
-               myEdit.src="/static/images/editlogo.png";
-               myEdit.onclick = ()=>{ document.getElementById('id05').style.display='block'};
-               myLi.appendChild(myEdit);
-               //create span
-               const mySpan = document.createElement('span');
-               mySpan.innerHTML = 'x';
-               myLi.appendChild(mySpan);
-           }
-           const remove = document.querySelectorAll('span');
-           for(let i = 0; i < remove.length; i++){
-                remove[i].addEventListener('click', ()=>{
-                    remove[i].parentElement.style.opacity = 0;
-                    setTimeout(()=>{
-                        remove[i].parentElement.style.display = "none";
-                        remove[i].parentElement.style.remove();
-                    }, 500);
-                });
-            }
-           inputText.value = "";
-        });
-
         function openFriends(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");

@@ -9,19 +9,37 @@ import random
 import zomato_api
 from config import MAIL_USERNAME
 
+"""
+Configues app
+MySQl and the email are configured from the config.py file
+and results is initlized to an empty dictionary 
+"""
 app = Flask(__name__)
 mysql = MySQL()
 app.config.from_pyfile('config.py')
 mysql.init_app(app)
 mail = Mail(app)
 result = {}
+
+"""
+The home page of the app with a check to see if the users 'username' is in session
+if in session, renders the page with the username variable equal to the persons 'username'
+else renders the page with no parameters
+"""
 @app.route('/')
 def home():
     if 'username' in session:
         return render_template('index.html', username=session['username'])
     return render_template('index.html')
 
-
+"""
+Checks to see if the request method is post and if the person filled out the username and password fields
+if true, takes the values in the username and password field, hashes the password, and calls a mysql procedure to see if
+that persons loging exist in the database
+if it does, then if gets the persons name, email, and id and stores them as session variables along with their password, aftewards
+sending the user back the home page
+else is displays error message saying one of the two is invalid and sending the user back the home page.   
+"""
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     msg = ''
@@ -50,7 +68,9 @@ def login():
             con.close()
     return redirect(url_for('home'))
 
-
+"""
+Removes all the users session values and if the user has results removes the user results from the list
+"""
 @app.route('/logout/')
 def logout():
     global result
@@ -58,10 +78,18 @@ def logout():
     session.pop('email', None)
     session.pop('id', None)
     session.pop('password', None)
-    result = {}
+    if len(result) != 0:
+        result.popitem()
     return redirect(url_for('home'))
 
-
+"""
+Checks to see if the person creating a new account has their email, fullname, password, and repeated password in the request form
+if true, gets the passwords hashes them and then gets the email, firstname, and lastname values
+Checks to see if the username is in the database and if the passwords that were hashed match
+if either one are true displays the correspoding error message and returns the user back the home page
+else adds the person and their loging info into the database, stores the seession values, and sends a confirmation email with a secure token
+lastly it sends the new user to the prefereces page
+"""
 @app.route('/registration/', methods=['GET', 'POST'])
 def registration():
     if request.method == 'POST':
@@ -102,16 +130,26 @@ def registration():
             flash('Please fill out the form!')
     return redirect(url_for('home'))
 
+"""
+Gets the results for the user and filtering the results depending on what page the user is on
+"""
 @app.route('/search_results/<int:pageNum>/<int:Next>/<int:prev>/<int:rand>')
 def search_results(pageNum,Next,prev,rand):
     if 'username' in session:
-        data = result.get(session['id'])
+        sesId = session['id']
+        data = result.get(sesId)
         return render_template('search.html', username=session['username'], data=data, pageNum=pageNum, next=Next, prev=prev,random=rand)
     else:
         data = result.get(0)
         return render_template('search.html', data=data, pageNum=pageNum, next=Next, prev=prev,random=rand)
    
-
+"""
+Uses zip code, radius, price range, and rating that the user provides to do an api call that gets up to 100 results
+the resutls are append into a list of lists, sorted by highest rating, and then mapped to the users id or 0 if they are not logged in
+lastly returns the render of page with all the data provided  
+If a page is redirct to the search there is a check to see if the key-value pair is true
+results returns None if key-value pair does not exists
+"""
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
     global result
@@ -149,7 +187,12 @@ def search():
                 msg = "No results found"
             else:
                 session['random'] = resp['random']['id']
-            result = {sesId:data}
+
+            if result == {}:
+                result = {sesId: data}
+            else:
+                result.popitem()
+                result[sesId] = data
             return render_template('search.html', msg=msg, data=data, username=uname,
                                    userZipcode=UserZipCode, userDistance=UserDistance,
                                    userRating=UserRating, userRange=UserRange, pageNum=pageNum, next=10, prev=0, random=session['random'],qd=qd)
@@ -161,6 +204,9 @@ def search():
         else:
             return render_template('search.html', msg=msg, data = data, username=uname, pageNum=pageNum, next=0, prev=0,random=0)
 
+"""
+Does a quick search using the prefrences that the users has provideded through there survey
+"""
 @app.route('/quicksearch/', methods=['GET', 'POST'])
 def quickSearch():
     global result
@@ -197,21 +243,30 @@ def quickSearch():
         session['random'] = 0
     else:
         session['random']= resp['random']['id']
-    result = {sesId:data}
+    if result == {}:
+        result = {sesId: data}
+    else:
+        result.popitem()
+        result[sesId] = data
     con.close()  
-    return redirect(url_for('details',res_id = session['random'], qd = qd))
+    return redirect(url_for('details', res_id=session['random'], qd=qd))
 
+"""
+Rerolls your quick search results
+"""
 @app.route('/reroll/', methods =['GET','POST'])
 def reroll():
     data = result.get(session['id'])
-    i = random.randint(0,len(data))
+    i = random.randint(0,(len(data)-1))
     randId = data[i][1]
-    return redirect(url_for('details',res_id = randId,qd=1))
+    return redirect(url_for('details', res_id=randId, qd=1))
 
-
+"""
+Uses the int that is stored in the users range in the database and creates a pair of float values
+"""
 def getRange(range):
     if range == 1:
-        pair = [0.0,10.0]
+        pair = [0.01,10.0]
     elif range == 2:
         pair = [10.01,17.0]
     elif range == 3:
@@ -219,15 +274,22 @@ def getRange(range):
     elif range == 4:
         pair = [24.01,31.0]
     else:
-        pair = [31.01,1000]
+        pair = [31.01,1000.0]
     return pair
 
+"""
+Displays the details of the resturant chosen by the user  
+"""
 @app.route('/details/', methods=['GET', 'POST'])
 def details():
     msg = ""
     history = 0
+    favorite = 0
     mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
-    qd=request.args.get('qd')
+    if request.args.get('qd'):
+        qd = request.args.get('qd')
+    else:
+        qd = 0
     if 'rest_id' in session:
         if request.args.get('res_id') != session['rest_id']:
             session['rest_id'] = request.args.get('res_id')
@@ -249,14 +311,15 @@ def details():
     cur = con.cursor()
     commentsList = cur.callproc('getComments', [res_id])
     commentsList = cur.fetchall()
-    favorite = cur.callproc('getRestFavorite', (session['id'], [res_id]))
-    favorite = cur.fetchone()
+    print("Quick Decide: " + str(qd))
+
     if not commentsList:
         commentsList = 'empty'
     if resp["status"] != 'OK':
         msg += resp["status"]
     if 'username' in session:
         username = session['username']
+        favorite = cur.execute('CALL getRestFavorite(%s,%s)', (session['id'], [res_id]))
     else:
         username = ''
 
@@ -275,7 +338,9 @@ def details():
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
                            mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history,qd=qd)
 
-
+"""
+Allows users to leave comments on a resturant
+"""
 @app.route('/comment/', methods=['GET', 'POST'])
 def comment():
     if request.method == 'POST' and 'username' in session:
@@ -296,7 +361,11 @@ def comment():
 
     return redirect(url_for('details', res_id=restID))
 
-
+"""
+A users can take a surey and get results based on those, if the user is logged in it will get a user defult prefrence and the users establishment, cuisine, and catagory list
+Just like in search it will take in the same fields but if anything a field is different i.e. a new zip code it will update it in the database for the next time
+Updates the three list corresponding to the checkbox list on the prefrences page.  
+"""
 @app.route('/survey/', methods=['GET', 'POST'])
 def survey():
     global result
@@ -349,15 +418,18 @@ def survey():
                     msg = "No results found"
                 else:
                     session['random'] = resp['random']['id']
-                result = {sesId:data}
+                if result == {}:
+                    result = {sesId: data}
+                else:
+                    result.popitem()
+                    result[sesId] = data
                 return redirect(url_for('search', msg=msg, username=session['username'],
                                        userRange=newPref[2],
                                        userDistance=round(newPref[1] / 1609), userZipcode=newPref[0],
                                        userRating=newPref[3], pageNum=1, next=10, prev=0,random =session['random']))
         else:
             return render_template('preferences.html', msg=msg, data=data, username=session['username'],
-                                   userRange=pref[2],
-                                   userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[3],
+                                   userRange=pref[2], userDistance=pref[1], userZipcode=str(pref[0]), userRating=pref[3],
                                    estList=estList, cuisineList=cuisineList, categoryList=categoryList)
     else:
         if request.method == 'POST':
@@ -386,18 +458,25 @@ def survey():
                              resp[i]["aggregate_rating"], resp[i]["menu_url"], resp[i]["featured_image"],
                              resp[i]["rating_icon"]])
                 data.sort(reverse = True,key = lambda x: float(x[4]))
-                result = {0:data}
                 if len(data) == 0:
                     session['random'] = 0
                     msg = ("No results found")
                 else:
                     session['random'] = resp['random']['id']
-                return redirect(url_for('search', msg=msg,userRange=UserRange,
+                if result == {}:
+                    result = {sesId:data}
+                else:
+                    result.popitem()
+                    result[sesId] = data
+                return redirect(url_for('search', msg=msg, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
                                        userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=session['random']))
         return render_template('preferences.html', msg=msg)
 
-
+"""
+Shows the users information. the user can update their name and email if needed, update there prefrences and showing you your new results, and allows the user to log out
+of the website. 
+"""
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     msg = ''
@@ -407,8 +486,12 @@ def profile():
                 if request.form['email'] != '' or request.form['firstname'] != '' or request.form['lastname'] != '':
                     con = mysql.connect()
                     cur = con.cursor()
-                    hashed = hashlib.sha256(request.form['pwd'].encode('utf-8')).hexdigest()
-                    rptHashed = hashlib.sha256(request.form['pwd-rpt'].encode('utf-8')).hexdigest()
+                    if request.form['pwd'] != '' and request.form['pwd-rpt'] != '':
+                        hashed = hashlib.sha256(request.form['pwd'].encode('utf-8')).hexdigest()
+                        rptHashed = hashlib.sha256(request.form['pwd-rpt'].encode('utf-8')).hexdigest()
+                    else:
+                        hashed = hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
+                        rptHashed = hashlib.sha256(session['password'].encode('utf-8')).hexdigest()
                     if hashed != rptHashed:
                         msg = 'Password do not match'
                     else:
@@ -440,22 +523,21 @@ def profile():
                            msg=msg, email=session['email'],
                            firstname=session['username'].split()[0], lastname=session['username'].split()[-1])
 
-
-# background process happening without any refreshing
+#Adds a resturant to the favertes list
 @app.route('/addFavorite/', methods=['POST'])
 def addFavorite():
     restID = request.form["restaurantID"]
+    resName = request.form["restaurantName"]
     print("The session is: " + str(session["id"]) + " - " + str(restID))
     con = mysql.connect()
     cur = con.cursor()
-    cur.execute('CALL addFavorite(%s,%s)', (session["id"], restID))
+    cur.execute('CALL addFavorite(%s,%s,%s)', (session["id"], restID, resName))
     con.commit()
     con.close()
     session['history'] -= 1
     return redirect(url_for('details', res_id=restID))
 
-
-# background process happening without any refreshing
+#Removes the a resturant from the favorites list
 @app.route('/deleteFavorite/', methods=['POST'])
 def deleteFavorite():
     restID = request.form["restaurantID"]
@@ -468,8 +550,25 @@ def deleteFavorite():
     session['history'] -= 1
     return redirect(url_for('details', res_id=restID))
 
+#Shows all the users favorate resturants
+@app.route('/favorites/', methods=['GET', 'POST'])
+def favorites():
+    sesId = session['id']
+    favoritesList = getFavorites(sesId)
+    return render_template('favorites.html', username=session['username'], favoritesList=favoritesList)
 
-# Updates the user preference if it was changeded on the survey page
+#Gets the users favorite resturants
+def getFavorites(user_id):
+    con = mysql.connect()
+    cur = con.cursor()
+    favoritesList = cur.execute('CALL getFavorites(%s)', user_id)
+    favoritesList = cur.fetchall()
+    con.commit()
+    con.close()
+    return favoritesList
+
+
+# Updates the user preference if it was changed on the survey page
 def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
     con = mysql.connect()
     cur = con.cursor()
@@ -501,7 +600,7 @@ def updateUserPref(pref, uId, UserZip, UserDis, UserRate, UserRange):
     con.close()
     return [newZip, newDis, newRate, newRange]
 
-
+# Updates the bridging tables in the database based on the checkbox list on the prefrences page
 def updateUserList(userList, userCheckBox, uId, addFunction, deleteFunction):
     con = mysql.connect()
     cur = con.cursor()
@@ -551,14 +650,15 @@ def contactus():
     return render_template('contactus.html')
 
 
-@app.route('/favorites/', methods=['GET', 'POST'])
-def favorites():
-    return render_template('favorites.html', username=session['username'])
-
 @app.route('/help/', methods=['GET', 'POST'])
 def help():
     return render_template('help.html', username=session['username'])
 
+"""
+The displays all the users friends, in/out going friend request, and groups
+If the user want to send a request checks to see if that user existed or if the user puts in ther own email, display the corresponding error message
+else adds the user to the friends list with a pending status.
+"""
 @app.route('/connect/', methods=['GET', 'POST'])
 def connect():
     msg = ''
@@ -566,11 +666,11 @@ def connect():
     pending = []
     declined = []
     sesId = session['id']
+    con = mysql.connect()
+    cur = con.cursor()
     if request.method == 'POST':
         if request.form['findFriend'] == 'Submit' and 'friends' in request.form:
             friend = request.form['friends']
-            con = mysql.connect()
-            cur = con.cursor()
             name = cur.execute('Call GetName(%s)', (friend))
             name = cur.fetchone()
             if name == None:
@@ -587,6 +687,7 @@ def connect():
                 msg = ('Friend request sent')
                 flash(msg)
     friendsList = getFriends(sesId)
+    groupList = getGroups(sesId)
     for friend in friendsList:
         if friend[3] == 0:
             pending.append(friend)
@@ -594,10 +695,9 @@ def connect():
             confirmed.append(friend)
         else:
             declined.append(friend)
-    return render_template('AddFriends.html', username=session['username'], data=confirmed, pending=pending, declined=declined)
+    return render_template('AddFriends.html', username=session['username'], data=confirmed, pending=pending, declined=declined, groups = groupList)
 
-    #SicklerFlask.txt file here?
-
+#Adds a friend to the pending list the other users has to either accept or decline their friend request
 def addFriend(friendId, userId):
     con = mysql.connect()
     cur = con.cursor()
@@ -607,6 +707,7 @@ def addFriend(friendId, userId):
         con.commit()
     con.close()
 
+#Gets all your friends regardless of status
 def getFriends(Fk_user):
     con = mysql.connect()
     cur = con.cursor()
@@ -616,6 +717,7 @@ def getFriends(Fk_user):
     con.close()
     return friendsList
 
+#Removes a friend from your friends list
 def deleteFriend(friends_id, Fk_user, status):
     con = mysql.connect()
     cur = con.cursor()
@@ -624,6 +726,7 @@ def deleteFriend(friends_id, Fk_user, status):
         con.commit()
     con.close()
 
+#Updates the pending user either accepting or declining their friend request.
 @app.route('/update/<int:friends_id>/<int:Fk_user>/<int:status>', methods = ['GET','POST'])
 def updateFriend(friends_id,Fk_user,status):
     con = mysql.connect()
@@ -633,20 +736,29 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-def addGroup(groupname, user_id):
-    con = mysql.connect()
-    cur = con.cursor()
-    cur.execute('CALL addGroup(%s, %s)', (groupname, user_id))
-    con.commit()
-    con.close()
+#Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
+@app.route('/addGroup/', methods =['GET','POST'])
+def addGroup():
+    if request.method == 'POST':  
+        if 'addgroup' in request.form:
+            groupname = request.form['addgroup']
+            user_id = session['id']
+            con = mysql.connect()
+            cur = con.cursor()
+            cur.execute('CALL addGroup(%s,%s,@status)', (groupname, user_id))
+            con.commit()
+            con.close()
+    return redirect(url_for('connect'))
 
+#Adds a new user to the group
 def addToGroup(group_id, user_id):
     con = mysql.connect()
     cur = con.cursor()
-    cur.execute('CALL addToGroup(%s, %s)', (group_id, user_id)) 
+    cur.execute('CALL addToGroup(%s, %s, @status)', (group_id, user_id)) 
     con.commit()
     con.close()
 
+#Gets the groups name, id, and all members with the group. The first member id in the group is the also the creator/owner of the group
 def getGroups(user_id):
     con = mysql.connect()
     cur = con.cursor()
@@ -654,14 +766,15 @@ def getGroups(user_id):
     groupsList = cur.execute('CALL getGroups(%s)', (user_id))
     groupsList =  cur.fetchall()
     for i in groupsList:
-        membersList = cur.excute('CALL getGroupMembers(%s)',(i[1]))
+        membersList = cur.execute('CALL getGroupMembers(%s)',(i[1]))
         membersList = [val for sublist in cur.fetchall() for val in sublist]
-        groupMembers.append([[i[0],membersList]])
-        print(groupMembers)
+        membersList = [i[0]]+[i[1]]+membersList
+        groupMembers.append([membersList])
     con.commit()
     con.close()
     return groupMembers
 
+#Removes the user from the group
 def deleteFromGroup(group_id, user_id):
     con = mysql.connect()
     cur = con.cursor()
@@ -669,6 +782,7 @@ def deleteFromGroup(group_id, user_id):
     con.commit()
     con.close()
 
+#Deletes the Group created by the user 
 def deleteUserGroup(user_id, fk_group):
     con = mysql.connect()
     cur = con.cursor()
@@ -676,15 +790,18 @@ def deleteUserGroup(user_id, fk_group):
     con.commit()
     con.close()
 
+#sends the confirmation email to the user
 def regestrationMessage(email, url):
     msg = Message('Confirmation Email', sender = MAIL_USERNAME, recipients =[email])
     msg.body = "Please confirm your email " + url
     mail.send(msg)
 
+#creates a token using the apps secret key and mask the value with salt value
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
 
+#Checks to see if the token is accociate with an email, if true returns the email, else returns false
 def confirm_token(token,expiration=3600):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
@@ -693,6 +810,11 @@ def confirm_token(token,expiration=3600):
         return False
     return email
 
+"""
+when the user clicks the url in the confirmation email, checks to see if the token in the email corresponds with token created by the email
+if the account is not currently active, updates the database to mark the account as an active account
+then sends the user to the home page
+"""
 @app.route('/connect/<token>')
 def confirm_email(token):
     con = mysql.connect()

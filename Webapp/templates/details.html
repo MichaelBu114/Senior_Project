@@ -69,14 +69,14 @@
         <p>&nbsp;</p>
         <div class="detail">
             <div class="floating-box" style="margin: 10px auto;min-height:auto;">
-                {% if qd%}
-                <div style="float:left;">
-                    <a href="{{url_for('reroll')}}" type="button" class="comment-button">Re-roll</a>
-                </div>
+                {% if qd == 0 %}
+                    <input type="button" class="comment-button" value="<-- Back to Search Results" onclick="history.go({{history}});">
+                    <hr/>
                 {% else %}
-                <input type="button" class="comment-button" value="<-- Back to Search Results" onclick="history.go({{history}});"
-                       style="margin-left">
+                    <a href="{{url_for('reroll')}}" class="menubutton" style="background:white;color:#f67b5f">Re-roll</a>
+                    <hr/>
                 {% endif %}
+
                 {% if 'OK' not in msg %}
                 <div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
                 <div style="float:right">
@@ -108,19 +108,18 @@
                 <hr/>
                 {% if 'username' in session %}{% if favorite %}
                 <div style="float:right;">
-                    <form action="{{url_for('deleteFavorite')}}" method="post"><input name="restaurantID" type="hidden"
-                                                                                      value="{{restaurantID}}">
-                        <button type="submit" type="submit" class="comment-button"
-                                style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;'>
+                    <form action="{{url_for('deleteFavorite')}}" method="post">
+                        <input name="restaurantID" type="hidden" value="{{restaurantID}}">
+                        <button type="submit" class="comment-button" style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;'>
                             Remove Favorite <i class='far fa-check-square'></i></button>
                     </form>
                 </div>
                 {%else%}
                 <div style="float:right;">
-                    <form action="{{url_for('addFavorite')}}" method="post"><input name="restaurantID" type="hidden"
-                                                                                   value="{{restaurantID}}">
-                        <button type="submit" class="comment-button"
-                                style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;'>
+                    <form action="{{url_for('addFavorite')}}" method="post">
+                        <input name="restaurantID" type="hidden" value="{{restaurantID}}">
+                        <input name="restaurantName" type="hidden" value="{{name}}">
+                        <button type="submit" class="comment-button" style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;'>
                             Add Favorite <i class='far fa-plus-square'></i></button>
                     </form>
                 </div>
