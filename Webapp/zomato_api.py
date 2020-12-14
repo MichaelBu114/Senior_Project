@@ -14,7 +14,7 @@ s = requests.Session()
 s.headers.update({"user-key" : ZOMATO_API_KEY})
 
 def choose_random(total_count):
-    num = random.randint(0, total_count-1) # Get random ID
+    num = random.randint(0, total_count-1) # Choose a random ID
     response_json['random'] = response_json[num]
     
     if DEBUG:
@@ -42,12 +42,13 @@ def mysql_database_call(function, user_id):
     connection = None
     result = ""
     print("Executing %s ..." % function)
+    # Connect to MySQL server (using config.py values)
     connection = mysql.connect(user=MYSQL_DATABASE_USER,password =MYSQL_DATABASE_PASSWORD,host=MYSQL_DATABASE_HOST,database=MYSQL_DATABASE_DB,port=MYSQL_DATABASE_PORT,auth_plugin=MYSQL_AUTH_PLUGIN)
     cursor = connection.cursor()
-    categories = cursor.callproc(function, args = [user_id])
+    categories = cursor.callproc(function, args = [user_id]) # Execute function
     for r in cursor.stored_results():
         for i in list(r.fetchall()):
-            result += str(i[0]) + ","
+            result += str(i[0]) + "," # Loop through results and store them into a list
     connection.close()
     assert FORCE_ERROR == False
     return result[:-1]
@@ -65,6 +66,7 @@ def restaurant_details(res_id):
     
     response = response.json()
     
+    # Parse restaurant details
     response_json["id"] = response["id"]
     response_json["name"] = response["name"]
     response_json["phone_numbers"] = response["phone_numbers"].split(", ") # Convert string of phone numbers into list
@@ -92,6 +94,7 @@ def restaurant_details(res_id):
     return response_json
 
 def api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange, start=0):
+    # API call
     url = ZOMATO_BASE_URL+"/search?lat=%s&lon=%s&radius=%s&sort=%s&category=%s&establishment_type=%s&cuisines=%s&start=%s&count=20" % (lat, lon, meters, sorting, categories, establishments, cuisines, start)
     print ("Calling " + url)
     response = s.get(url, headers=header)
@@ -101,7 +104,7 @@ def api_request(lat, lon, meters, sorting, categories, establishments, cuisines,
     response = response.json()
     id = len(response_json) - 2
     
-    # Parse
+    # Parse response into dictionary
     for i in response["restaurants"]:
         if float(i["restaurant"]["user_rating"]["aggregate_rating"]) <= float(userRating) and float(i["restaurant"]["average_cost_for_two"]/2) >= userRange[0] and float(i["restaurant"]["average_cost_for_two"]/2) <= userRange[1]:
             response_json[id] = {}
@@ -140,6 +143,7 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
         cuisines = format(userCus)
         establishments = format(userEst)
     
+    # Check values to make sure they are valid
     for i in [categories, cuisines, establishments]:
         if i == -1:
             response_json['status'] = "MySQL Database Error"
@@ -151,13 +155,16 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
     lon = maps_response["results"][0]["geometry"]["location"]["lng"]
     meters = int(radius) * 1609
 
+    # Initial API request
     items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange)
     
+    # Loop and continue to get API results as long as they are available
     while items == 20 and start < 100:
         items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange, start)
         start += 20
     
-    if response_json['count'] > 0: # Get random restaurant if there are results
+    # Choose a random restaurant if there are results
+    if response_json['count'] > 0:
         choose_random(response_json['count'])
     
     return response_json
