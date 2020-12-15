@@ -743,12 +743,6 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-<<<<<<< HEAD
-@app.route('/editGroupPage/', methods=['GET', 'POST'])
-def editGroupPage():
-    return render_template('editGroupPage.html')
-
-=======
 @app.route('/editGroups/', methods = ['GET','POST'])
 def editGroup():
     if 'username' in session:
@@ -756,7 +750,7 @@ def editGroup():
     else:
         uname = ''
     return render_template('editGroupModal.html', username = uname)
->>>>>>> parent of de7078e... Revert "base edit group flask"
+    
 #Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
 def addGroup():
