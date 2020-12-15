@@ -69,7 +69,7 @@ def restaurant_details(res_id):
     # Parse restaurant details
     response_json["id"] = response["id"]
     response_json["name"] = response["name"]
-    response_json["phone_numbers"] = response["phone_numbers"].split(", ") # Convert string of phone numbers into list
+    response_json["phone_numbers"] = response["phone_numbers"]
     response_json["address"] = response["location"]["address"]
     response_json["city"] = response["location"]["city"]
     response_json["latitude"] = response["location"]["latitude"]

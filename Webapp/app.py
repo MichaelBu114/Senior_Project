@@ -663,7 +663,8 @@ else adds the user to the friends list with a pending status.
 def connect():
     msg = ''
     confirmed = []
-    pending = []
+    outPending = []
+    inPending = []
     declined = []
     sesId = session['id']
     con = mysql.connect()
@@ -690,12 +691,18 @@ def connect():
     groupList = getGroups(sesId)
     for friend in friendsList:
         if friend[3] == 0:
-            pending.append(friend)
-        elif friend[3] == 1:
+            if friend[5] != sesId:
+                outPending.append(friend)
+            else:
+                pend = cur.execute('CALL getProfile(%s)', (friend[6]))
+                pend = cur.fetchone()
+                pend = pend + (friend[3],friend[4],friend[5],friend[6])
+                inPending.append(pend)
+        elif friend[3] == 1 and friend[5] != sesId:
             confirmed.append(friend)
-        else:
+        elif friend[3] == 2 and friend[5] != sesId:
             declined.append(friend)
-    return render_template('AddFriends.html', username=session['username'], data=confirmed, pending=pending, declined=declined, groups = groupList)
+    return render_template('AddFriends.html', username=session['username'], data=confirmed, inPending = inPending ,outPending=outPending, declined=declined, groups = groupList)
 
 #Adds a friend to the pending list the other users has to either accept or decline their friend request
 def addFriend(friendId, userId):
@@ -732,6 +739,7 @@ def updateFriend(friends_id,Fk_user,status):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL updateFriend(%s, %s, %s)', (friends_id, Fk_user, status))
+    cur.execute('CALL addFriend(%s,%s,%s)', (friends_id,Fk_user,status))
     con.commit()
     con.close()
     return redirect(url_for('connect'))
@@ -786,7 +794,8 @@ def deleteFromGroup(group_id, user_id):
     con.commit()
     con.close()
 
-#Deletes the Group created by the user 
+#Deletes the Group created by the user
+@app.route('/deleteGroup/') 
 def deleteUserGroup(user_id, fk_group):
     con = mysql.connect()
     cur = con.cursor()
