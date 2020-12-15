@@ -146,13 +146,16 @@ ol li img {
                             <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:710px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
                                     <div id="pending-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
-                                        {% for i in pending %}
+                                        {% for i in outPending %}
                                             <p style="color: Gray;font-size:12px;font-weight:bold;">
                                                     {{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Requested: {{i[4]}})
-                                                    {% if i[5] == session['id'] %}
+                                            </p>
+                                        {% endfor %}
+                                        {% for i in inPending %}
+                                            <p style="color: Gray;font-size:12px;font-weight:bold;">
+                                                    {{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Requested: {{i[4]}})
                                                     <a href = "{{url_for('updateFriend',friends_id=i[5],Fk_user=i[6],status=1)}}" class="menubutton">Accept</a> 
                                                     <a href= "{{url_for('updateFriend',friends_id=i[5],Fk_user=i[6],status=2)}}" class="menubutton">Decline</a>
-                                                    {%endif%}
                                             </p>
                                         {% endfor %}
                                     </div>
