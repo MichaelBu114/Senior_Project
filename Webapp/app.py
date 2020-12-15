@@ -156,6 +156,7 @@ def search():
     msg = ""
     data = []
     pageNum = 0
+    random = None
     qd = 0
     if 'username' in session:
         sesId = session['id']
@@ -248,7 +249,7 @@ def quickSearch():
         result.popitem()
         result[sesId] = data
     con.close()  
-    return redirect(url_for('details', username = uname,res_id=session['random'], qd=qd))
+    return redirect(url_for('details', res_id=session['random'], qd=qd))
 
 """
 Rerolls your quick search results
@@ -743,13 +744,6 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-@app.route('/editGroups/', methods = ['GET','POST'])
-def editGroup():
-    if 'username' in session:
-        uname = session['username']
-    else:
-        uname = ''
-    return render_template('editGroupModal.html', username = uname)
 #Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
 def addGroup():
