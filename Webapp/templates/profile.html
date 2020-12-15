@@ -19,7 +19,7 @@
     <div id="container">
   {% include 'header.html' with context %}
         <div class="content">
-            <form action="{{url_for('profile')}}" method="post">
+            <form action="{{url_for('profile')}}" method="post" id="profile">
                 <p>&nbsp;</p>
                 <div class="search">
                     <div class="floating-box" style="margin: 20px auto;">
@@ -54,6 +54,8 @@
                         <input type="submit" name="button" value="Save Changes" style="float: left; margin-right: 90px;">&nbsp;
                         <input type="submit" name="button" value="Modify Preferences" style="float: left; margin-right: 90px;">&nbsp;
                         <input type="submit" name="button" value="Logout" style="float: right; margin-right: 90px;">
+
+                        <script type = "text/javascript">document.getElementById('profile').reset();</script>
             </form>
             <br>
         <p>&nbsp;</p>

@@ -744,10 +744,14 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
+@app.route('/editGroupPage/', methods=['GET', 'POST'])
+def editGroupPage():
+    return render_template('editGroupPage.html')
+
 #Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
 def addGroup():
-    if request.method == 'POST':  
+    if request.method == 'POST':
         if 'addgroup' in request.form:
             groupname = request.form['addgroup']
             user_id = session['id']
