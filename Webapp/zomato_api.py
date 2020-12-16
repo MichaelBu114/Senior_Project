@@ -13,6 +13,14 @@ header = {"user-key" : ZOMATO_API_KEY}
 s = requests.Session()
 s.headers.update({"user-key" : ZOMATO_API_KEY})
 
+def get_msg(resp):
+    msg = ""
+    
+    if resp["status"] != 'OK':
+        msg += resp["status"]
+    
+    return msg
+
 def choose_random(total_count):
     num = random.randint(0, total_count-1) # Choose a random ID
     response_json['random'] = response_json[num]

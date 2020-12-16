@@ -7,7 +7,7 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 import random
 import zomato_api
-from config import MAIL_USERNAME
+from config import MAIL_USERNAME, MAPAPIKEY
 
 """
 Configues app
@@ -173,8 +173,7 @@ def search():
             rangePair = getRange(UserRange)
             resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair)
             
-            if resp["status"] != 'OK':
-                msg += resp["status"]
+            msg = zomato_api.get_msg(resp)
             
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -228,9 +227,7 @@ def quickSearch():
     rangePair = getRange(UserRange)
         
     resp = zomato_api.search(defult_zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
-        
-    if resp["status"] != 'OK':
-        msg += resp["status"]
+    msg = zomato_api.get_msg(resp)
         
     for i in range(int(resp["count"])):
         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -247,7 +244,7 @@ def quickSearch():
     else:
         result.popitem()
         result[sesId] = data
-    con.close()  
+    con.close()
     return redirect(url_for('details', username = uname,res_id=session['random'], qd=qd))
 
 """
@@ -284,7 +281,6 @@ def details():
     msg = ""
     history = 0
     favorite = 0
-    mapapikey = "ed2bc3219ed1439cb0502f05dc7a881b"
     if request.args.get('qd'):
         qd = request.args.get('qd')
     else:
@@ -314,8 +310,7 @@ def details():
 
     if not commentsList:
         commentsList = 'empty'
-    if resp["status"] != 'OK':
-        msg += resp["status"]
+    msg = zomato_api.get_msg(resp)
     if 'username' in session:
         username = session['username']
         favorite = cur.execute('CALL getRestFavorite(%s,%s)', (session['id'], [res_id]))
@@ -335,7 +330,7 @@ def details():
                            is_delivering_now=resp["is_delivering_now"],
                            is_table_reservation_supported=resp["is_table_reservation_supported"],
                            has_table_booking=resp["has_table_booking"], establishment=estList, username=username,
-                           mapimageapikey=mapapikey, commentsList=commentsList, favorite=favorite, history=history,qd=qd)
+                           mapimageapikey=MAPAPIKEY, commentsList=commentsList, favorite=favorite, history=history,qd=qd)
 
 """
 Allows users to leave comments on a resturant
@@ -404,8 +399,7 @@ def survey():
                 updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
                 
-                if resp["status"] != 'OK':
-                    msg += str(resp["status"])
+                msg = zomato_api.get_msg(resp)
                 
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -448,9 +442,7 @@ def survey():
                 cat = [int(i) for i in cat]
                 cat.sort()
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, rangePair, cat, cus, estab)
-                
-                if resp["status"] != 'OK':
-                    msg += str(resp["status"])
+                msg = zomato_api.get_msg(resp)
                 
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -459,7 +451,7 @@ def survey():
                 data.sort(reverse = True,key = lambda x: float(x[4]))
                 if len(data) == 0:
                     session['random'] = 0
-                    msg = ("No results found")
+                    msg = "No results found"
                 else:
                     session['random'] = resp['random']['id']
                 if result == {}:
