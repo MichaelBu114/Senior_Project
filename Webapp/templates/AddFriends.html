@@ -227,40 +227,6 @@ ol li img {
     </div>
     <!-- end .container -->
     <script>
-        {#const inputText = document.querySelector('#addgroup');
-        const addButton = document.querySelector('.btn-list');
-        const groupList = document.querySelector('#activegroups ol');
-
-        addButton.addEventListener('click', (e)=>{
-           if(inputText.value != ""){
-               e.preventDefault();
-               //create list element
-               const myLi = document.createElement('li');
-               myLi.innerHTML = inputText.value;
-               groupList.appendChild(myLi);
-               //create edit image
-               const myEdit = document.createElement('img');
-               myEdit.src="/static/images/editlogo.png";
-               myEdit.onclick = ()=>{ document.getElementById('id05').style.display='block'};
-               myLi.appendChild(myEdit);
-               //create span
-               const mySpan = document.createElement('span');
-               mySpan.innerHTML = 'x';
-               myLi.appendChild(mySpan);
-           }
-           const remove = document.querySelectorAll('span');
-           for(let i = 0; i &lt; remove.length; i++){
-                remove[i].addEventListener('click', ()=>{
-                    remove[i].parentElement.style.opacity = 0;
-                    setTimeout(()=>{
-                        remove[i].parentElement.style.display = "none";
-                        remove[i].parentElement.style.remove();
-                    }, 500);
-                });
-            }
-           inputText.value = "";
-        });#}
-
         function openFriends(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");

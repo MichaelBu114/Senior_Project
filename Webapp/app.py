@@ -753,16 +753,16 @@ def editGroup(fk_group):
     members = []
     friends = getFriends(sesId)
     for i in friends:
-        if friends[3] == 1 and friends[5] != sesId:
-            confirm.append(friends)
+        if i[3] == 1 and i[5] != sesId:
+            confirm.append(i)
     groupMembers = cur.execute('CALL getGroupMembers(%s)',(fk_group))
-    groupMembers = cur.fetchall()
+    groupMembers = [val for sublist in cur.fetchall() for val in sublist]
     for i in confirm:
         if i[5] in groupMembers:
-            nonMembers.append(i)
-        else:
             members.append(i)
-    return render_template('editGroupPage.html', username = uname, friends = nonMembers, members = members)
+        else:
+            nonMembers.append(i)
+    return render_template('editGroupPage.html', username = uname, friends = nonMembers, members = members, group_id = fk_group)
 
 # Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
@@ -779,12 +779,14 @@ def addGroup():
     return redirect(url_for('connect'))
 
 # Adds a new user to the group
+@app.route('/add/<int:group_id>/<int:user_id>', methods = ['GET','POSt'])
 def addToGroup(group_id, user_id):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL addToGroup(%s, %s, @status)', (group_id, user_id)) 
     con.commit()
     con.close()
+    return redirect(url_for('editGroup', fk_group=group_id))
 
 # Gets the groups name, id, and all members with the group. The first member id in the group is the also the creator/owner of the group
 def getGroups(user_id):
@@ -804,12 +806,14 @@ def getGroups(user_id):
     return groupMembers
 
 #Removes the user from the group
+@app.route('/delete/<int:group_id>/<int:user_id>')
 def deleteFromGroup(group_id, user_id):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL deleteFromGroup(%s, %s)', (group_id, user_id))
     con.commit()
     con.close()
+    return redirect(url_for('editGroup', fk_group=group_id))
 
 #Deletes the Group created by the user
 @app.route('/deleteGroup/<int:user_id>/<int:fk_group>', methods = ['GET','POST']) 
