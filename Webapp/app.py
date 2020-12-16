@@ -638,7 +638,11 @@ def twitterlink():
 
 @app.route('/contactus/', methods=['GET', 'POST'])
 def contactus():
-    return render_template('contactus.html')
+    if 'username' in session:
+        username = session['username']
+    else:
+        username = 'none'
+    return render_template('contactus.html', username=username)
 
 
 @app.route('/help/', methods=['GET', 'POST'])
