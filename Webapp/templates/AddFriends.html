@@ -71,14 +71,14 @@ ol li span {
     position: absolute;
     top: 0;
     right: 0;
-    width: 35px;
+    width: 50px;
     text-align: center;
     background: #e00;
 }
 
 ol li img {
     position: absolute;
-    right: 35px;
+    right: 50px;
     width: 25px;
     height: 25px;
     background: #28a745;
@@ -205,9 +205,12 @@ ol li img {
                                     <h3>Active Groups</h3>
                                     <ol>
                                         {% for i in groups %}
-                                            <li>{{i[0]}}<a href="{{url_for('editGroup', fk_group = i[1], gp_name = i[0])}}"><img src="/static/images/editlogo.png"/></a>
+                                            <li>{{i[0]}}
                                                 {% if i[2] == session['id']%}
-                                                <span><a href = "{{url_for('deleteUserGroup', user_id = i[2], fk_group=i[1])}}">x</a></span>
+                                                    <a href="{{url_for('editGroup', fk_group = i[1], gp_name = i[0])}}"><img src="/static/images/editlogo.png"/></a>
+                                                    <span><a href = "{{url_for('deleteUserGroup', user_id = i[2], fk_group=i[1])}}">Delete</a></span>
+                                                {% else %}
+                                                    <span><a href = "{{url_for('deleteFromGroup', group_id=i[1], user_id = session['id'], gp_name = i[0], conPage = 1)}}">Leave</a></span>
                                                 {%endif%}
                                             </li>
                                         {% endfor %}
