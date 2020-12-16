@@ -169,7 +169,7 @@ CREATE TABLE `Friends` (
   KEY `Friends_User_friend_user_id_fk_idx` (`Fk_friend`),
   CONSTRAINT `Friends_User_friend_user_id_fk` FOREIGN KEY (`Fk_friend`) REFERENCES `User` (`user_id`),
   CONSTRAINT `Friends_User_user_id_fk` FOREIGN KEY (`Fk_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `Friends` (
 
 LOCK TABLES `Friends` WRITE;
 /*!40000 ALTER TABLE `Friends` DISABLE KEYS */;
-INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,0,'2020-11-21 20:17:33'),(5,2,3,1,'2020-11-21 20:17:33'),(6,2,20,1,'2020-12-04 18:07:29'),(7,2,19,0,'2020-12-03 18:46:11');
+INSERT INTO `Friends` VALUES (1,3,2,1,'2020-11-21 20:17:33'),(3,3,1,1,'2020-11-21 20:17:33'),(4,2,1,1,'2020-12-16 22:41:04'),(5,2,3,1,'2020-11-21 20:17:33'),(6,2,20,1,'2020-12-04 18:07:29'),(7,2,19,1,'2020-12-16 22:56:11'),(8,1,2,1,'2020-12-16 22:41:04'),(9,20,19,1,'2020-12-16 22:56:15'),(10,20,21,1,'2020-12-16 22:56:49'),(11,20,18,1,'2020-12-16 22:55:39'),(12,20,16,1,'2020-12-16 22:54:18'),(13,20,17,1,'2020-12-16 22:54:47'),(14,20,22,1,'2020-12-16 22:57:27'),(15,16,20,1,'2020-12-16 22:54:18'),(16,17,20,1,'2020-12-16 22:54:47'),(17,18,20,1,'2020-12-16 22:55:39'),(18,19,2,1,'2020-12-16 22:56:11'),(19,19,20,1,'2020-12-16 22:56:15'),(20,21,20,1,'2020-12-16 22:56:49'),(21,22,20,1,'2020-12-16 22:57:27');
 /*!40000 ALTER TABLE `Friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -196,7 +196,7 @@ CREATE TABLE `Groups` (
   `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`group_id`),
   UNIQUE KEY `Groups_group_id_uindex` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,7 +205,7 @@ CREATE TABLE `Groups` (
 
 LOCK TABLES `Groups` WRITE;
 /*!40000 ALTER TABLE `Groups` DISABLE KEYS */;
-INSERT INTO `Groups` VALUES (1,'Sam Test Group',20,'2020-11-24 02:19:56');
+INSERT INTO `Groups` VALUES (2,'Test Group 2',1,'2020-12-16 22:40:25'),(3,'Test Group 26',1,'2020-12-16 22:40:30'),(4,'Test Group 21',20,'2020-12-16 22:42:48'),(5,'Test 3',20,'2020-12-16 23:22:08');
 /*!40000 ALTER TABLE `Groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,7 +402,7 @@ CREATE TABLE `User_Group` (
   KEY `User_Group_User_user_id_fk` (`Fk_user`),
   CONSTRAINT `User_Group_Groups_group_id_fk` FOREIGN KEY (`Fk_group`) REFERENCES `Groups` (`group_id`) ON DELETE CASCADE,
   CONSTRAINT `User_Group_User_user_id_fk` FOREIGN KEY (`Fk_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -411,7 +411,7 @@ CREATE TABLE `User_Group` (
 
 LOCK TABLES `User_Group` WRITE;
 /*!40000 ALTER TABLE `User_Group` DISABLE KEYS */;
-INSERT INTO `User_Group` VALUES (1,19,1,'2020-11-24 02:23:00');
+INSERT INTO `User_Group` VALUES (2,1,2,'2020-12-16 22:40:25'),(3,1,3,'2020-12-16 22:40:30'),(4,2,2,'2020-12-16 22:41:12'),(5,20,4,'2020-12-16 22:42:48'),(6,22,4,'2020-12-16 22:59:36'),(7,18,4,'2020-12-16 22:59:37'),(8,16,4,'2020-12-16 22:59:38'),(9,19,4,'2020-12-16 22:59:38'),(10,20,5,'2020-12-16 23:22:08'),(11,17,5,'2020-12-16 23:22:16'),(12,22,5,'2020-12-16 23:22:20');
 /*!40000 ALTER TABLE `User_Group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -885,8 +885,9 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`%` PROCEDURE `getGroupsUserIsMember`(IN userID INT(11))
 BEGIN
-	SELECT Fk_group FROM User_Group
-    WHERE Fk_user = userID;
+	SELECT g.group_name, g.group_id FROM `dp_sp`.Groups g
+    JOIN User_Group ug ON ug.Fk_group = g.group_id
+    WHERE userID = ug.Fk_user AND userID != group_owner_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1298,4 +1299,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-15 20:39:21
+-- Dump completed on 2020-12-16 18:26:35

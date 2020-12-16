@@ -131,10 +131,10 @@ ol li img {
                         <ul id='FriendList'>
                             <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:710px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                    <div id="friends-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                    <div id="friends-lineitem" style="position: inherit;">
                                         {% for i in data %}
                                             <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Accepted: {{i[4]}})
-                                            <a href= "{{url_for('deleteFriend',friends_id=i[5],Fk_user=i[6],status=3)}}" class="menubutton">Delete</a></p>
+                                            <a href= "{{url_for('deleteFriend',friends_id=i[5],Fk_user=i[6],status=3)}}" class="menubutton" style="float:right;padding: 1px 15px;">Delete</a></p>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -147,7 +147,7 @@ ol li img {
                         <ul id='PendingList'>
                             <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:710px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                    <div id="pending-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                    <div id="pending-lineitem" style="margin: 5px 10px; position: inherit;">
                                         {% for i in outPending %}
                                             <p style="color: Gray;font-size:12px;font-weight:bold;">
                                                     {{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Requested: {{i[4]}})
@@ -168,7 +168,7 @@ ol li img {
                         <ul id='DeclinedList'>
                             <li>
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:710px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
-                                    <div id="declined-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
+                                    <div id="declined-lineitem" style="margin: 5px 10px; position: inherit;">
                                         {% for i in declined %}
                                             <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Declined: {{i[4]}})</p>
                                         {% endfor %}
