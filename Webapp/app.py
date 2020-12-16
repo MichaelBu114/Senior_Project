@@ -738,7 +738,24 @@ def updateFriend(friends_id,Fk_user,status):
 @app.route('/editGroups/<int:fk_group>', methods = ['GET','POST'])
 def editGroup(fk_group):
     uname = session['username']
-    return render_template('editGroupPage.html', username = uname)
+    sesId = session['id']
+    con = mysql.connect()
+    cur = con.cursor()
+    confirm = []
+    nonMembers = []
+    members = []
+    friends = getFriends(sesId)
+    for i in friends:
+        if friends[3] == 1 and friends[5] != sesId:
+            confirm.append(friends)
+    groupMembers = cur.execute('CALL getGroupMembers(%s)',(fk_group))
+    groupMembers = cur.fetchall()
+    for i in confirm:
+        if i[5] in groupMembers:
+            nonMembers.append(i)
+        else:
+            members.append(i)
+    return render_template('editGroupPage.html', username = uname, friends = nonMembers, members = members)
 
 #Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
