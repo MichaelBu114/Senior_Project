@@ -173,8 +173,7 @@ def search():
             rangePair = getRange(UserRange)
             resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair)
             
-            if resp["status"] != 'OK':
-                msg += resp["status"]
+            msg = zomato_api.get_msg(resp)
             
             for i in range(int(resp["count"])):
                 data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -228,9 +227,7 @@ def quickSearch():
     rangePair = getRange(UserRange)
         
     resp = zomato_api.search(defult_zip, dist, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
-        
-    if resp["status"] != 'OK':
-        msg += resp["status"]
+    msg = zomato_api.get_msg(resp)
         
     for i in range(int(resp["count"])):
         data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -313,8 +310,7 @@ def details():
 
     if not commentsList:
         commentsList = 'empty'
-    if resp["status"] != 'OK':
-        msg += resp["status"]
+    msg = zomato_api.get_msg(resp)
     if 'username' in session:
         username = session['username']
         favorite = cur.execute('CALL getRestFavorite(%s,%s)', (session['id'], [res_id]))
@@ -403,8 +399,7 @@ def survey():
                 updateUserList(categoryList, cat, sesId, 'Call addUserCategories(%s,%s)','Call deleteUserCategories(%s,%s)')
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", sesId, UserRating, rangePair, 0, 0, 0)
                 
-                if resp["status"] != 'OK':
-                    msg += str(resp["status"])
+                msg = zomato_api.get_msg(resp)
                 
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
@@ -447,9 +442,7 @@ def survey():
                 cat = [int(i) for i in cat]
                 cat.sort()
                 resp = zomato_api.search(UserZipCode, UserDistance, "real_distance", 0, UserRating, rangePair, cat, cus, estab)
-                
-                if resp["status"] != 'OK':
-                    msg += str(resp["status"])
+                msg = zomato_api.get_msg(resp)
                 
                 for i in range(int(resp["count"])):
                     data.append([resp[i]["name"], resp[i]["id"], resp[i]["address"], resp[i]["phone_number"],
