@@ -19,7 +19,7 @@
           }
 
           .displayGroups {
-            width: 300px;
+            width: 325px;
             padding: 0;
           }
 
@@ -43,8 +43,8 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 25px;
-            height: 20px;
+            width: 35px;
+            height: 25px;
             border: none;
             padding: 0px;
             background: Green;
@@ -58,8 +58,8 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             text-align: center;
             background: #e00;
           }
@@ -78,7 +78,7 @@
                            <ol id="currentGroup" class="displayGroups" style="color: Gray;font-size:12px;font-weight:bold;">
                                {% for i in members %}
                                    <li style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}
-                                    <span><a href = "{{url_for('deleteFromGroup', group_id = group_id, user_id = i[5])}}">x</span></a>
+                                    <span><a href = "{{url_for('deleteFromGroup', group_id = group_id, user_id = i[5])}}">x</a></span>
                                    </li>
                                 {% endfor %}
                            </ol>
@@ -88,7 +88,7 @@
                            <ol id="outsideGroup" class="displayGroups">
                               {% for i in friends %}
                                    <li style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}
-                                    <span><a href = "{{url_for('addToGroup', group_id = group_id, user_id = i[5])}}">ADD</span></a>
+                                    <button class="add-btn" type="button"><a href = "{{url_for('addToGroup', group_id = group_id, user_id = i[5])}}">ADD</a></button>
                                    </li>
                               {% endfor %}
                            </ol>
