@@ -10,6 +10,7 @@ MYSQL_AUTH_PLUGIN = 'mysql_native_password'
 # API/Flask Keys
 ZOMATO_API_KEY = "94d29bfae9762eb671263394ac6212ec"
 GOOGLE_MAPS_API_KEY = "AIzaSyBTIYFA8avWuLBtGteyCUXhFdDFrqlS648"
+MAPAPIKEY = "ed2bc3219ed1439cb0502f05dc7a881b"
 SECRET_KEY = secrets.token_urlsafe(16)
 SECURITY_PASSWORD_SALT = "rowan"
 
