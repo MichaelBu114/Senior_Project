@@ -743,14 +743,11 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-@app.route('/editGroups/', methods = ['GET','POST'])
-def editGroup():
-    if 'username' in session:
-        uname = session['username']
-    else:
-        uname = ''
-    return render_template('editGroupModal.html', username = uname)
-    
+@app.route('/editGroups/<int:fk_group>', methods = ['GET','POST'])
+def editGroup(fk_group):
+    uname = session['username']
+    return render_template('editGroupPage.html', username = uname)
+
 #Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
 def addGroup():
@@ -784,7 +781,8 @@ def getGroups(user_id):
         membersList = cur.execute('CALL getGroupMembers(%s)',(i[1]))
         membersList = [val for sublist in cur.fetchall() for val in sublist]
         membersList = [i[0]]+[i[1]]+membersList
-        groupMembers.append([membersList])
+        groupMembers.append(membersList) 
+    print(groupMembers)
     con.commit()
     con.close()
     return groupMembers
@@ -798,13 +796,14 @@ def deleteFromGroup(group_id, user_id):
     con.close()
 
 #Deletes the Group created by the user
-@app.route('/deleteGroup/') 
+@app.route('/deleteGroup/<int:user_id>/<int:fk_group>', methods = ['GET','POST']) 
 def deleteUserGroup(user_id, fk_group):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL deleteUserGroup(%s, %s)', (user_id, fk_group))
     con.commit()
     con.close()
+    return redirect(url_for('connect'))
 
 #sends the confirmation email to the user
 def regestrationMessage(email, url):

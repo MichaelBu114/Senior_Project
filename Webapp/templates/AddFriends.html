@@ -103,8 +103,7 @@ ol li img {
 </head>
 
 <body>
-<!-- Modal for editGroup-->
-{% include 'editGroupModal.html' %}
+
 
     <div id="container">
   {% include 'header.html' with context %}
@@ -205,9 +204,9 @@ ol li img {
                                 <div id="activegroups">
                                     <h3>Active Groups</h3>
                                     <ol>
-                                        {% for i in data %}
-                                            <li>Group for {{i[0]}}&nbsp;{{i[1]}}<a href="{{url_for('editGroupPage')}}"><img src="/static/images/editlogo.png"/></a>
-                                                <span {#Needs to call delete group#}>x</span>
+                                        {% for i in groups %}
+                                            <li>{{i[0]}}<a href="{{url_for('editGroup', fk_group = i[1])}}"><img src="/static/images/editlogo.png"/></a>
+                                                <span><a href = "{{url_for('deleteUserGroup', user_id = i[2], fk_group=i[1])}}">x</span></a>
                                             </li>
                                         {% endfor %}
                                     </ol>
