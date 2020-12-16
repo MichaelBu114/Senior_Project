@@ -742,7 +742,7 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-@app.route('/editGroups/<int:fk_group>', methods = ['GET','POST'])
+@app.route('/editGroups/', methods = ['GET','POST'])
 def editGroup(fk_group):
     uname = session['username']
     sesId = session['id']
@@ -798,7 +798,7 @@ def getGroups(user_id):
         membersList = [val for sublist in cur.fetchall() for val in sublist]
         membersList = [i[0]]+[i[1]]+membersList
         groupMembers.append(membersList) 
-    print(groupMembers)
+
     con.commit()
     con.close()
     return groupMembers
@@ -812,7 +812,7 @@ def deleteFromGroup(group_id, user_id):
     con.close()
 
 #Deletes the Group created by the user
-@app.route('/deleteGroup/<int:user_id>/<int:fk_group>', methods = ['GET','POST']) 
+@app.route('/deleteGroup/<int:user_id>/<int:fk_group>', methods = ['GET','POST'])
 def deleteUserGroup(user_id, fk_group):
     con = mysql.connect()
     cur = con.cursor()

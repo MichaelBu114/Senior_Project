@@ -76,18 +76,19 @@
                        <div class="column">
                            <h3>Friends in group</h3>
                            <ol id="currentGroup" class="displayGroups" style="color: Gray;font-size:12px;font-weight:bold;">
-                               {% for i in data %}
-                                   <li id="friend{{i[1]}}" style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}<span>x</span>
+                               {% for i in members %}
+                                   <li id="friend{{i[1]}}" style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}
+                                       <span><a href="{{ url_for('deleteFromGroup', fk_group, user_id = i[3]) }}">x</a></span>
                                    </li>
                               {% endfor %}
                            </ol>
                        </div>
                        <div class="column">
-                           <h3>Friends not in group</h3>>
+                           <h3>Friends not in group</h3>
                            <ol id="outsideGroup" class="displayGroups">
-                              {% for i in data %}
+                              {% for i in friends %}
                                    <li id="friend{{i[1]}}" style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}
-                                       <button onclick="addFriendToGroup('friend{{i[1]}}')" style="color: Black;font-size:12px;" type="button" name="createGroup" class="add-btn">ADD</button>
+                                       <button onclick="{{ url_for('addToGroup', fk_group, user_id = i[3]) }}" style="color: Black;font-size:12px;" type="button" name="createGroup" class="add-btn">ADD</button>
                                    </li>
                               {% endfor %}
                            </ol>
