@@ -112,10 +112,10 @@ ol li img {
             <div class="search">
                 <div class="floating-box" style="margin: 20px auto">
                     <ul>
-                        <li><button name = "Friends" value ="friends" class="tablinks" style="background-color: white; color: black; border-right: 1px solid;" onclick="openFriends(event, 'Friends')" id="defaultOpen">Friends</button></li>
-                        <li><button name = "Pending" value ="pending" class="tablinks" style="background-color: white; color: black; border-right: 1px solid;" onclick="openFriends(event, 'Pending')">Pending</button></li>
-                        <li><button name = "FindFrinds" value ="findfriends" class="tablinks" style="background-color: white; color: black; border-right: 1px solid;" onclick="openFriends(event, 'FindFriends')">Search for Friends</button></li>
-                        <li><button name = "Groups" value ="groups" class="tablinks" style="background-color: white; color: black" onclick="openFriends(event, 'GroupPage')">Groups Page</button></li>
+                        <li><button name = "Friends" value ="friends" class="tablinks" style="background-color: white; color: black; border-right: 1px solid;border-radius: 5px;" onclick="openFriends(event, 'Friends')" id="defaultOpen">Friends</button></li>
+                        <li><button name = "Pending" value ="pending" class="tablinks" style="background-color: white; color: black; border-right: 1px solid;border-radius: 5px;" onclick="openFriends(event, 'Pending')">Pending</button></li>
+                        <li><button name = "FindFriends" value ="findfriends" class="tablinks" style="background-color: white; color: black; border-right: 1px solid;border-radius: 5px;" onclick="openFriends(event, 'FindFriends')">Search for Friends</button></li>
+                        <li><button name = "Groups" value ="groups" class="tablinks" style="background-color: white; color: black;border-radius: 5px;" onclick="openFriends(event, 'GroupPage')">Groups Page</button></li>
                     </ul>
                     
                     {% with messages = get_flashed_messages() %}
@@ -134,7 +134,8 @@ ol li img {
                                 <div style="background-color: #ffffff; padding: 5px; max-width:50%; min-width:710px; min-height: 110px; border-style: solid;border-radius:10px;border-color:#f67b5f;">
                                     <div id="friends-lineitem" style="max-height:110px; margin: 5px 10px; position: inherit;">
                                         {% for i in data %}
-                                            <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Accepted: {{i[4]}})</p>
+                                            <p style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}} (Date Accepted: {{i[4]}})
+                                            <a href= "{{url_for('deleteFriend',friends_id=i[5],Fk_user=i[6],status=3)}}" class="menubutton">Delete</a></p>
                                         {% endfor %}
                                     </div>
                                 </div>

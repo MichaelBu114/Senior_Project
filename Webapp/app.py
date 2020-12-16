@@ -695,7 +695,8 @@ def connect():
             declined.append(friend)
     return render_template('AddFriends.html', username=session['username'], data=confirmed, inPending = inPending ,outPending=outPending, declined=declined, groups = groupList)
 
-#Adds a friend to the pending list the other users has to either accept or decline their friend request
+
+# Adds a friend to the pending list the other users has to either accept or decline their friend request
 def addFriend(friendId, userId):
     con = mysql.connect()
     cur = con.cursor()
@@ -705,7 +706,8 @@ def addFriend(friendId, userId):
         con.commit()
     con.close()
 
-#Gets all your friends regardless of status
+
+# Gets all your friends regardless of status
 def getFriends(Fk_user):
     con = mysql.connect()
     cur = con.cursor()
@@ -715,16 +717,21 @@ def getFriends(Fk_user):
     con.close()
     return friendsList
 
-#Removes a friend from your friends list
+
+# Removes a friend from your friends list
+@app.route('/deleteFriend/<int:friends_id>/<int:Fk_user>/<int:status>', methods = ['GET','POST'])
 def deleteFriend(friends_id, Fk_user, status):
     con = mysql.connect()
     cur = con.cursor()
-    if (status == 1 and friends_id != Fk_user):
+    if (status == 3 and friends_id != Fk_user):
         cur.execute('CALL deleteFriend(%s, %s)', (friends_id, Fk_user))
+        cur.execute('CALL deleteFriend(%s, %s)', (Fk_user, friends_id))
         con.commit()
     con.close()
+    return redirect(url_for('connect'))
 
-#Updates the pending user either accepting or declining their friend request.
+
+# Updates the pending user either accepting or declining their friend request.
 @app.route('/update/<int:friends_id>/<int:Fk_user>/<int:status>', methods = ['GET','POST'])
 def updateFriend(friends_id,Fk_user,status):
     con = mysql.connect()
@@ -757,7 +764,7 @@ def editGroup(fk_group):
             members.append(i)
     return render_template('editGroupPage.html', username = uname, friends = nonMembers, members = members)
 
-#Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
+# Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
 def addGroup():
     if request.method == 'POST':
@@ -771,7 +778,7 @@ def addGroup():
             con.close()
     return redirect(url_for('connect'))
 
-#Adds a new user to the group
+# Adds a new user to the group
 def addToGroup(group_id, user_id):
     con = mysql.connect()
     cur = con.cursor()
@@ -779,7 +786,7 @@ def addToGroup(group_id, user_id):
     con.commit()
     con.close()
 
-#Gets the groups name, id, and all members with the group. The first member id in the group is the also the creator/owner of the group
+# Gets the groups name, id, and all members with the group. The first member id in the group is the also the creator/owner of the group
 def getGroups(user_id):
     con = mysql.connect()
     cur = con.cursor()

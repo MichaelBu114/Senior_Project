@@ -19,7 +19,7 @@
     <div id="container">
   {% include 'header.html' with context %}
         <div class="content">
-            <form action="{{url_for('profile')}}" method="post" id="profile">
+            <form action="{{url_for('profile')}}" method="post" id="profile" autocomplete="off">
                 <p>&nbsp;</p>
                 <div class="search">
                     <div class="floating-box" style="margin: 20px auto;">
@@ -28,7 +28,7 @@
                     <br/>
                         <div>
                             <label class="question">Email&nbsp;&nbsp;&nbsp;</label>
-                            <input type="text" placeholder="{{email}}" name="email" id="email">
+                            <input type="text" placeholder="{{email}}" name="email" id="email" autocomplete="off">
                         </div>
                     <br>
                         <div>
@@ -43,27 +43,28 @@
                     <br>
                     	<div>
                             <label class="question">New Password&nbsp;&nbsp;&nbsp;</label>
-                            <input type="password" placeholder="New Password" name="pwd" id="password">
+                            <input type="password" placeholder="New Password" name="pwd" id="password" autocomplete="off">
                         </div>
                     <br>
                     	<div>
                             <label class="question">Repeat New Password&nbsp;&nbsp;&nbsp;</label>
-                            <input type="password" placeholder="Repeat New Password" name="pwd-rpt" id="password_repeat">
+                            <input type="password" placeholder="Repeat New Password" name="pwd-rpt" id="password_repeat" autocomplete="off">
                         </div>
                     <br>
                         <input type="submit" name="button" value="Save Changes" style="float: left; margin-right: 90px;">&nbsp;
                         <input type="submit" name="button" value="Modify Preferences" style="float: left; margin-right: 90px;">&nbsp;
                         <input type="submit" name="button" value="Logout" style="float: right; margin-right: 90px;">
-
-                        <script type = "text/javascript">document.getElementById('profile').reset();</script>
+                    </div>
+                </div>
             </form>
             <br>
         <p>&nbsp;</p>
-    </div>
+        </div>
         <!-- end .content -->
 {% include 'footer.html' %}
     </div>
     <!-- end .container -->
+<script type = "text/javascript">document.getElementById('email').reset();document.getElementById('password').reset();</script>
 </body>
 
 
