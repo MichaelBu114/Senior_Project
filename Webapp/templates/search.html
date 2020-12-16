@@ -50,19 +50,21 @@
                     <option value="5"{% if userRange == 5 %}selected{% endif %}>$$$$$</option>
                   </select>
             </div><br />
-
-            {% if data %}
-            <a href="{{url_for('details',res_id=random)}}">Pick a Restaurant</a>
-            {% endif %}
-
             {% if 'OK' not in msg %}<div class="msg">{{ msg }}</div> <!--for testing-->{%endif%}
             <input type="submit" value="Submit" style="margin:5px 0;">
             <p>&nbsp;</p>
             <table border="0" style="max-width:50%; min-width:755px;">
+            {% if data %}
+                <tr>
+                    <td width="4%">&nbsp;</td>
+                    <td colspan="4" width="96%" align="center"><a href="{{url_for('details',res_id=random,qd=1)}}" class="menubutton" style="background:white;color:#f67b5f;font-weight:bold;padding:5px 40px;border-radius:5px;font-size:14px;">Quick Decide</a></td>
+                </tr>
+            {% endif %}
                 <tr>
                     <td width="4%">&nbsp;</td>
                     <td colspan="4" width="96%"><hr/></td>
                 </tr>
+
                 <tr>
                     {% if pageNum > 1 and pageNum < 11 %}
                         <td width="4%">&nbsp;</td>

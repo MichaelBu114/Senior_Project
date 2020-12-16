@@ -70,10 +70,10 @@
         <div class="detail">
             <div class="floating-box" style="margin: 10px auto;min-height:auto;">
                 {% if qd == 0 %}
-                    <input type="button" class="comment-button" value="<-- Back to Search Results" onclick="history.go({{history}});">
+                    <input type="button" class="comment-button" value="<-- Back to Search Results" onclick="history.go({{history}});" style="padding:5px 20px;border-radius:5px">
                     <hr/>
                 {% else %}
-                    <a href="{{url_for('reroll')}}" class="menubutton" style="background:white;color:#f67b5f">Re-roll</a>
+                    <a href="{{url_for('reroll')}}" class="menubutton" style="background:white;color:#f67b5f;font-weight:bold;padding:5px 30px;border-radius:5px">Re-roll</a>
                     <hr/>
                 {% endif %}
 
@@ -110,7 +110,7 @@
                 <div style="float:right;">
                     <form action="{{url_for('deleteFavorite')}}" method="post">
                         <input name="restaurantID" type="hidden" value="{{restaurantID}}">
-                        <button type="submit" class="comment-button" style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;'>
+                        <button type="submit" class="comment-button" style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;border-radius:5px;padding:9px 10px 10px 10px;'>
                             Remove Favorite <i class='far fa-check-square'></i></button>
                     </form>
                 </div>
@@ -119,20 +119,20 @@
                     <form action="{{url_for('addFavorite')}}" method="post">
                         <input name="restaurantID" type="hidden" value="{{restaurantID}}">
                         <input name="restaurantName" type="hidden" value="{{name}}">
-                        <button type="submit" class="comment-button" style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;'>
+                        <button type="submit" class="comment-button" style='font-size:14px;font-weight:bold;color:#f67b5f;background:white;position:inline;border-radius:5px;padding:9px 10px 10px 10px;'>
                             Add Favorite <i class='far fa-plus-square'></i></button>
                     </form>
                 </div>
                 {%endif%}{% if commentsList != 'empty' %}
                 <div style="float:right;">
-                    <button class="comment-button" style="position:inline;"
+                    <button class="comment-button" style="position:inline;border-radius:5px;"
                             onclick="document.getElementById('id04').style.display='block'">View {{ commentsList|length
                         }} Member Comment{% if commentsList|length >1 %}s{%endif%}
                     </button>
                 </div>
                 {%endif%}
                  <div style="float:right;">
-                    <button class="comment-button" onclick="document.getElementById('id03').style.display='block'">Leave A
+                    <button class="comment-button" onclick="document.getElementById('id03').style.display='block'" style="border-radius:5px;">Leave A
                     Comment
                     </button>
                 </div>
