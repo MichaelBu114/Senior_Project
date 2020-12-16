@@ -742,7 +742,7 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-@app.route('/editGroups/', methods = ['GET','POST'])
+@app.route('/editGroups/<int:fk_group>', methods = ['GET','POST'])
 def editGroup(fk_group):
     uname = session['username']
     sesId = session['id']
