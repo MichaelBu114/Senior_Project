@@ -786,7 +786,7 @@ def addToGroup(group_id, user_id, gp_name):
     cur.execute('CALL addToGroup(%s, %s, @status)', (group_id, user_id)) 
     con.commit()
     con.close()
-    return redirect(url_for('editGroup', fk_group=group_id, groupName=gp_name))
+    return redirect(url_for('editGroup', fk_group=group_id, gp_name=gp_name))
 
 # Gets the groups name, id, and all members with the group. The first member id in the group is the also the creator/owner of the group
 def getGroups(user_id):
@@ -808,14 +808,17 @@ def getGroups(user_id):
     return groupMembers
 
 #Removes the user from the group
-@app.route('/delete/<int:group_id>/<int:user_id>/<int:gp_name>')
-def deleteFromGroup(group_id, user_id, gp_name):
+@app.route('/delete/<int:group_id>/<int:user_id>/<string:gp_name>/<int:conPage>')
+def deleteFromGroup(group_id, user_id, gp_name, conPage):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL deleteFromGroup(%s, %s)', (group_id, user_id))
     con.commit()
     con.close()
-    return redirect(url_for('editGroup', fk_group=group_id, groupName = gp_name))
+    if conPage == 1:
+        return redirect(url_for('connect'))
+    else:
+        return redirect(url_for('editGroup', fk_group=group_id, gp_name = gp_name))
 
 #Deletes the Group created by the user
 @app.route('/deleteGroup/<int:user_id>/<int:fk_group>', methods = ['GET','POST'])

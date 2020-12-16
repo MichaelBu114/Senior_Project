@@ -78,7 +78,7 @@
                            <ol id="currentGroup" class="displayGroups" style="color: Gray;font-size:12px;font-weight:bold;">
                                {% for i in members %}
                                    <li style="color: Gray;font-size:12px;font-weight:bold;">{{i[0]}}&nbsp;{{i[1]}} - {{i[2]}}
-                                    <span><a href = "{{url_for('deleteFromGroup', group_id = group_id, user_id = i[5],gp_name=groupName)}}">x</span></a>
+                                    <span><a href = "{{url_for('deleteFromGroup', group_id = group_id, user_id = i[5],gp_name=groupName, conPage = 0)}}">x</span></a>
                                    </li>
                                 {% endfor %}
                            </ol>
