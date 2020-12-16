@@ -742,8 +742,8 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
-@app.route('/editGroups/<int:fk_group>', methods = ['GET','POST'])
-def editGroup(fk_group):
+@app.route('/editGroups/<int:fk_group>/<string:gp_name>', methods = ['GET','POST'])
+def editGroup(fk_group, gp_name):
     uname = session['username']
     sesId = session['id']
     con = mysql.connect()
@@ -762,7 +762,7 @@ def editGroup(fk_group):
             members.append(i)
         else:
             nonMembers.append(i)
-    return render_template('editGroupPage.html', username = uname, friends = nonMembers, members = members, group_id = fk_group)
+    return render_template('editGroupPage.html', username = uname, friends = nonMembers, members = members, group_id = fk_group, groupName=gp_name)
 
 # Creates a new group with the name given by the user and make them the creator/owner. Returns you back to the connect page
 @app.route('/addGroup/', methods =['GET','POST'])
@@ -779,41 +779,43 @@ def addGroup():
     return redirect(url_for('connect'))
 
 # Adds a new user to the group
-@app.route('/add/<int:group_id>/<int:user_id>', methods = ['GET','POSt'])
-def addToGroup(group_id, user_id):
+@app.route('/add/<int:group_id>/<int:user_id>/<string:gp_name>', methods = ['GET','POSt'])
+def addToGroup(group_id, user_id, gp_name):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL addToGroup(%s, %s, @status)', (group_id, user_id)) 
     con.commit()
     con.close()
-    return redirect(url_for('editGroup', fk_group=group_id))
+    return redirect(url_for('editGroup', fk_group=group_id, groupName=gp_name))
 
 # Gets the groups name, id, and all members with the group. The first member id in the group is the also the creator/owner of the group
 def getGroups(user_id):
     con = mysql.connect()
     cur = con.cursor()
     groupMembers = []
-    groupsList = cur.execute('CALL getGroups(%s)', (user_id))
-    groupsList =  cur.fetchall()
+    groupsList1 = cur.execute('CALL getGroups(%s)', (user_id))
+    groupsList1 = cur.fetchall()
+    groupsList2 = cur.execute('CALL getGroupsUserIsMember(%s)', (user_id))
+    groupsList2 = cur.fetchall()
+    groupsList = groupsList1 + groupsList2
     for i in groupsList:
         membersList = cur.execute('CALL getGroupMembers(%s)',(i[1]))
         membersList = [val for sublist in cur.fetchall() for val in sublist]
         membersList = [i[0]]+[i[1]]+membersList
         groupMembers.append(membersList) 
-
     con.commit()
     con.close()
     return groupMembers
 
 #Removes the user from the group
-@app.route('/delete/<int:group_id>/<int:user_id>')
-def deleteFromGroup(group_id, user_id):
+@app.route('/delete/<int:group_id>/<int:user_id>/<int:gp_name>')
+def deleteFromGroup(group_id, user_id, gp_name):
     con = mysql.connect()
     cur = con.cursor()
     cur.execute('CALL deleteFromGroup(%s, %s)', (group_id, user_id))
     con.commit()
     con.close()
-    return redirect(url_for('editGroup', fk_group=group_id))
+    return redirect(url_for('editGroup', fk_group=group_id, groupName = gp_name))
 
 #Deletes the Group created by the user
 @app.route('/deleteGroup/<int:user_id>/<int:fk_group>', methods = ['GET','POST'])
