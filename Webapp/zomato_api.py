@@ -158,7 +158,7 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
     
     # Check zip code validity
     if len(zip) != 5:
-        response_json['status'] = "Invalid ZIP Code"
+        response_json['status'] = "Invalid ZIP Code, Please Try Again"
         return response_json
     
     # Convert zip code into coordinates
@@ -168,7 +168,7 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
         lon = maps_response["results"][0]["geometry"]["location"]["lng"]
         meters = int(radius) * 1609
     except:
-        response_json['status'] = "Invalid ZIP Code"
+        response_json['status'] = "Invalid ZIP Code, Please Try Again"
         return response_json
 
     # Initial API request
