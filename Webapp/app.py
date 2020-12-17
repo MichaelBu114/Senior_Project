@@ -153,7 +153,10 @@ results returns None if key-value pair does not exists
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
     global result
-    msg = ""
+    if request.args.get('msg'):
+        msg = request.args.get('msg')
+    else:
+        msg = ""
     data = []
     pageNum = 0
     qd = 0
