@@ -6,7 +6,6 @@ from config import *
 ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1"
 GOOGLE_MAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
-
 FORCE_ERROR = False
 DEBUG = True
 header = {"user-key" : ZOMATO_API_KEY}
@@ -157,11 +156,20 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
             response_json['status'] = "MySQL Database Error"
             return response_json
     
+    # Check zip code validity
+    if len(zip) != 5:
+        response_json['status'] = "Invalid ZIP Code"
+        return response_json
+    
     # Convert zip code into coordinates
     maps_response = requests.get(GOOGLE_MAPS_BASE_URL+"?address=%s&key=%s" % (zip, GOOGLE_MAPS_API_KEY)).json()
-    lat = maps_response["results"][0]["geometry"]["location"]["lat"]
-    lon = maps_response["results"][0]["geometry"]["location"]["lng"]
-    meters = int(radius) * 1609
+    try:
+        lat = maps_response["results"][0]["geometry"]["location"]["lat"]
+        lon = maps_response["results"][0]["geometry"]["location"]["lng"]
+        meters = int(radius) * 1609
+    except:
+        response_json['status'] = "Invalid ZIP Code"
+        return response_json
 
     # Initial API request
     items = api_request(lat, lon, meters, sorting, categories, establishments, cuisines, userRating, userRange)
@@ -174,5 +182,7 @@ def search(zip, radius, sorting, user_id, userRating, userRange, userCat = None,
     # Choose a random restaurant if there are results
     if response_json['count'] > 0:
         choose_random(response_json['count'])
+    else:
+        response_json['status'] = "No results found"
     
     return response_json

@@ -182,7 +182,6 @@ def search():
             data.sort(reverse = True,key = lambda x: float(x[4]))
             if len(data) == 0:
                 session['random'] = 0
-                msg = "No results found"
             else:
                 session['random'] = resp['random']['id']
 
@@ -408,7 +407,6 @@ def survey():
                 data.sort(reverse = True,key = lambda x: float(x[4]))
                 if len(data) == 0:
                     session['random'] = 0
-                    msg = "No results found"
                 else:
                     session['random'] = resp['random']['id']
                 if result == {}:
@@ -451,7 +449,6 @@ def survey():
                 data.sort(reverse = True,key = lambda x: float(x[4]))
                 if len(data) == 0:
                     session['random'] = 0
-                    msg = "No results found"
                 else:
                     session['random'] = resp['random']['id']
                 if result == {}:
