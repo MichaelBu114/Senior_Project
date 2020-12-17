@@ -1,0 +1,1 @@
+Sometimes at random the dictionary that stores results of the zomato api call returns a None type displaying no results. refreashing the page fixes it.
