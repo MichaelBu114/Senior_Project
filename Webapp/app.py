@@ -251,7 +251,11 @@ Rerolls your quick search results
 """
 @app.route('/reroll/', methods =['GET','POST'])
 def reroll():
-    data = result.get(session['id'])
+    if 'username' in session:
+        sesId= session['id']
+    else:
+        sesId = 0
+    data = result.get(sesId)
     i = random.randint(0,(len(data)-1))
     randId = data[i][1]
     return redirect(url_for('details', res_id=randId, qd=1))
@@ -452,10 +456,10 @@ def survey():
                 else:
                     session['random'] = resp['random']['id']
                 if result == {}:
-                    result = {sesId:data}
+                    result = {0:data}
                 else:
                     result.popitem()
-                    result[sesId] = data
+                    result[0] = data
                 return redirect(url_for('search', msg=msg, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
                                        userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=session['random']))
