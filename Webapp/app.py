@@ -74,12 +74,8 @@ Removes all the users session values and if the user has results removes the use
 @app.route('/logout/')
 def logout():
     global result
-    session.pop('username', None)
-    session.pop('email', None)
-    session.pop('id', None)
-    session.pop('password', None)
-    if len(result) != 0:
-        result.popitem()
+    session.clear()
+    result.clear()
     return redirect(url_for('home'))
 
 """
@@ -462,7 +458,7 @@ def survey():
                     result = {0:data}
                 else:
                     result.popitem()
-                    result[0] = data
+                    result = {0:data}
                 return redirect(url_for('search', msg=msg, userRange=UserRange,
                                        userDistance=round(UserDistance / 1609),
                                        userZipcode=UserZipCode, userRating=UserRating, pageNum=1, next=10, prev=0,random=session['random']))
@@ -750,6 +746,7 @@ def updateFriend(friends_id,Fk_user,status):
     con.close()
     return redirect(url_for('connect'))
 
+#The user can edit members of the group if they are the owner
 @app.route('/editGroups/<int:fk_group>/<string:gp_name>', methods = ['GET','POST'])
 def editGroup(fk_group, gp_name):
     uname = session['username']
